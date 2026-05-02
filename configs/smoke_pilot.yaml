@@ -1,0 +1,25 @@
+data_root: data/smoke_bridge
+output_root: results/smoke_pilot
+task: topology
+seed: 11
+train_limit: 16
+val_limit: 8
+id_test_limit: 8
+far_ood_limit: 8
+target_params:
+  min: 405000
+  max: 495000
+trainer:
+  lr: 3.0e-4
+  weight_decay: 1.0e-5
+  max_epochs: 1
+  patience: 1
+  batch_size_flat: 4
+  batch_size_hier: 2
+models:
+  - gin
+  - gatv2
+  - graphgps
+  - diffpool
+  - mincut
+  - ptr

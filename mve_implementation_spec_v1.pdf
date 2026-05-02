@@ -1,0 +1,1528 @@
+%PDF-1.4
+%“Œ‹ž ReportLab Generated PDF document http://www.reportlab.com
+1 0 obj
+<<
+/F1 2 0 R /F2 3 0 R /F3 5 0 R
+>>
+endobj
+2 0 obj
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
+endobj
+3 0 obj
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
+endobj
+4 0 obj
+<<
+/Contents 12 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 11 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+5 0 obj
+<<
+/BaseFont /Courier /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+>>
+endobj
+6 0 obj
+<<
+/Contents 13 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 11 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+7 0 obj
+<<
+/Contents 14 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 11 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+8 0 obj
+<<
+/Contents 15 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 11 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+9 0 obj
+<<
+/PageMode /UseNone /Pages 11 0 R /Type /Catalog
+>>
+endobj
+10 0 obj
+<<
+/Author (OpenAI Codex) /CreationDate (D:20260326145142+08'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20260326145142+08'00') /Producer (ReportLab PDF Library - www.reportlab.com) 
+  /Subject (\(unspecified\)) /Title (MVE Implementation Spec v1) /Trapped /False
+>>
+endobj
+11 0 obj
+<<
+/Count 4 /Kids [ 4 0 R 6 0 R 7 0 R 8 0 R ] /Type /Pages
+>>
+endobj
+12 0 obj
+<<
+/Length 8137
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+.85098 .886275 .92549 RG
+.5 w
+n 45.35433 796.5354 m 549.9213 796.5354 l S
+BT /F1 8 Tf 9.6 TL ET
+.321569 .376471 .427451 rg
+BT 1 0 0 1 45.35433 805.0394 Tm (MVE Implementation Spec v1) Tj T* ET
+BT 1 0 0 1 524.5693 28.34646 Tm (Page 1) Tj T* ET
+Q
+q
+1 0 0 1 51.35433 750.8504 cm
+Q
+q
+1 0 0 1 51.35433 726.8504 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 4 Tm /F2 20 Tf 24 TL 107.3535 0 Td (MVE Implementation Spec v1) Tj T* -107.3535 0 Td ET
+Q
+Q
+q
+1 0 0 1 51.35433 705.8504 cm
+q
+.321569 .376471 .427451 rg
+BT 1 0 0 1 0 3.5 Tm /F1 9.5 Tf 13 TL 20.31171 0 Td (Version 0 technical specification for experiment-ready cross-subject shared perceptual cell learning on NSD) Tj T* -20.31171 0 Td ET
+Q
+Q
+q
+1 0 0 1 51.35433 624.5504 cm
+q
+.917647 .94902 .980392 rg
+n 0 69.3 504.5669 -69.3 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 8 52.5 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2.1 Tm /F2 8.7 Tf 10.8 TL (Version 0 objective) Tj T* ET
+Q
+Q
+q
+1 0 0 1 8 6 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 25.7 Tm /F1 8.8 Tf 11.5 TL (Lock the first experiment to one falsifiable claim: a learned shared cell space should improve held-out-subject closed-set) Tj T* (stimulus identification on NSD relative to strong non-graph baselines. Version 0 intentionally freezes the scope before graph) Tj T* (reasoning.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.058824 .298039 .505882 RG
+.6 w
+n 0 69.3 m 504.5669 69.3 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 69.3 l S
+n 504.5669 0 m 504.5669 69.3 l S
+1 1 1 RG
+n 0 46.5 m 504.5669 46.5 l S
+Q
+Q
+Q
+q
+1 0 0 1 51.35433 619.5504 cm
+Q
+q
+1 0 0 1 51.35433 579.0504 cm
+q
+BT 1 0 0 1 0 25.7 Tm 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (Version boundary.) Tj /F1 8.8 Tf ( This document replaces proposal-level ambiguity with coding-level defaults. It assumes NSD only, the) Tj T* (shared 1000-image stimulus subset, averaged repeated-image responses, no dynamic graph module, and a single primary) Tj T* (metric for the first pass.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 557.0504 cm
+q
+.058824 .298039 .505882 rg
+BT 1 0 0 1 0 2 Tm /F2 12 Tf 14 TL (1. Sample Definition) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 403.9504 cm
+q
+.058824 .298039 .505882 rg
+n 0 148.1 504.5669 -18.1 re f*
+1 1 1 rg
+n 0 130 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 112 504.5669 -28 re f*
+1 1 1 rg
+n 0 84 504.5669 -28 re f*
+.968627 .976471 .988235 rg
+n 0 56 504.5669 -28 re f*
+1 1 1 rg
+n 0 28 504.5669 -28 re f*
+1 1 1 rg
+BT /F2 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 134 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Item) Tj T* ET
+Q
+Q
+q
+1 0 0 1 146.7323 134 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Version 0 decision) Tj T* ET
+Q
+Q
+0 0 0 rg
+BT /F1 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 116 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Dataset) Tj T* ET
+Q
+Q
+q
+1 0 0 1 146.7323 116 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (NSD only for primary development and acceptance testing.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 98 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Sample unit) Tj T* ET
+Q
+Q
+q
+1 0 0 1 146.7323 88 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (One subject x one shared image, using the subject's averaged repeated-image beta response for) Tj T* (that image.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 70 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Label) Tj T* ET
+Q
+Q
+q
+1 0 0 1 146.7323 60 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Closed-set image identity over the 1000 NSD shared stimuli. This keeps the first metric simple and) Tj T* (directly tied to cross-subject alignment.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 42 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Split) Tj T* ET
+Q
+Q
+q
+1 0 0 1 146.7323 32 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Outer loop = 8 leave-one-subject-out folds. Per fold: 1 held-out test subject, 1 validation subject, 6) Tj T* (training subjects.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 14 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Train/val/test policy) Tj T* ET
+Q
+Q
+q
+1 0 0 1 146.7323 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (No stimulus split in Version 0. All 1000 shared images appear in every split; only the subject axis) Tj T* (changes. This isolates subject transfer rather than open-set semantic generalization.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.85098 .886275 .92549 RG
+.4 w
+n 0 148.1 m 504.5669 148.1 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 148.1 l S
+n 504.5669 0 m 504.5669 148.1 l S
+n 0 130 m 504.5669 130 l S
+n 0 112 m 504.5669 112 l S
+n 0 84 m 504.5669 84 l S
+n 0 56 m 504.5669 56 l S
+n 0 28 m 504.5669 28 l S
+n 141.7323 0 m 141.7323 148.1 l S
+Q
+Q
+Q
+q
+1 0 0 1 51.35433 374.9504 cm
+q
+BT 1 0 0 1 0 14.2 Tm 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (Rationale.) Tj /F1 8.8 Tf ( Averaging repeated presentations reduces trial noise and lets the first implementation answer the alignment) Tj T* (question before single-trial variance, temporal modeling, or external datasets are introduced.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 352.9504 cm
+q
+.058824 .298039 .505882 rg
+BT 1 0 0 1 0 2 Tm /F2 12 Tf 14 TL (2. Input Representation) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 211.8504 cm
+q
+.058824 .298039 .505882 rg
+n 0 136.1 504.5669 -18.1 re f*
+1 1 1 rg
+n 0 118 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 100 504.5669 -18 re f*
+1 1 1 rg
+n 0 82 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 64 504.5669 -28 re f*
+1 1 1 rg
+n 0 36 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 18 504.5669 -18 re f*
+1 1 1 rg
+BT /F2 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 122 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Component) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 122 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Specification) Tj T* ET
+Q
+Q
+0 0 0 rg
+BT /F1 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 104 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Signal level) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 104 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Voxel-level beta pattern restricted to selected visual ROIs; no ROI mean pooling for the main model.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 86 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (ROIs) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 86 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (NSD visual ROI union: V1, V2, V3, hV4, LO, VO, and PHC masks from official NSD ROI annotations.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 68 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Raw tensor) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 68 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Subject-specific vector with all voxels in the selected ROI union before projection.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 50 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Normalization) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 40 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Fit voxelwise z-score statistics on training subjects only; apply the fitted mean/std to val and test subjects) Tj T* (per fold.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 22 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Projection) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 22 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Subject-wise PCA fitted on training samples only, projected to d_in = 512. No whitening in Version 0.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Model input shape) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL ([512] per sample after projection; batch shape [B, 512].) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.85098 .886275 .92549 RG
+.4 w
+n 0 136.1 m 504.5669 136.1 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 136.1 l S
+n 504.5669 0 m 504.5669 136.1 l S
+n 0 118 m 504.5669 118 l S
+n 0 100 m 504.5669 100 l S
+n 0 82 m 504.5669 82 l S
+n 0 64 m 504.5669 64 l S
+n 0 36 m 504.5669 36 l S
+n 0 18 m 504.5669 18 l S
+n 119.0551 0 m 119.0551 136.1 l S
+Q
+Q
+Q
+q
+1 0 0 1 51.35433 182.8504 cm
+q
+BT 1 0 0 1 0 14.2 Tm 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (Stored artifacts.) Tj /F1 8.8 Tf ( Keep both the raw ROI voxel indices and the fitted PCA objects so that later diagnostics can map prototypes) Tj T* (back to anatomy without rerunning extraction.) Tj T* ET
+Q
+Q
+ 
+endstream
+endobj
+13 0 obj
+<<
+/Length 11119
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+.85098 .886275 .92549 RG
+.5 w
+n 45.35433 796.5354 m 549.9213 796.5354 l S
+BT /F1 8 Tf 9.6 TL ET
+.321569 .376471 .427451 rg
+BT 1 0 0 1 45.35433 805.0394 Tm (MVE Implementation Spec v1) Tj T* ET
+BT 1 0 0 1 524.5693 28.34646 Tm (Page 2) Tj T* ET
+Q
+q
+1 0 0 1 51.35433 765.1969 cm
+q
+.058824 .298039 .505882 rg
+BT 1 0 0 1 0 2 Tm /F2 12 Tf 14 TL (3. Version 0 Model Definition) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 736.1969 cm
+q
+BT 1 0 0 1 0 14.2 Tm 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (Architecture.) Tj /F1 8.8 Tf ( The proposed model is static and sequence-free in Version 0: subject encoder -> shared prototype bank -> cell) Tj T* (activation vector -> classifier head. Dynamic GNN blocks are explicitly deferred.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 604.0969 cm
+q
+.058824 .298039 .505882 rg
+n 0 128.1 504.5669 -18.1 re f*
+1 1 1 rg
+n 0 110 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 92 504.5669 -18 re f*
+1 1 1 rg
+n 0 74 504.5669 -28 re f*
+.968627 .976471 .988235 rg
+n 0 46 504.5669 -28 re f*
+1 1 1 rg
+n 0 18 504.5669 -18 re f*
+1 1 1 rg
+BT /F2 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 114 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Module) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 114 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Default setting) Tj T* ET
+Q
+Q
+0 0 0 rg
+BT /F1 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 96 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Subject encoder f_s) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 96 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Subject-specific two-layer MLP: 512 -> 256 -> 256 with GELU, dropout 0.1, and LayerNorm on the output.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 78 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Shared prototype bank P) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 78 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (P in R^\(K x d\), with K = 64 shared cells and d = 256 embedding dimensions.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 60 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Assignment rule) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 50 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL -0.026012 Tw (Cosine similarity followed by softmax with temperature tau = 0.07. No Sinkhorn and no hard top-k masking) Tj T* 0 Tw (in Version 0.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 32 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Cell activation z) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 22 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (K-dimensional activation vector z = a. The model uses one activation vector per sample, not a T x K) Tj T* (sequence.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Output head g) Tj T* ET
+Q
+Q
+q
+1 0 0 1 124.0551 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (LayerNorm -> Linear\(64, 256\) -> GELU -> Linear\(256, 1000\).) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.85098 .886275 .92549 RG
+.4 w
+n 0 128.1 m 504.5669 128.1 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 128.1 l S
+n 504.5669 0 m 504.5669 128.1 l S
+n 0 110 m 504.5669 110 l S
+n 0 92 m 504.5669 92 l S
+n 0 74 m 504.5669 74 l S
+n 0 46 m 504.5669 46 l S
+n 0 18 m 504.5669 18 l S
+n 119.0551 0 m 119.0551 128.1 l S
+Q
+Q
+Q
+q
+1 0 0 1 51.35433 530.6969 cm
+%PreformattedPara
+.121569 .160784 .2 rg
+BT 1 0 0 1 6 63.2 Tm /F3 8.2 Tf 10.2 TL (x_s in R^512) Tj T* (h = f_s\(x_s\) in R^256) Tj T* (u_k = cos\(h, p_k\)) Tj T* (a = softmax\(u / tau\),  tau = 0.07) Tj T* (z = a in R^64) Tj T* (y_hat = g\(z\)) Tj T* (L = L_ce + 0.20 L_align + 0.05 L_balance + 0.01 L_orth) Tj T* ET
+Q
+q
+1 0 0 1 51.35433 490.1969 cm
+q
+BT 1 0 0 1 0 25.7 Tm -0.047004 Tw 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (L_align.) Tj /F1 8.8 Tf ( For each image represented by multiple training subjects in a batch, minimize 1 - cosine\(z_i, z_j\) across subject pairs.) Tj T* 0 Tw /F2 8.8 Tf (L_balance.) Tj /F1 8.8 Tf ( Match the batch-mean assignment distribution to Uniform\(64\) with KL divergence. ) Tj /F2 8.8 Tf (L_orth.) Tj /F1 8.8 Tf ( Penalize prototype) Tj T* (redundancy with ||PP^T - I||) Tj /F1 7.04 Tf 4.4 Ts (2) Tj -4.4 Ts (F) Tj /F1 8.8 Tf 0 Ts (.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 468.1969 cm
+q
+.058824 .298039 .505882 rg
+BT 1 0 0 1 0 2 Tm /F2 12 Tf 14 TL (4. Baseline Hierarchy) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 345.0969 cm
+q
+.058824 .298039 .505882 rg
+n 0 118.1 504.5669 -18.1 re f*
+1 1 1 rg
+n 0 100 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 82 504.5669 -18 re f*
+1 1 1 rg
+n 0 64 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 46 504.5669 -28 re f*
+1 1 1 rg
+n 0 18 504.5669 -18 re f*
+1 1 1 rg
+BT /F2 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 104 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (ID) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44.68504 104 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Baseline) Tj T* ET
+Q
+Q
+q
+1 0 0 1 209.0945 104 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Purpose) Tj T* ET
+Q
+Q
+0 0 0 rg
+BT /F1 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 86 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (B1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44.68504 86 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (ROI feature + linear classifier) Tj T* ET
+Q
+Q
+q
+1 0 0 1 209.0945 86 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Lowest-friction atlas-aware baseline on the same 512-d projected input.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 68 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (B2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44.68504 68 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (ROI feature + two-layer MLP) Tj T* ET
+Q
+Q
+q
+1 0 0 1 209.0945 68 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Nonlinear baseline without shared cell structure.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 50 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (B3) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44.68504 50 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Shared linear latent space) Tj T* ET
+Q
+Q
+q
+1 0 0 1 209.0945 50 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Subject-specific linear adapters to 256-d shared latent plus linear classifier.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 32 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (B4) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44.68504 32 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Shared encoder without prototype bank) Tj T* ET
+Q
+Q
+q
+1 0 0 1 209.0945 22 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Strong non-graph baseline: same subject encoder as the proposed model, but h) Tj T* (goes directly to the classifier head.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (B5) Tj T* ET
+Q
+Q
+q
+1 0 0 1 44.68504 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Prototype bank model) Tj T* ET
+Q
+Q
+q
+1 0 0 1 209.0945 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Proposed Version 0 model and the only new method required for acceptance.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.85098 .886275 .92549 RG
+.4 w
+n 0 118.1 m 504.5669 118.1 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 118.1 l S
+n 504.5669 0 m 504.5669 118.1 l S
+n 0 100 m 504.5669 100 l S
+n 0 82 m 504.5669 82 l S
+n 0 64 m 504.5669 64 l S
+n 0 46 m 504.5669 46 l S
+n 0 18 m 504.5669 18 l S
+n 39.68504 0 m 39.68504 118.1 l S
+n 204.0945 0 m 204.0945 118.1 l S
+Q
+Q
+Q
+q
+1 0 0 1 51.35433 316.0969 cm
+q
+BT 1 0 0 1 0 14.2 Tm 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (Decision rule.) Tj /F1 8.8 Tf ( Graph modules will not be introduced unless B5 beats both B3 and B4 on held-out subjects. Beating only weak) Tj T* (ROI baselines is not sufficient.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 294.0969 cm
+q
+.058824 .298039 .505882 rg
+BT 1 0 0 1 0 2 Tm /F2 12 Tf 14 TL (5. Training Protocol) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 108.9969 cm
+q
+.058824 .298039 .505882 rg
+n 0 180.1 504.5669 -18.1 re f*
+1 1 1 rg
+n 0 162 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 144 504.5669 -18 re f*
+1 1 1 rg
+n 0 126 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 108 504.5669 -18 re f*
+1 1 1 rg
+n 0 90 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 72 504.5669 -18 re f*
+1 1 1 rg
+n 0 54 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 36 504.5669 -18 re f*
+1 1 1 rg
+n 0 18 504.5669 -18 re f*
+1 1 1 rg
+BT /F2 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 166 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Item) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 166 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Version 0 default) Tj T* ET
+Q
+Q
+0 0 0 rg
+BT /F1 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 148 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Batch construction) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 148 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Sample 32 image IDs per step and draw up to 4 training subjects per image; target batch size is 128.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 130 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Subject mixing) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 130 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Yes. Every batch mixes subjects so that L_align is defined within the batch.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 112 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Optimizer) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 112 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (AdamW with parameter groups.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 94 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Learning rates) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 94 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (1e-3 for subject encoders and classifier head; 5e-4 for prototype bank.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 76 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Regularization) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 76 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Weight decay 1e-4, dropout 0.1, gradient clipping at global norm 1.0.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 58 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Schedule) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 58 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (5 warmup epochs then cosine decay to 1e-5.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 40 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Epochs) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 40 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (80 max epochs.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 22 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Early stopping) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 22 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Patience 10 on validation top-1 accuracy; break ties with validation top-5 accuracy.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Seeds) Tj T* ET
+Q
+Q
+q
+1 0 0 1 118.3858 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (5 fixed seeds: 11, 22, 33, 44, 55.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.85098 .886275 .92549 RG
+.4 w
+n 0 180.1 m 504.5669 180.1 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 180.1 l S
+n 504.5669 0 m 504.5669 180.1 l S
+n 0 162 m 504.5669 162 l S
+n 0 144 m 504.5669 144 l S
+n 0 126 m 504.5669 126 l S
+n 0 108 m 504.5669 108 l S
+n 0 90 m 504.5669 90 l S
+n 0 72 m 504.5669 72 l S
+n 0 54 m 504.5669 54 l S
+n 0 36 m 504.5669 36 l S
+n 0 18 m 504.5669 18 l S
+n 113.3858 0 m 113.3858 180.1 l S
+Q
+Q
+Q
+ 
+endstream
+endobj
+14 0 obj
+<<
+/Length 6245
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+.85098 .886275 .92549 RG
+.5 w
+n 45.35433 796.5354 m 549.9213 796.5354 l S
+BT /F1 8 Tf 9.6 TL ET
+.321569 .376471 .427451 rg
+BT 1 0 0 1 45.35433 805.0394 Tm (MVE Implementation Spec v1) Tj T* ET
+BT 1 0 0 1 524.5693 28.34646 Tm (Page 3) Tj T* ET
+Q
+q
+1 0 0 1 51.35433 765.1969 cm
+q
+.058824 .298039 .505882 rg
+BT 1 0 0 1 0 2 Tm /F2 12 Tf 14 TL (6. Evaluation Protocol) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 632.0969 cm
+q
+.058824 .298039 .505882 rg
+n 0 128.1 504.5669 -18.1 re f*
+1 1 1 rg
+n 0 110 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 92 504.5669 -28 re f*
+1 1 1 rg
+n 0 64 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 46 504.5669 -18 re f*
+1 1 1 rg
+n 0 28 504.5669 -28 re f*
+1 1 1 rg
+BT /F2 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 114 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Level) Tj T* ET
+Q
+Q
+q
+1 0 0 1 107.0472 114 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Metric or report) Tj T* ET
+Q
+Q
+0 0 0 rg
+BT /F1 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 96 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Primary) Tj T* ET
+Q
+Q
+q
+1 0 0 1 107.0472 96 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Held-out-subject top-1 closed-set accuracy over the 1000 shared images.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 78 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Secondary) Tj T* ET
+Q
+Q
+q
+1 0 0 1 107.0472 68 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Top-5 accuracy, retrieval Recall@1 and Recall@5 from the penultimate embedding, and RSA between) Tj T* (subject-level representation dissimilarity matrices.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 50 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Consistency analysis) Tj T* ET
+Q
+Q
+q
+1 0 0 1 107.0472 50 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Cell consistency = mean same-image cross-subject cosine on z plus top-1 prototype agreement rate.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 32 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Reporting) Tj T* ET
+Q
+Q
+q
+1 0 0 1 107.0472 32 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Mean +/- std across 8 subject folds and 5 seeds, with per-subject tables retained in the results directory.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 14 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Acceptance gate) Tj T* ET
+Q
+Q
+q
+1 0 0 1 107.0472 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Prototype model should exceed B4 by at least 3 absolute points on mean top-1 accuracy or win on at least 6 of) Tj T* (8 held-out subjects.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.85098 .886275 .92549 RG
+.4 w
+n 0 128.1 m 504.5669 128.1 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 128.1 l S
+n 504.5669 0 m 504.5669 128.1 l S
+n 0 110 m 504.5669 110 l S
+n 0 92 m 504.5669 92 l S
+n 0 64 m 504.5669 64 l S
+n 0 46 m 504.5669 46 l S
+n 0 28 m 504.5669 28 l S
+n 102.0472 0 m 102.0472 128.1 l S
+Q
+Q
+Q
+q
+1 0 0 1 51.35433 591.5969 cm
+q
+BT 1 0 0 1 0 25.7 Tm 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (External validation.) Tj /F1 8.8 Tf ( THINGS-fMRI and BOLD5000 remain frozen-transfer checks after NSD succeeds. They are not part of) Tj T* -0.108771 Tw (the Version 0 acceptance gate, but the evaluation scripts should already support loading an external feature matrix and running) Tj T* 0 Tw (a linear probe on frozen z.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 569.5969 cm
+q
+.058824 .298039 .505882 rg
+BT 1 0 0 1 0 2 Tm /F2 12 Tf 14 TL (7. Failure Diagnostics) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 424.4969 cm
+q
+.058824 .298039 .505882 rg
+n 0 140.1 504.5669 -18.1 re f*
+1 1 1 rg
+n 0 122 504.5669 -28 re f*
+.968627 .976471 .988235 rg
+n 0 94 504.5669 -38 re f*
+1 1 1 rg
+n 0 56 504.5669 -28 re f*
+.968627 .976471 .988235 rg
+n 0 28 504.5669 -28 re f*
+1 1 1 rg
+BT /F2 7.7 Tf 9.7 TL ET
+q
+1 0 0 1 5 126 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Failure mode) Tj T* ET
+Q
+Q
+q
+1 0 0 1 90.03937 126 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Detection signal) Tj T* ET
+Q
+Q
+q
+1 0 0 1 226.1024 126 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (First response) Tj T* ET
+Q
+Q
+0 0 0 rg
+BT /F1 7.7 Tf 9.7 TL ET
+q
+1 0 0 1 5 108 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Prototype collapse) Tj T* ET
+Q
+Q
+q
+1 0 0 1 90.03937 98 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf .121569 .160784 .2 rg (exp\(H\(mean\(a\)\)\) < 16 or one cell) Tj T* (gets > 25% of assignments.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 226.1024 108 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Raise L_balance, reduce K to 32, inspect assignment histograms.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 70 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Cross-subject) Tj T* (misalignment) Tj T* ET
+Q
+Q
+q
+1 0 0 1 90.03937 60 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 22 Tm /F1 8 Tf 10 TL (Same-image cosine on z is not at) Tj T* (least 0.10 above different-image) Tj T* (cosine.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 226.1024 80 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Audit z-scoring, PCA fitting, and subject-mixed batches first.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 42 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Overfitting) Tj T* ET
+Q
+Q
+q
+1 0 0 1 90.03937 32 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Train top-1 is > 10 points above) Tj T* (validation for 5 straight epochs.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 226.1024 42 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Increase dropout, shrink hidden width, and stop adding objectives.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Weak external) Tj T* (transfer) Tj T* ET
+Q
+Q
+q
+1 0 0 1 90.03937 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (NSD wins but frozen transfer to) Tj T* (THINGS/BOLD5000 is unstable.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 226.1024 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Check ROI overlap, preprocessing leakage, and label mapping before) Tj T* (claiming dataset shift.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.85098 .886275 .92549 RG
+.4 w
+n 0 140.1 m 504.5669 140.1 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 140.1 l S
+n 504.5669 0 m 504.5669 140.1 l S
+n 0 122 m 504.5669 122 l S
+n 0 94 m 504.5669 94 l S
+n 0 56 m 504.5669 56 l S
+n 0 28 m 504.5669 28 l S
+n 85.03937 0 m 85.03937 140.1 l S
+n 221.1024 0 m 221.1024 140.1 l S
+Q
+Q
+Q
+ 
+endstream
+endobj
+15 0 obj
+<<
+/Length 4889
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+.85098 .886275 .92549 RG
+.5 w
+n 45.35433 796.5354 m 549.9213 796.5354 l S
+BT /F1 8 Tf 9.6 TL ET
+.321569 .376471 .427451 rg
+BT 1 0 0 1 45.35433 805.0394 Tm (MVE Implementation Spec v1) Tj T* ET
+BT 1 0 0 1 524.5693 28.34646 Tm (Page 4) Tj T* ET
+Q
+q
+1 0 0 1 51.35433 765.1969 cm
+q
+.058824 .298039 .505882 rg
+BT 1 0 0 1 0 2 Tm /F2 12 Tf 14 TL (8. First Coding Milestones) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 634.0969 cm
+q
+.058824 .298039 .505882 rg
+n 0 126.1 504.5669 -18.1 re f*
+1 1 1 rg
+n 0 108 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 90 504.5669 -18 re f*
+1 1 1 rg
+n 0 72 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 54 504.5669 -18 re f*
+1 1 1 rg
+n 0 36 504.5669 -18 re f*
+.968627 .976471 .988235 rg
+n 0 18 504.5669 -18 re f*
+1 1 1 rg
+BT /F2 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 112 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Module) Tj T* ET
+Q
+Q
+q
+1 0 0 1 129.7244 112 cm
+q
+1 1 1 rg
+BT 1 0 0 1 0 2 Tm /F2 8.1 Tf 10.1 TL (Output artifact) Tj T* ET
+Q
+Q
+0 0 0 rg
+BT /F1 8.2 Tf 10.2 TL ET
+q
+1 0 0 1 5 94 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Data manifest builder) Tj T* ET
+Q
+Q
+q
+1 0 0 1 129.7244 94 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (data/nsd_v0/shared1000_manifest.csv and subject-fold split JSON files.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 76 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (ROI extraction and PCA) Tj T* ET
+Q
+Q
+q
+1 0 0 1 129.7244 76 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (data/nsd_v0/features/subjXX_visual_pca512.npz and artifacts/nsd_v0/preprocess/subjXX_pca.pkl.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 58 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Baseline training script) Tj T* ET
+Q
+Q
+q
+1 0 0 1 129.7244 58 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (results/nsd_v0/baselines/{model}/fold_{k}_seed_{s}/metrics.json and checkpoint.pt.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 40 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Prototype model trainer) Tj T* ET
+Q
+Q
+q
+1 0 0 1 129.7244 40 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (results/nsd_v0/prototype/fold_{k}_seed_{s}/model.pt, metrics.json, assignment_stats.json.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 22 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Evaluation script) Tj T* ET
+Q
+Q
+q
+1 0 0 1 129.7244 22 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (results/nsd_v0/eval/summary.csv and subject_breakdown.csv.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 5 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Visualization script) Tj T* ET
+Q
+Q
+q
+1 0 0 1 129.7244 4 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (results/nsd_v0/figures/prototype_usage.png, alignment_heatmap.png, subject_rsa.png.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.85098 .886275 .92549 RG
+.4 w
+n 0 126.1 m 504.5669 126.1 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 126.1 l S
+n 504.5669 0 m 504.5669 126.1 l S
+n 0 108 m 504.5669 108 l S
+n 0 90 m 504.5669 90 l S
+n 0 72 m 504.5669 72 l S
+n 0 54 m 504.5669 54 l S
+n 0 36 m 504.5669 36 l S
+n 0 18 m 504.5669 18 l S
+n 124.7244 0 m 124.7244 126.1 l S
+Q
+Q
+Q
+q
+1 0 0 1 51.35433 576.2969 cm
+q
+.917647 .94902 .980392 rg
+n 0 57.8 504.5669 -57.8 re f*
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 8 41 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 2.1 Tm /F2 8.7 Tf 10.8 TL (Implementation order) Tj T* ET
+Q
+Q
+q
+1 0 0 1 8 6 cm
+q
+.121569 .160784 .2 rg
+BT 1 0 0 1 0 14.2 Tm /F1 8.8 Tf 11.5 TL (Week 1 should end with the NSD shared-stimulus manifest and projected features on disk. Week 2 should end with B1-B4) Tj T* (training runs and a stable evaluation script. The prototype model should start only after those artifacts exist.) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+.058824 .298039 .505882 RG
+.6 w
+n 0 57.8 m 504.5669 57.8 l S
+n 0 0 m 504.5669 0 l S
+n 0 0 m 0 57.8 l S
+n 504.5669 0 m 504.5669 57.8 l S
+1 1 1 RG
+n 0 35 m 504.5669 35 l S
+Q
+Q
+Q
+q
+1 0 0 1 51.35433 571.2969 cm
+Q
+q
+1 0 0 1 51.35433 542.2969 cm
+q
+BT 1 0 0 1 0 14.2 Tm 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (Repository-ready checklist.) Tj /F1 8.8 Tf ( Every milestone above should map to one config file, one executable script, and one) Tj T* (machine-readable output. If a milestone only produces narrative notes, it is not complete.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 513.2969 cm
+q
+BT 1 0 0 1 0 14.2 Tm 11.5 TL /F2 8.8 Tf .121569 .160784 .2 rg (Deferred items.) Tj /F1 8.8 Tf ( Single-trial beta modeling, temporal bins, graph edges between cells, and external-dataset fine-tuning are) Tj T* (explicitly outside Version 0. If any of these appear in the first implementation PR, the scope has drifted.) Tj T* ET
+Q
+Q
+q
+1 0 0 1 51.35433 487.2969 cm
+q
+.321569 .376471 .427451 rg
+BT 1 0 0 1 0 12.2 Tm /F1 7.8 Tf 10 TL (This specification is experiment-ready when every table entry above can be mapped to a config key, a saved artifact, or a unit-tested) Tj T* (dataloader assumption.) Tj T* ET
+Q
+Q
+ 
+endstream
+endobj
+xref
+0 16
+0000000000 65535 f 
+0000000073 00000 n 
+0000000124 00000 n 
+0000000231 00000 n 
+0000000343 00000 n 
+0000000548 00000 n 
+0000000653 00000 n 
+0000000858 00000 n 
+0000001063 00000 n 
+0000001268 00000 n 
+0000001337 00000 n 
+0000001633 00000 n 
+0000001711 00000 n 
+0000009900 00000 n 
+0000021072 00000 n 
+0000027369 00000 n 
+trailer
+<<
+/ID 
+[<4a7e6dba5752d4312d518fd222a3b2e2><4a7e6dba5752d4312d518fd222a3b2e2>]
+% ReportLab generated PDF document -- digest (http://www.reportlab.com)
+
+/Info 10 0 R
+/Root 9 0 R
+/Size 16
+>>
+startxref
+32310
+%%EOF

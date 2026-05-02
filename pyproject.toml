@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bridgegen"
+version = "0.1.0"
+description = "Bridge-sensitive synthetic graph generator and preliminary test suite."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "numpy>=1.24",
+  "scipy>=1.10",
+  "networkx>=3.1",
+  "PyYAML>=6.0",
+  "scikit-learn>=1.3",
+  "torch>=2.3",
+  "torch-geometric>=2.5",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

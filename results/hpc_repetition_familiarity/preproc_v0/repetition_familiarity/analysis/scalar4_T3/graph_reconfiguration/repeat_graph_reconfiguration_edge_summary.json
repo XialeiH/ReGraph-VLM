@@ -1,0 +1,18 @@
+{
+  "source": "/scratch/xh2906/final_project_nsd/v0_shared_unit/preproc_v0/repetition_familiarity/analysis/scalar4_T3/graph_reconfiguration/repeat_graph_reconfiguration_edges.csv",
+  "train_only_edges": "/scratch/xh2906/final_project_nsd/v0_shared_unit/preproc_v0/repetition_familiarity/analysis/scalar4_T3/graph_reconfiguration/repeat_graph_reconfiguration_train_only_edges.csv",
+  "fold_consistent_edges": "/scratch/xh2906/final_project_nsd/v0_shared_unit/preproc_v0/repetition_familiarity/analysis/scalar4_T3/graph_reconfiguration/repeat_graph_reconfiguration_fold_consistent_edges.csv",
+  "folds": [
+    "fold_01",
+    "fold_04"
+  ],
+  "deltas": [
+    "delta_A_21",
+    "delta_A_31"
+  ],
+  "top_k_per_fold_delta": 20,
+  "n_train_only_rows": 40,
+  "n_fold_consistent_rows": 9,
+  "n_fold_consistent_delta_A_21": 3,
+  "n_fold_consistent_delta_A_31": 6
+}

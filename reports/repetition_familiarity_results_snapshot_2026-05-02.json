@@ -1,0 +1,109 @@
+{
+  "date": "2026-05-02",
+  "project_line": "NSD HCP-MMP ROI graph repetition/familiarity modeling",
+  "dataset": {
+    "roi_nodes": 180,
+    "atlas": "HCP-MMP",
+    "feature_set": "scalar4",
+    "features": ["mean_beta", "std_beta", "q90_beta", "positive_fraction"],
+    "repetition_setting": "strict_T3",
+    "folds": ["fold_01", "fold_04"]
+  },
+  "neuroscience_results": {
+    "roi_repetition_effects": {
+      "fdr_sig_delta_21_rois": 41,
+      "fdr_sig_delta_31_rois": 56,
+      "real_mean_abs_delta_21": 10.90,
+      "shuffle_mean_abs_delta_21": 2.56,
+      "real_mean_abs_delta_31": 14.33,
+      "shuffle_mean_abs_delta_31": 2.48
+    },
+    "same_image_stability": {
+      "repeat_1_2": {"same": 0.8916, "different": 0.8305, "gap": 0.0612},
+      "repeat_1_3": {"same": 0.8851, "different": 0.8296, "gap": 0.0555},
+      "repeat_2_3": {"same": 0.8871, "different": 0.8292, "gap": 0.0579}
+    },
+    "graph_reconfiguration": {
+      "summary": "Global repeat-specific adjacency is stable, with local fold-consistent edge changes.",
+      "fold_consistent_train_only_edges": 9,
+      "fold_consistent_delta_21_edges": 3,
+      "fold_consistent_delta_31_edges": 6
+    }
+  },
+  "pair_matching_results": {
+    "raw_pearson_flat_mean": {
+      "auroc": 0.6182,
+      "r_at_5": 0.0522,
+      "mrr": 0.0433
+    },
+    "roi_mlp_bce_mean": {
+      "auroc": 0.7672,
+      "auprc": 0.7336,
+      "r_at_5": 0.0543,
+      "mrr": 0.0442
+    },
+    "roi_mlp_bce_infonce_mean": {
+      "auroc": 0.7778,
+      "auprc": 0.7540,
+      "r_at_1": 0.0194,
+      "r_at_5": 0.0758,
+      "mrr": 0.0592,
+      "status": "current_strongest_baseline"
+    },
+    "braingnn_pair_encoder": {
+      "auroc": 0.5,
+      "status": "collapsed"
+    },
+    "naive_gcn": {
+      "auroc": 0.5,
+      "status": "collapsed"
+    }
+  },
+  "bnt_results": {
+    "bnt_token_flat_roi_id_bce_infonce": {
+      "auroc": 0.7693,
+      "auprc": 0.7512,
+      "r_at_5": 0.0718,
+      "mrr": 0.0584
+    },
+    "bnt_token_flat_roi_id_bce_only": {
+      "auroc": 0.7550,
+      "auprc": 0.7281,
+      "r_at_5": 0.0563,
+      "mrr": 0.0475
+    },
+    "bnt_token_cls": {
+      "auroc": 0.5057,
+      "status": "collapsed"
+    },
+    "bnt_native_hybrid_cls": {
+      "auroc": 0.5087,
+      "status": "collapsed"
+    },
+    "token_mlp_flat_normal": {
+      "auroc": 0.7064,
+      "r_at_5": 0.0393,
+      "mrr": 0.0356
+    },
+    "interpretation": [
+      "BNT-token with flatten readout is competitive with ROI MLP but does not yet beat it.",
+      "Transformer interaction helps relative to no-transformer token MLP controls.",
+      "BCE+InfoNCE improves BNT retrieval relative to BCE-only.",
+      "CLS and native connection-profile adaptations collapse for scalar4 trial-beta graphs.",
+      "ROI-ID necessity is unresolved because no-ID/shuffled controls are competitive so far."
+    ],
+    "pending_at_snapshot": [
+      "bnt_token normal ROI ID fold_04 seed 33",
+      "bnt_token no ROI ID fold_01 seed 11"
+    ]
+  },
+  "lightweight_results_location": "results/hpc_repetition_familiarity/",
+  "excluded_from_git": [
+    "raw NSD data",
+    "beta volumes",
+    ".pt datasets",
+    "checkpoints",
+    "large arrays",
+    "conda/virtualenv files"
+  ]
+}
