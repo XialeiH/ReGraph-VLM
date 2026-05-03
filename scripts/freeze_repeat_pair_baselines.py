@@ -40,6 +40,23 @@ def model_label(row: pd.Series) -> str:
     return f"{model} + {loss}"
 
 
+def dataframe_to_markdown(df: pd.DataFrame) -> str:
+    headers = [str(col) for col in df.columns]
+    lines = [
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join(["---"] * len(headers)) + " |",
+    ]
+    for _, row in df.iterrows():
+        cells = []
+        for value in row.tolist():
+            if isinstance(value, float):
+                cells.append(f"{value:.4f}")
+            else:
+                cells.append(str(value))
+        lines.append("| " + " | ".join(cells) + " |")
+    return "\n".join(lines)
+
+
 def main() -> None:
     args = parse_args()
     root = args.root.resolve()
@@ -52,7 +69,11 @@ def main() -> None:
     rows = []
     if similarity_summary.exists():
         sim = pd.read_csv(similarity_summary)
-        for method, group in sim.groupby("method", dropna=False):
+        method_col = "method" if "method" in sim.columns else "similarity"
+        if method_col not in sim.columns:
+            raise ValueError(f"{similarity_summary} has neither `method` nor `similarity` column")
+        sim = sim[sim.get("split", "test") == "test"].copy() if "split" in sim.columns else sim
+        for method, group in sim.groupby(method_col, dropna=False):
             rows.append(
                 {
                     "baseline": f"raw {method}",
@@ -95,7 +116,7 @@ def main() -> None:
     md_path.write_text(
         "# Frozen Repeat-Pair Baselines\n\n"
         "Generated from current repeat-pair raw-similarity and learned-encoder summaries.\n\n"
-        + out.to_markdown(index=False, floatfmt=".4f")
+        + dataframe_to_markdown(out)
         + "\n",
         encoding="utf-8",
     )

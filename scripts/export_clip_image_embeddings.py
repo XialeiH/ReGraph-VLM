@@ -23,7 +23,11 @@ DEFAULT_DATASET_ROOT = Path("preproc_v0/repetition_familiarity/datasets/scalar4_
 DEFAULT_OUTPUT_DIR = Path("preproc_v0/repetition_familiarity/vlm/clip_embeddings")
 DEFAULT_STIM_INFO = Path("data/nsddata/experiments/nsd/nsd_stim_info_merged.csv")
 DEFAULT_STIMULI_HDF5 = Path("data/nsddata_stimuli/stimuli/nsd/nsd_stimuli.hdf5")
-COCO_URL = "https://images.cocodataset.org/{split}/{coco_id:012d}.jpg"
+# Torch's SSL trust chain can reject images.cocodataset.org even when the
+# object is public and reachable. COCO's S3 endpoint serves these images over
+# HTTP, which is sufficient here because the files are public stimulus images
+# identified by fixed COCO IDs.
+COCO_URL = "http://images.cocodataset.org/{split}/{coco_id:012d}.jpg"
 
 
 def parse_args() -> argparse.Namespace:
