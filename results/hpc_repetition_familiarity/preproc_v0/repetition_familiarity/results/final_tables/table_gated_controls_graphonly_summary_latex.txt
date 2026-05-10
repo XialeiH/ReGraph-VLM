@@ -1,0 +1,7 @@
+\begin{tabular}{lllrrlrrrrrrrrrrrrrrrrr}
+\toprule
+table & graph_encoder & readout & lambda_clip & lambda_cross & model & n & AUROC_mean & AUROC_std & AUPRC_mean & AUPRC_std & R@5_mean & R@5_std & MRR_mean & MRR_std & image_R@5_mean & image_R@5_std & image_MRR_mean & image_MRR_std & brain_R@5_mean & brain_R@5_std & brain_MRR_mean & brain_MRR_std \\
+\midrule
+table_gated_controls_graphonly & bnt_token_flat & gated_flat & 0.0000 & 0.0000 & regraph_vlm_v0 & 6 & 0.8462 & 0.0152 & 0.8193 & 0.0213 & 0.0960 & 0.0431 & 0.0759 & 0.0276 & 0.0095 & 0.0037 & 0.0123 & 0.0036 & 0.0083 & 0.0023 & 0.0118 & 0.0023 \\
+\bottomrule
+\end{tabular}

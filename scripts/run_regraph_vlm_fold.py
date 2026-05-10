@@ -20,12 +20,20 @@ from models.regraph_vlm import ReGraphVLM
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train ReGraph-VLM v0 on same-image repeat matching.")
     parser.add_argument("--root", type=Path, required=True)
-    parser.add_argument("--fold", required=True, choices=["fold_01", "fold_04"])
+    parser.add_argument("--fold", required=True)
     parser.add_argument("--dataset-root", type=Path, default=Path("preproc_v0/repetition_familiarity/datasets/scalar4_T3_clip"))
+    parser.add_argument("--extra-test-dataset-root", type=Path, default=None)
+    parser.add_argument("--extra-test-name", default="extra")
     parser.add_argument("--output-root", type=Path, default=Path("preproc_v0/repetition_familiarity/results/regraph_vlm"))
-    parser.add_argument("--graph-encoder", default="bnt_token_flat", choices=["bnt_token_flat"])
+    parser.add_argument("--graph-encoder", default="bnt_token_flat", choices=["bnt_token_flat", "roi_mlp", "fusion"])
     parser.add_argument("--loss", default="bce_infonce_clip", choices=["bce_infonce_clip"])
     parser.add_argument("--lambda-clip", type=float, default=0.0)
+    parser.add_argument(
+        "--lambda-cross",
+        type=float,
+        default=0.0,
+        help="Auxiliary cross-subject brain-brain InfoNCE weight. On cross-subject pairs this uses the same positive-pair structure as repeat InfoNCE.",
+    )
     parser.add_argument("--temperature", type=float, default=0.1)
     parser.add_argument("--clip-temperature", type=float, default=0.07)
     parser.add_argument("--embedding-dim", type=int, default=128)
@@ -33,7 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--num-heads", type=int, default=4)
     parser.add_argument("--num-layers", type=int, default=2)
     parser.add_argument("--dropout", type=float, default=0.3)
-    parser.add_argument("--readout", default="flat", choices=["flat"])
+    parser.add_argument("--readout", default="flat", choices=["flat", "gated_flat"])
     parser.add_argument("--roi-id-mode", default="normal", choices=["normal", "none", "shuffled"])
     parser.add_argument("--epochs", type=int, default=80)
     parser.add_argument("--patience", type=int, default=12)
@@ -42,6 +50,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=1e-4)
     parser.add_argument("--seed", type=int, default=11)
     parser.add_argument("--device", default="auto")
+    parser.add_argument(
+        "--eval-only",
+        action="store_true",
+        help="Load an existing checkpoint from the output directory and write final metrics without training.",
+    )
     return parser.parse_args()
 
 
@@ -309,25 +322,57 @@ def brain_image_retrieval_metrics(model: ReGraphVLM, pairs: list[dict[str, Any]]
     }
 
 
+def evaluate_pairs(
+    model: ReGraphVLM,
+    pairs: list[dict[str, Any]],
+    threshold: float,
+    adjacency: torch.Tensor,
+    device: torch.device,
+    batch_size: int,
+    prefix: str = "",
+) -> dict[str, Any]:
+    loader = DataLoader(ClipPairDataset(pairs), batch_size=batch_size, shuffle=False, collate_fn=collate_pairs)
+    labels, scores, loss = collect_pair_scores(model, loader, adjacency, device)
+    preds = (scores >= threshold).astype(np.int64)
+    repeat_ret = repeat_retrieval_metrics(model, pairs, adjacency, device, batch_size)
+    bi_ret = brain_image_retrieval_metrics(model, pairs, adjacency, device, batch_size)
+    base = {
+        "test_loss": loss,
+        "AUROC": auroc(labels, scores),
+        "AUPRC": average_precision(labels, scores),
+        "balanced_accuracy": balanced_accuracy(labels, preds),
+        "R@1": repeat_ret["r1"],
+        "R@5": repeat_ret["r5"],
+        "R@10": repeat_ret["r10"],
+        "MRR": repeat_ret["mrr"],
+        **bi_ret,
+        "n_test_pairs": int(len(pairs)),
+    }
+    if not prefix:
+        return base
+    return {f"{prefix}_{key}": value for key, value in base.items()}
+
+
 def main() -> None:
     args = parse_args()
     set_seed(args.seed)
     root = args.root.resolve()
     fold_dir = (root / args.dataset_root / args.fold).resolve()
-    output_dir = (
-        root
-        / args.output_root
-        / "bnt_token_flat_clip"
-        / f"lambda_{args.lambda_clip:g}"
-        / args.fold
-        / f"seed_{args.seed}"
-    )
+    encoder_dir = f"{args.graph_encoder}_clip" if args.readout == "flat" else f"{args.graph_encoder}_{args.readout}_clip"
+    lambda_dir = f"lambda_{args.lambda_clip:g}"
+    if args.lambda_cross != 0.0:
+        lambda_dir = f"{lambda_dir}_cross_{args.lambda_cross:g}"
+    output_dir = root / args.output_root / encoder_dir / lambda_dir / args.fold / f"seed_{args.seed}"
     output_dir.mkdir(parents=True, exist_ok=True)
     device = resolve_device(args.device)
 
     train_pairs = torch.load(fold_dir / "train_pairs.pt", map_location="cpu", weights_only=False)
     val_pairs = torch.load(fold_dir / "val_pairs.pt", map_location="cpu", weights_only=False)
     test_pairs = torch.load(fold_dir / "test_pairs.pt", map_location="cpu", weights_only=False)
+    extra_test_pairs = None
+    if args.extra_test_dataset_root is not None:
+        extra_fold_dir = (root / args.extra_test_dataset_root / args.fold).resolve()
+        extra_test_pairs = torch.load(extra_fold_dir / "test_pairs.pt", map_location="cpu", weights_only=False)
     sample = train_pairs[0]
     n_nodes = int(sample["x1"].shape[0])
     node_dim = int(sample["x1"].shape[1])
@@ -349,6 +394,7 @@ def main() -> None:
         roi_id_mode=args.roi_id_mode,
         num_heads=args.num_heads,
         num_layers=args.num_layers,
+        graph_encoder=args.graph_encoder,
     ).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
@@ -358,55 +404,81 @@ def main() -> None:
     bad_epochs = 0
     curve: list[dict[str, Any]] = []
 
-    for epoch in range(1, args.epochs + 1):
-        model.train()
-        train_loss = 0.0
-        train_n = 0
-        for batch in train_loader:
-            batch = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
-            opt.zero_grad(set_to_none=True)
-            logits = model.pair_logits(batch["x1"], batch["x2"], adjacency)
-            bce = F.binary_cross_entropy_with_logits(logits, batch["same_image"])
-            nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
-            clip_loss = clip_alignment_loss(model, batch, adjacency, args.clip_temperature)
-            loss = bce + nce + args.lambda_clip * clip_loss
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
-            opt.step()
-            train_loss += float(loss.item()) * batch["same_image"].numel()
-            train_n += batch["same_image"].numel()
+    if not args.eval_only:
+        for epoch in range(1, args.epochs + 1):
+            model.train()
+            train_loss = 0.0
+            train_n = 0
+            for batch in train_loader:
+                batch = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
+                opt.zero_grad(set_to_none=True)
+                logits = model.pair_logits(batch["x1"], batch["x2"], adjacency)
+                bce = F.binary_cross_entropy_with_logits(logits, batch["same_image"])
+                nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
+                cross_nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
+                clip_loss = clip_alignment_loss(model, batch, adjacency, args.clip_temperature)
+                loss = bce + nce + args.lambda_cross * cross_nce + args.lambda_clip * clip_loss
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
+                opt.step()
+                train_loss += float(loss.item()) * batch["same_image"].numel()
+                train_n += batch["same_image"].numel()
 
-        val_labels, val_scores, val_loss = collect_pair_scores(model, val_loader, adjacency, device)
-        val_auroc = auroc(val_labels, val_scores)
-        threshold, val_bal = best_threshold(val_labels, val_scores)
-        row = {
-            "epoch": epoch,
-            "train_loss": train_loss / max(train_n, 1),
-            "val_loss": val_loss,
-            "val_auroc": val_auroc,
-            "val_balanced_accuracy": val_bal,
-            "val_threshold": threshold,
-        }
-        curve.append(row)
-        print(json.dumps(row), flush=True)
+            val_labels, val_scores, val_loss = collect_pair_scores(model, val_loader, adjacency, device)
+            val_auroc = auroc(val_labels, val_scores)
+            threshold, val_bal = best_threshold(val_labels, val_scores)
+            row = {
+                "epoch": epoch,
+                "train_loss": train_loss / max(train_n, 1),
+                "val_loss": val_loss,
+                "val_auroc": val_auroc,
+                "val_balanced_accuracy": val_bal,
+                "val_threshold": threshold,
+            }
+            curve.append(row)
+            print(json.dumps(row), flush=True)
 
-        if val_auroc > best_val:
-            best_val = float(val_auroc)
-            best_epoch = epoch
-            best_threshold_value = threshold
-            bad_epochs = 0
-            torch.save({"model": model.state_dict(), "args": vars(args), "epoch": epoch}, output_dir / "checkpoint.pt")
-        else:
-            bad_epochs += 1
-            if bad_epochs >= args.patience:
-                break
+            if val_auroc > best_val:
+                best_val = float(val_auroc)
+                best_epoch = epoch
+                best_threshold_value = threshold
+                bad_epochs = 0
+                torch.save({"model": model.state_dict(), "args": vars(args), "epoch": epoch}, output_dir / "checkpoint.pt")
+            else:
+                bad_epochs += 1
+                if bad_epochs >= args.patience:
+                    break
 
     checkpoint = torch.load(output_dir / "checkpoint.pt", map_location=device, weights_only=False)
     model.load_state_dict(checkpoint["model"])
-    test_labels, test_scores, test_loss = collect_pair_scores(model, test_loader, adjacency, device)
-    preds = (test_scores >= best_threshold_value).astype(np.int64)
-    repeat_ret = repeat_retrieval_metrics(model, test_pairs, adjacency, device, args.batch_size)
-    bi_ret = brain_image_retrieval_metrics(model, test_pairs, adjacency, device, args.batch_size)
+    if args.eval_only:
+        val_labels, val_scores, val_loss = collect_pair_scores(model, val_loader, adjacency, device)
+        best_val = auroc(val_labels, val_scores)
+        best_threshold_value, _ = best_threshold(val_labels, val_scores)
+        best_epoch = int(checkpoint.get("epoch", -1))
+        curve.append(
+            {
+                "epoch": best_epoch,
+                "train_loss": float("nan"),
+                "val_loss": val_loss,
+                "val_auroc": best_val,
+                "val_balanced_accuracy": balanced_accuracy(val_labels, (val_scores >= best_threshold_value).astype(np.int64)),
+                "val_threshold": best_threshold_value,
+            }
+        )
+    eval_metrics = evaluate_pairs(model, test_pairs, best_threshold_value, adjacency, device, args.batch_size)
+    if extra_test_pairs is not None:
+        eval_metrics.update(
+            evaluate_pairs(
+                model,
+                extra_test_pairs,
+                best_threshold_value,
+                adjacency,
+                device,
+                args.batch_size,
+                prefix=args.extra_test_name,
+            )
+        )
 
     metrics = {
         "model": "regraph_vlm_v0",
@@ -414,28 +486,23 @@ def main() -> None:
         "fold": args.fold,
         "seed": args.seed,
         "lambda_clip": args.lambda_clip,
+        "lambda_cross": args.lambda_cross,
+        "readout": args.readout,
+        "roi_id_mode": args.roi_id_mode,
         "loss": args.loss,
         "clip_temperature": args.clip_temperature,
         "temperature": args.temperature,
         "best_val_metric": best_val,
         "best_epoch": best_epoch,
-        "test_loss": test_loss,
-        "AUROC": auroc(test_labels, test_scores),
-        "AUPRC": average_precision(test_labels, test_scores),
-        "balanced_accuracy": balanced_accuracy(test_labels, preds),
-        "R@1": repeat_ret["r1"],
-        "R@5": repeat_ret["r5"],
-        "R@10": repeat_ret["r10"],
-        "MRR": repeat_ret["mrr"],
-        **bi_ret,
-        "n_test_pairs": int(len(test_pairs)),
+        **eval_metrics,
         "n_nodes": n_nodes,
         "node_feature_dim": node_dim,
         "clip_dim": clip_dim,
         "status": "ok",
     }
     (output_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
-    with (output_dir / "learning_curve.csv").open("w", encoding="utf-8", newline="") as handle:
+    curve_path = output_dir / ("eval_only_curve.csv" if args.eval_only else "learning_curve.csv")
+    with curve_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(curve[0].keys()))
         writer.writeheader()
         writer.writerows(curve)

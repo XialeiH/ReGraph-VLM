@@ -22,6 +22,73 @@ class ProjectionHead(nn.Module):
         return F.normalize(self.net(x), dim=-1)
 
 
+class RoiMLPEncoder(nn.Module):
+    def __init__(self, n_nodes: int, node_feature_dim: int, hidden_dim: int, embedding_dim: int, dropout: float) -> None:
+        super().__init__()
+        in_dim = n_nodes * node_feature_dim
+        self.net = nn.Sequential(
+            nn.LayerNorm(in_dim),
+            nn.Linear(in_dim, max(hidden_dim * 4, embedding_dim * 2)),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(max(hidden_dim * 4, embedding_dim * 2), max(hidden_dim * 2, embedding_dim)),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(max(hidden_dim * 2, embedding_dim), embedding_dim),
+        )
+
+    def forward(self, x: torch.Tensor, adjacency: torch.Tensor | None = None) -> torch.Tensor:
+        return F.normalize(self.net(x.flatten(start_dim=1)), dim=-1)
+
+
+class FusionEncoder(nn.Module):
+    """Concatenate non-graph ROI MLP and BNT/ReGraph embeddings before projection."""
+
+    def __init__(
+        self,
+        n_nodes: int,
+        node_feature_dim: int,
+        hidden_dim: int,
+        embedding_dim: int,
+        dropout: float,
+        readout: str,
+        roi_id_mode: str,
+        num_heads: int,
+        num_layers: int,
+    ) -> None:
+        super().__init__()
+        self.roi_mlp = RoiMLPEncoder(
+            n_nodes=n_nodes,
+            node_feature_dim=node_feature_dim,
+            hidden_dim=hidden_dim,
+            embedding_dim=embedding_dim,
+            dropout=dropout,
+        )
+        self.bnt = BNTTokenEncoder(
+            n_nodes=n_nodes,
+            in_dim=node_feature_dim,
+            hidden_dim=hidden_dim,
+            embedding_dim=embedding_dim,
+            dropout=dropout,
+            readout=readout,
+            roi_id_mode=roi_id_mode,
+            num_heads=num_heads,
+            num_layers=num_layers,
+        )
+        self.fuse = nn.Sequential(
+            nn.LayerNorm(embedding_dim * 2),
+            nn.Linear(embedding_dim * 2, embedding_dim * 2),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(embedding_dim * 2, embedding_dim),
+        )
+
+    def forward(self, x: torch.Tensor, adjacency: torch.Tensor | None = None) -> torch.Tensor:
+        z_roi = self.roi_mlp(x, adjacency)
+        z_bnt = self.bnt(x, adjacency)
+        return F.normalize(self.fuse(torch.cat([z_roi, z_bnt], dim=-1)), dim=-1)
+
+
 class ReGraphVLM(nn.Module):
     """ReGraph-VLM v0: BNT-token graph encoder plus frozen CLIP-image alignment."""
 
@@ -37,20 +104,44 @@ class ReGraphVLM(nn.Module):
         roi_id_mode: str = "normal",
         num_heads: int = 4,
         num_layers: int = 2,
+        graph_encoder: str = "bnt_token_flat",
         init_scale: float = 10.0,
     ) -> None:
         super().__init__()
-        self.graph_encoder = BNTTokenEncoder(
-            n_nodes=n_nodes,
-            in_dim=node_feature_dim,
-            hidden_dim=hidden_dim,
-            embedding_dim=embedding_dim,
-            dropout=dropout,
-            readout=readout,
-            roi_id_mode=roi_id_mode,
-            num_heads=num_heads,
-            num_layers=num_layers,
-        )
+        if graph_encoder == "bnt_token_flat":
+            self.graph_encoder = BNTTokenEncoder(
+                n_nodes=n_nodes,
+                in_dim=node_feature_dim,
+                hidden_dim=hidden_dim,
+                embedding_dim=embedding_dim,
+                dropout=dropout,
+                readout=readout,
+                roi_id_mode=roi_id_mode,
+                num_heads=num_heads,
+                num_layers=num_layers,
+            )
+        elif graph_encoder == "roi_mlp":
+            self.graph_encoder = RoiMLPEncoder(
+                n_nodes=n_nodes,
+                node_feature_dim=node_feature_dim,
+                hidden_dim=hidden_dim,
+                embedding_dim=embedding_dim,
+                dropout=dropout,
+            )
+        elif graph_encoder == "fusion":
+            self.graph_encoder = FusionEncoder(
+                n_nodes=n_nodes,
+                node_feature_dim=node_feature_dim,
+                hidden_dim=hidden_dim,
+                embedding_dim=embedding_dim,
+                dropout=dropout,
+                readout=readout,
+                roi_id_mode=roi_id_mode,
+                num_heads=num_heads,
+                num_layers=num_layers,
+            )
+        else:
+            raise ValueError(f"Unsupported ReGraph-VLM graph encoder: {graph_encoder}")
         self.brain_proj = ProjectionHead(embedding_dim, embedding_dim, dropout)
         self.image_proj = ProjectionHead(clip_dim, embedding_dim, dropout)
         self.log_scale = nn.Parameter(torch.tensor(float(init_scale)).log())

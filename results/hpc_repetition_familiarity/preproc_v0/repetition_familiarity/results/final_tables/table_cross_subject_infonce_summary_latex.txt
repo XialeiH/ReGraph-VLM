@@ -1,0 +1,9 @@
+\begin{tabular}{lllrrlrrrrrrrrrrrrrrrrr}
+\toprule
+table & graph_encoder & readout & lambda_clip & lambda_cross & model & n & AUROC_mean & AUROC_std & AUPRC_mean & AUPRC_std & R@5_mean & R@5_std & MRR_mean & MRR_std & image_R@5_mean & image_R@5_std & image_MRR_mean & image_MRR_std & brain_R@5_mean & brain_R@5_std & brain_MRR_mean & brain_MRR_std \\
+\midrule
+table_cross_subject_infonce & bnt_token_flat & gated_flat & 2.0000 & 0.1000 & regraph_vlm_v0 & 2 & 0.8563 & 0.0119 & 0.8373 & 0.0153 & 0.1065 & 0.0490 & 0.0828 & 0.0328 & 0.1019 & 0.0463 & 0.0778 & 0.0248 & 0.1140 & 0.0154 & 0.0886 & 0.0108 \\
+table_cross_subject_infonce & bnt_token_flat & gated_flat & 2.0000 & 0.3000 & regraph_vlm_v0 & 2 & 0.8331 & 0.0434 & 0.8150 & 0.0470 & 0.1042 & 0.0532 & 0.0823 & 0.0379 & 0.0930 & 0.0479 & 0.0738 & 0.0316 & 0.1082 & 0.0355 & 0.0859 & 0.0261 \\
+table_cross_subject_infonce & bnt_token_flat & gated_flat & 2.0000 & 1.0000 & regraph_vlm_v0 & 2 & 0.8556 & 0.0128 & 0.8343 & 0.0153 & 0.1068 & 0.0513 & 0.0813 & 0.0344 & 0.1008 & 0.0386 & 0.0786 & 0.0262 & 0.1210 & 0.0321 & 0.0907 & 0.0209 \\
+\bottomrule
+\end{tabular}

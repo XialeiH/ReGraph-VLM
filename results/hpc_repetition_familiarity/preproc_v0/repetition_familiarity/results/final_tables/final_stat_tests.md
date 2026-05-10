@@ -1,0 +1,23 @@
+| comparison                                  | metric    |   n_pairs |   mean_diff |   t_approx |   p_norm_approx |   bootstrap_ci_low |   bootstrap_ci_high |
+|:--------------------------------------------|:----------|----------:|------------:|-----------:|----------------:|-------------------:|--------------------:|
+| gated_vs_roi_mlp_allfold_final              | AUROC     |        24 |      0.0095 |     5.3924 |          0.0000 |             0.0061 |              0.0129 |
+| gated_vs_roi_mlp_allfold_final              | AUPRC     |        24 |      0.0168 |     7.9614 |          0.0000 |             0.0128 |              0.0210 |
+| gated_vs_roi_mlp_allfold_final              | R@5       |        24 |      0.0117 |     5.1987 |          0.0000 |             0.0077 |              0.0163 |
+| gated_vs_roi_mlp_allfold_final              | MRR       |        24 |      0.0059 |     4.4378 |          0.0000 |             0.0035 |              0.0086 |
+| gated_vs_roi_mlp_allfold_final              | image_R@5 |        24 |      0.0118 |     4.9264 |          0.0000 |             0.0073 |              0.0165 |
+| gated_vs_roi_mlp_allfold_final              | brain_R@5 |        24 |      0.0159 |     7.1198 |          0.0000 |             0.0116 |              0.0202 |
+| gated_vs_roi_mlp_allfold_final              | brain_MRR |        24 |      0.0105 |     9.8951 |          0.0000 |             0.0085 |              0.0125 |
+| gated_vs_flat_allfold_final                 | AUROC     |        24 |      0.0049 |     1.8315 |          0.0670 |            -0.0003 |              0.0101 |
+| gated_vs_flat_allfold_final                 | AUPRC     |        24 |      0.0043 |     1.5122 |          0.1305 |            -0.0013 |              0.0097 |
+| gated_vs_flat_allfold_final                 | R@5       |        24 |      0.0035 |     2.1755 |          0.0296 |             0.0004 |              0.0065 |
+| gated_vs_flat_allfold_final                 | MRR       |        24 |      0.0018 |     1.5271 |          0.1267 |            -0.0005 |              0.0040 |
+| gated_vs_flat_allfold_final                 | image_R@5 |        24 |      0.0035 |     1.9155 |          0.0554 |            -0.0000 |              0.0069 |
+| gated_vs_flat_allfold_final                 | brain_R@5 |        24 |      0.0029 |     1.5259 |          0.1270 |            -0.0006 |              0.0069 |
+| gated_vs_flat_allfold_final                 | brain_MRR |        24 |      0.0024 |     2.0008 |          0.0454 |             0.0001 |              0.0047 |
+| heldout_gated_real_clip_vs_random_embedding | AUROC     |         6 |     -0.0050 |    -0.8880 |          0.3745 |            -0.0161 |              0.0039 |
+| heldout_gated_real_clip_vs_random_embedding | AUPRC     |         6 |     -0.0058 |    -0.8079 |          0.4192 |            -0.0175 |              0.0072 |
+| heldout_gated_real_clip_vs_random_embedding | R@5       |         6 |      0.0140 |     1.2455 |          0.2129 |            -0.0054 |              0.0337 |
+| heldout_gated_real_clip_vs_random_embedding | MRR       |         6 |      0.0082 |     0.8260 |          0.4088 |            -0.0076 |              0.0275 |
+| heldout_gated_real_clip_vs_random_embedding | image_R@5 |         6 |      0.1843 |    10.2987 |          0.0000 |             0.1532 |              0.2141 |
+| heldout_gated_real_clip_vs_random_embedding | brain_R@5 |         6 |      0.2054 |    11.5167 |          0.0000 |             0.1749 |              0.2350 |
+| heldout_gated_real_clip_vs_random_embedding | brain_MRR |         6 |      0.1212 |    11.9050 |          0.0000 |             0.1027 |              0.1390 |

@@ -19,7 +19,7 @@ class BNTTokenEncoder(nn.Module):
         roi_id_mode: str = "normal",
     ):
         super().__init__()
-        if readout not in {"cls", "mean", "flat"}:
+        if readout not in {"cls", "mean", "flat", "gated_flat"}:
             raise ValueError(f"Unsupported BNT token readout: {readout}")
         if roi_id_mode not in {"normal", "none", "shuffled"}:
             raise ValueError(f"Unsupported ROI ID mode: {roi_id_mode}")
@@ -34,6 +34,11 @@ class BNTTokenEncoder(nn.Module):
         else:
             self.roi_permutation = None
         self.cls = nn.Parameter(torch.zeros(1, 1, hidden_dim)) if readout == "cls" else None
+        self.gate = (
+            nn.Sequential(nn.LayerNorm(hidden_dim), nn.Linear(hidden_dim, 1), nn.Sigmoid())
+            if readout == "gated_flat"
+            else None
+        )
         layer = nn.TransformerEncoderLayer(
             d_model=hidden_dim,
             nhead=num_heads,
@@ -44,7 +49,7 @@ class BNTTokenEncoder(nn.Module):
             norm_first=True,
         )
         self.transformer = nn.TransformerEncoder(layer, num_layers=num_layers)
-        if readout == "flat":
+        if readout in {"flat", "gated_flat"}:
             self.head = nn.Sequential(
                 nn.LayerNorm(n_nodes * hidden_dim),
                 nn.Linear(n_nodes * hidden_dim, max(embedding_dim * 2, hidden_dim)),
@@ -76,6 +81,10 @@ class BNTTokenEncoder(nn.Module):
             pooled = h[:, 0]
         elif self.readout == "mean":
             pooled = h.mean(dim=1)
+        elif self.readout == "gated_flat":
+            if self.gate is None:
+                raise RuntimeError("gated_flat readout requires a gate module")
+            pooled = (h * self.gate(h)).flatten(start_dim=1)
         else:
             pooled = h.flatten(start_dim=1)
         return F.normalize(self.head(pooled), dim=-1)

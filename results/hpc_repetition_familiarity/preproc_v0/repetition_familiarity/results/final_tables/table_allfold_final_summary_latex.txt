@@ -1,0 +1,10 @@
+\begin{tabular}{lllrrlrrrrrrrrrrrrrrrrr}
+\toprule
+table & graph_encoder & readout & lambda_clip & lambda_cross & model & n & AUROC_mean & AUROC_std & AUPRC_mean & AUPRC_std & R@5_mean & R@5_std & MRR_mean & MRR_std & image_R@5_mean & image_R@5_std & image_MRR_mean & image_MRR_std & brain_R@5_mean & brain_R@5_std & brain_MRR_mean & brain_MRR_std \\
+\midrule
+table_allfold_final & bnt_token_flat & flat & 0.0000 & 0.0000 & regraph_vlm_v0 & 8 & 0.8130 & 0.0497 & 0.7890 & 0.0489 & 0.0758 & 0.0273 & 0.0619 & 0.0203 & 0.0068 & 0.0028 & 0.0102 & 0.0019 & 0.0080 & 0.0016 & 0.0104 & 0.0015 \\
+table_allfold_final & bnt_token_flat & flat & 2.0000 & 0.0000 & regraph_vlm_v0 & 24 & 0.8210 & 0.0481 & 0.8022 & 0.0460 & 0.0865 & 0.0318 & 0.0677 & 0.0213 & 0.0812 & 0.0305 & 0.0641 & 0.0208 & 0.0966 & 0.0299 & 0.0749 & 0.0189 \\
+table_allfold_final & bnt_token_flat & gated_flat & 2.0000 & 0.0000 & regraph_vlm_v0 & 24 & 0.8259 & 0.0523 & 0.8065 & 0.0528 & 0.0899 & 0.0357 & 0.0695 & 0.0240 & 0.0847 & 0.0318 & 0.0675 & 0.0223 & 0.0996 & 0.0310 & 0.0773 & 0.0207 \\
+table_allfold_final & roi_mlp & flat & 2.0000 & 0.0000 & regraph_vlm_v0 & 24 & 0.8164 & 0.0518 & 0.7896 & 0.0532 & 0.0782 & 0.0273 & 0.0636 & 0.0190 & 0.0729 & 0.0280 & 0.0593 & 0.0187 & 0.0837 & 0.0291 & 0.0668 & 0.0193 \\
+\bottomrule
+\end{tabular}

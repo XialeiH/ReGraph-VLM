@@ -1,0 +1,9 @@
+\begin{tabular}{llrrrrrrrrr}
+\toprule
+table & model & n & AUROC_mean & AUROC_std & AUPRC_mean & AUPRC_std & R@5_mean & R@5_std & MRR_mean & MRR_std \\
+\midrule
+table_static_baselines & raw_cosine_flat & 16 & 0.6319 & 0.0254 & 0.6294 & 0.0219 & 0.0086 & 0.0015 & 0.0119 & 0.0018 \\
+table_static_baselines & raw_pearson_flat & 16 & 0.6357 & 0.0285 & 0.6335 & 0.0240 & 0.0086 & 0.0015 & 0.0119 & 0.0018 \\
+table_static_baselines & raw_pearson_mean_beta & 16 & 0.5867 & 0.0291 & 0.6031 & 0.0257 & 0.0086 & 0.0015 & 0.0119 & 0.0018 \\
+\bottomrule
+\end{tabular}

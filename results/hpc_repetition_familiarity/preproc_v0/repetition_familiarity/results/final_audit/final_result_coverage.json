@@ -1,0 +1,75 @@
+{
+  "status": "ok",
+  "checks": [
+    {
+      "section": "allfold_main",
+      "model": "ROI-MLP+CLIP",
+      "observed": 24,
+      "expected": 24,
+      "status": "ok"
+    },
+    {
+      "section": "allfold_main",
+      "model": "Flat ReGraph+CLIP",
+      "observed": 24,
+      "expected": 24,
+      "status": "ok"
+    },
+    {
+      "section": "allfold_main",
+      "model": "Gated ReGraph+CLIP",
+      "observed": 24,
+      "expected": 24,
+      "status": "ok"
+    },
+    {
+      "section": "allfold_graph_only",
+      "model": "Flat ReGraph graph-only",
+      "observed": 8,
+      "expected": 8,
+      "status": "ok"
+    },
+    {
+      "section": "heldout_image",
+      "model": "ROI-MLP+CLIP",
+      "observed": 6,
+      "expected": 6,
+      "status": "ok"
+    },
+    {
+      "section": "heldout_image",
+      "model": "Flat ReGraph+CLIP",
+      "observed": 6,
+      "expected": 6,
+      "status": "ok"
+    },
+    {
+      "section": "heldout_image",
+      "model": "Gated ReGraph+CLIP",
+      "observed": 6,
+      "expected": 6,
+      "status": "ok"
+    },
+    {
+      "section": "heldout_image",
+      "model": "Gated random embedding",
+      "observed": 6,
+      "expected": 6,
+      "status": "ok"
+    },
+    {
+      "section": "hard_negative_allfold",
+      "model": "ROI-MLP+CLIP",
+      "observed": 8,
+      "expected": 8,
+      "status": "ok"
+    },
+    {
+      "section": "hard_negative_allfold",
+      "model": "Gated ReGraph+CLIP",
+      "observed": 8,
+      "expected": 8,
+      "status": "ok"
+    }
+  ]
+}
