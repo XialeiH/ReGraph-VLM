@@ -76,6 +76,7 @@ def main() -> None:
         "table_allfold_final": results / "cross_subject_allfold_final/regraph_vlm_summary.csv",
         "table_hard_negative_allfold": results / "cross_subject_hardneg_allfold_seed11/regraph_vlm_summary.csv",
         "table_heldout_final": results / "heldout_image_final/regraph_vlm_summary.csv",
+        "table_phase2_sota_graph_baselines": results / "phase2_sota_graph_baselines/regraph_vlm_summary.csv",
     }
     compact_rows = []
     for name, path in sources.items():

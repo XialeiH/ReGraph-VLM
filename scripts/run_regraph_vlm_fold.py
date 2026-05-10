@@ -25,7 +25,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--extra-test-dataset-root", type=Path, default=None)
     parser.add_argument("--extra-test-name", default="extra")
     parser.add_argument("--output-root", type=Path, default=Path("preproc_v0/repetition_familiarity/results/regraph_vlm"))
-    parser.add_argument("--graph-encoder", default="bnt_token_flat", choices=["bnt_token_flat", "roi_mlp", "fusion"])
+    parser.add_argument(
+        "--graph-encoder",
+        default="bnt_token_flat",
+        choices=[
+            "bnt_token_flat",
+            "graph_bnt",
+            "regraph_graph",
+            "roi_transformer_noadj",
+            "roi_mlp",
+            "gated_roi_mlp",
+            "token_mlp",
+            "gated_token_mlp",
+            "mindeye2_shared",
+            "umbrae_subject",
+            "fusion",
+        ],
+    )
     parser.add_argument("--loss", default="bce_infonce_clip", choices=["bce_infonce_clip"])
     parser.add_argument("--lambda-clip", type=float, default=0.0)
     parser.add_argument(
@@ -36,6 +52,14 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--temperature", type=float, default=0.1)
     parser.add_argument("--clip-temperature", type=float, default=0.07)
+    parser.add_argument(
+        "--lambda-subject-adv",
+        type=float,
+        default=0.0,
+        help="MindLink-style gradient-reversal subject-adversarial loss weight.",
+    )
+    parser.add_argument("--num-subjects", type=int, default=8)
+    parser.add_argument("--graph-bias-scale", type=float, default=1.0)
     parser.add_argument("--embedding-dim", type=int, default=128)
     parser.add_argument("--hidden-dim", type=int, default=64)
     parser.add_argument("--num-heads", type=int, default=4)
@@ -55,6 +79,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Load an existing checkpoint from the output directory and write final metrics without training.",
     )
+    parser.add_argument("--save-eval-details", action="store_true", help="Write pair scores and retrieval ranks for bootstrap analysis.")
     return parser.parse_args()
 
 
@@ -67,13 +92,17 @@ class ClipPairDataset(Dataset):
 
     def __getitem__(self, idx: int) -> dict[str, Any]:
         pair = self.pairs[idx]
+        subject_1 = int(pair.get("subject_1", pair.get("subject", 0)))
+        subject_2 = int(pair.get("subject_2", pair.get("reference_subject", 0)))
         return {
             "x1": pair["x1"].float(),
             "x2": pair["x2"].float(),
             "clip_1": pair["clip_1"].float(),
             "clip_2": pair["clip_2"].float(),
             "same_image": torch.tensor(float(pair["same_image"]), dtype=torch.float32),
-            "subject": int(pair["subject"]),
+            "subject": subject_1,
+            "subject_1": subject_1,
+            "subject_2": subject_2,
             "nsdId_1": int(pair["nsdId_1"]),
             "nsdId_2": int(pair["nsdId_2"]),
             "repeat_1": int(pair["repeat_1"]),
@@ -89,6 +118,8 @@ def collate_pairs(batch: list[dict[str, Any]]) -> dict[str, Any]:
         "clip_2": torch.stack([item["clip_2"] for item in batch]),
         "same_image": torch.stack([item["same_image"] for item in batch]),
         "subject": torch.tensor([int(item["subject"]) for item in batch], dtype=torch.int64),
+        "subject_1": torch.tensor([int(item["subject_1"]) for item in batch], dtype=torch.int64),
+        "subject_2": torch.tensor([int(item["subject_2"]) for item in batch], dtype=torch.int64),
         "nsdId_1": torch.tensor([int(item["nsdId_1"]) for item in batch], dtype=torch.int64),
         "nsdId_2": torch.tensor([int(item["nsdId_2"]) for item in batch], dtype=torch.int64),
         "repeat_1": torch.tensor([int(item["repeat_1"]) for item in batch], dtype=torch.int64),
@@ -182,8 +213,8 @@ def pair_infonce_loss(model: ReGraphVLM, batch: dict[str, torch.Tensor], adjacen
     pos = batch["same_image"] > 0.5
     if int(pos.sum().item()) < 2:
         return batch["x1"].sum() * 0.0
-    z1 = model.encode_brain(batch["x1"][pos], adjacency)
-    z2 = model.encode_brain(batch["x2"][pos], adjacency)
+    z1 = model.encode_brain(batch["x1"][pos], adjacency, batch["subject_1"][pos])
+    z2 = model.encode_brain(batch["x2"][pos], adjacency, batch["subject_2"][pos])
     logits = (z1 @ z2.T) / temperature
     labels = torch.arange(logits.shape[0], device=logits.device)
     return 0.5 * (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels))
@@ -192,7 +223,8 @@ def pair_infonce_loss(model: ReGraphVLM, batch: dict[str, torch.Tensor], adjacen
 def clip_alignment_loss(model: ReGraphVLM, batch: dict[str, torch.Tensor], adjacency: torch.Tensor, temperature: float) -> torch.Tensor:
     xb = torch.cat([batch["x1"], batch["x2"]], dim=0)
     ci = torch.cat([batch["clip_1"], batch["clip_2"]], dim=0)
-    zb = model.encode_brain(xb, adjacency)
+    subjects = torch.cat([batch["subject_1"], batch["subject_2"]], dim=0)
+    zb = model.encode_brain(xb, adjacency, subjects)
     zi = model.encode_image(ci)
     logits = (zb @ zi.T) / temperature
     labels = torch.arange(logits.shape[0], device=logits.device)
@@ -208,7 +240,7 @@ def collect_pair_scores(model: ReGraphVLM, loader: DataLoader, adjacency: torch.
     with torch.no_grad():
         for batch in loader:
             batch = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
-            logits = model.pair_logits(batch["x1"], batch["x2"], adjacency)
+            logits = model.pair_logits(batch["x1"], batch["x2"], adjacency, batch["subject_1"], batch["subject_2"])
             loss = F.binary_cross_entropy_with_logits(logits, batch["same_image"])
             probs = torch.sigmoid(logits)
             labels.append(batch["same_image"].cpu().numpy())
@@ -227,8 +259,10 @@ def repeat_retrieval_metrics(model: ReGraphVLM, pairs: list[dict[str, Any]], adj
             chunk = positives[start : start + batch_size]
             x1 = torch.stack([pair["x1"].float() for pair in chunk]).to(device)
             x2 = torch.stack([pair["x2"].float() for pair in chunk]).to(device)
-            z1 = model.encode_brain(x1, adjacency).cpu().numpy()
-            z2 = model.encode_brain(x2, adjacency).cpu().numpy()
+            s1 = torch.tensor([int(pair.get("subject_1", pair.get("subject", 0))) for pair in chunk], dtype=torch.long, device=device)
+            s2 = torch.tensor([int(pair.get("subject_2", pair.get("reference_subject", 0))) for pair in chunk], dtype=torch.long, device=device)
+            z1 = model.encode_brain(x1, adjacency, s1).cpu().numpy()
+            z2 = model.encode_brain(x2, adjacency, s2).cpu().numpy()
             for idx, pair in enumerate(chunk):
                 rows.append(
                     {
@@ -283,6 +317,42 @@ def grouped_retrieval(rows: list[dict[str, Any]], query_key: str, candidate_key:
     }
 
 
+def retrieval_rank_rows(rows: list[dict[str, Any]], query_key: str, candidate_key: str, mode: str) -> list[dict[str, Any]]:
+    groups: dict[tuple[int, int, int], list[dict[str, Any]]] = {}
+    for row in rows:
+        groups.setdefault((int(row["subject"]), int(row["repeat_1"]), int(row["repeat_2"])), []).append(row)
+    out: list[dict[str, Any]] = []
+    for group, group_rows in groups.items():
+        group_rows = sorted(group_rows, key=lambda row: int(row["nsdId_1"]))
+        q = np.stack([row[query_key] for row in group_rows], axis=0)
+        c = np.stack([row[candidate_key] for row in group_rows], axis=0)
+        candidate_ids = np.array([int(row["nsdId_2"]) for row in group_rows])
+        true_ids = np.array([int(row["nsdId_1"]) for row in group_rows])
+        scores = q @ c.T
+        for idx in range(scores.shape[0]):
+            order = np.argsort(-scores[idx], kind="mergesort")
+            pos = np.where(candidate_ids[order] == true_ids[idx])[0]
+            if len(pos) == 0:
+                continue
+            rank = int(pos[0]) + 1
+            out.append(
+                {
+                    "mode": mode,
+                    "subject": group[0],
+                    "repeat_1": group[1],
+                    "repeat_2": group[2],
+                    "nsdId": int(true_ids[idx]),
+                    "rank": rank,
+                    "reciprocal_rank": 1.0 / rank,
+                    "hit1": int(rank <= 1),
+                    "hit5": int(rank <= 5),
+                    "hit10": int(rank <= 10),
+                    "n_candidates": int(len(candidate_ids)),
+                }
+            )
+    return out
+
+
 def brain_image_retrieval_metrics(model: ReGraphVLM, pairs: list[dict[str, Any]], adjacency: torch.Tensor, device: torch.device, batch_size: int) -> dict[str, float]:
     positives = [pair for pair in pairs if int(pair["same_image"]) == 1]
     rows: list[dict[str, Any]] = []
@@ -292,7 +362,8 @@ def brain_image_retrieval_metrics(model: ReGraphVLM, pairs: list[dict[str, Any]]
             chunk = positives[start : start + batch_size]
             x1 = torch.stack([pair["x1"].float() for pair in chunk]).to(device)
             clip1 = torch.stack([pair["clip_1"].float() for pair in chunk]).to(device)
-            zb = model.encode_brain(x1, adjacency).cpu().numpy()
+            s1 = torch.tensor([int(pair.get("subject_1", pair.get("subject", 0))) for pair in chunk], dtype=torch.long, device=device)
+            zb = model.encode_brain(x1, adjacency, s1).cpu().numpy()
             zi = model.encode_image(clip1).cpu().numpy()
             for idx, pair in enumerate(chunk):
                 rows.append(
@@ -320,6 +391,80 @@ def brain_image_retrieval_metrics(model: ReGraphVLM, pairs: list[dict[str, Any]]
         "brain_MRR": image_to_brain["mrr"],
         "brain_median_rank": image_to_brain["median_rank"],
     }
+
+
+def write_eval_details(
+    model: ReGraphVLM,
+    pairs: list[dict[str, Any]],
+    adjacency: torch.Tensor,
+    device: torch.device,
+    batch_size: int,
+    output_dir: Path,
+    prefix: str = "test",
+) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    loader = DataLoader(ClipPairDataset(pairs), batch_size=batch_size, shuffle=False, collate_fn=collate_pairs)
+    score_rows: list[dict[str, Any]] = []
+    model.eval()
+    with torch.no_grad():
+        for batch in loader:
+            batch = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
+            logits = model.pair_logits(batch["x1"], batch["x2"], adjacency, batch["subject_1"], batch["subject_2"])
+            scores = torch.sigmoid(logits).cpu().numpy()
+            labels = batch["same_image"].cpu().numpy()
+            for idx in range(len(scores)):
+                score_rows.append(
+                    {
+                        "subject": int(batch["subject_1"][idx].cpu()),
+                        "subject_2": int(batch["subject_2"][idx].cpu()),
+                        "nsdId_1": int(batch["nsdId_1"][idx].cpu()),
+                        "nsdId_2": int(batch["nsdId_2"][idx].cpu()),
+                        "repeat_1": int(batch["repeat_1"][idx].cpu()),
+                        "repeat_2": int(batch["repeat_2"][idx].cpu()),
+                        "same_image": int(labels[idx]),
+                        "score": float(scores[idx]),
+                    }
+                )
+    if score_rows:
+        with (output_dir / f"{prefix}_pair_scores.csv").open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(score_rows[0].keys()))
+            writer.writeheader()
+            writer.writerows(score_rows)
+
+    positives = [pair for pair in pairs if int(pair["same_image"]) == 1]
+    repeat_rows: list[dict[str, Any]] = []
+    image_rows: list[dict[str, Any]] = []
+    with torch.no_grad():
+        for start in range(0, len(positives), batch_size):
+            chunk = positives[start : start + batch_size]
+            x1 = torch.stack([pair["x1"].float() for pair in chunk]).to(device)
+            x2 = torch.stack([pair["x2"].float() for pair in chunk]).to(device)
+            c1 = torch.stack([pair["clip_1"].float() for pair in chunk]).to(device)
+            s1 = torch.tensor([int(pair.get("subject_1", pair.get("subject", 0))) for pair in chunk], dtype=torch.long, device=device)
+            s2 = torch.tensor([int(pair.get("subject_2", pair.get("reference_subject", 0))) for pair in chunk], dtype=torch.long, device=device)
+            z1 = model.encode_brain(x1, adjacency, s1).cpu().numpy()
+            z2 = model.encode_brain(x2, adjacency, s2).cpu().numpy()
+            zi = model.encode_image(c1).cpu().numpy()
+            for idx, pair in enumerate(chunk):
+                common = {
+                    "subject": int(pair.get("subject_1", pair.get("subject", 0))),
+                    "repeat_1": int(pair["repeat_1"]),
+                    "repeat_2": int(pair["repeat_2"]),
+                    "nsdId_1": int(pair["nsdId_1"]),
+                    "nsdId_2": int(pair["nsdId_2"]),
+                }
+                repeat_rows.append({**common, "z1": z1[idx], "z2": z2[idx]})
+                image_rows.append({**common, "brain": z1[idx], "image": zi[idx], "nsdId_2": int(pair["nsdId_1"])})
+    rank_rows = (
+        retrieval_rank_rows(repeat_rows, "z1", "z2", "repeat")
+        + retrieval_rank_rows(image_rows, "brain", "image", "brain_to_image")
+        + retrieval_rank_rows(image_rows, "image", "brain", "image_to_brain")
+    )
+    if rank_rows:
+        with (output_dir / f"{prefix}_retrieval_ranks.csv").open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(rank_rows[0].keys()))
+            writer.writeheader()
+            writer.writerows(rank_rows)
 
 
 def evaluate_pairs(
@@ -362,6 +507,8 @@ def main() -> None:
     lambda_dir = f"lambda_{args.lambda_clip:g}"
     if args.lambda_cross != 0.0:
         lambda_dir = f"{lambda_dir}_cross_{args.lambda_cross:g}"
+    if args.lambda_subject_adv != 0.0:
+        lambda_dir = f"{lambda_dir}_subjadv_{args.lambda_subject_adv:g}"
     output_dir = root / args.output_root / encoder_dir / lambda_dir / args.fold / f"seed_{args.seed}"
     output_dir.mkdir(parents=True, exist_ok=True)
     device = resolve_device(args.device)
@@ -395,6 +542,8 @@ def main() -> None:
         num_heads=args.num_heads,
         num_layers=args.num_layers,
         graph_encoder=args.graph_encoder,
+        num_subjects=args.num_subjects,
+        graph_bias_scale=args.graph_bias_scale,
     ).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
@@ -412,12 +561,22 @@ def main() -> None:
             for batch in train_loader:
                 batch = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
                 opt.zero_grad(set_to_none=True)
-                logits = model.pair_logits(batch["x1"], batch["x2"], adjacency)
+                logits = model.pair_logits(batch["x1"], batch["x2"], adjacency, batch["subject_1"], batch["subject_2"])
                 bce = F.binary_cross_entropy_with_logits(logits, batch["same_image"])
                 nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
                 cross_nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
                 clip_loss = clip_alignment_loss(model, batch, adjacency, args.clip_temperature)
-                loss = bce + nce + args.lambda_cross * cross_nce + args.lambda_clip * clip_loss
+                adv_loss = batch["x1"].sum() * 0.0
+                if args.lambda_subject_adv > 0:
+                    subject_labels = (batch["subject_1"].long() - 1).clamp(min=0, max=args.num_subjects - 1)
+                    subject_logits = model.subject_logits(
+                        batch["x1"],
+                        adjacency,
+                        batch["subject_1"],
+                        reverse_scale=1.0,
+                    )
+                    adv_loss = F.cross_entropy(subject_logits, subject_labels)
+                loss = bce + nce + args.lambda_cross * cross_nce + args.lambda_clip * clip_loss + args.lambda_subject_adv * adv_loss
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
                 opt.step()
@@ -467,6 +626,8 @@ def main() -> None:
             }
         )
     eval_metrics = evaluate_pairs(model, test_pairs, best_threshold_value, adjacency, device, args.batch_size)
+    if args.save_eval_details:
+        write_eval_details(model, test_pairs, adjacency, device, args.batch_size, output_dir, prefix="test")
     if extra_test_pairs is not None:
         eval_metrics.update(
             evaluate_pairs(
@@ -479,6 +640,8 @@ def main() -> None:
                 prefix=args.extra_test_name,
             )
         )
+        if args.save_eval_details:
+            write_eval_details(model, extra_test_pairs, adjacency, device, args.batch_size, output_dir, prefix=args.extra_test_name)
 
     metrics = {
         "model": "regraph_vlm_v0",
@@ -487,8 +650,11 @@ def main() -> None:
         "seed": args.seed,
         "lambda_clip": args.lambda_clip,
         "lambda_cross": args.lambda_cross,
+        "lambda_subject_adv": args.lambda_subject_adv,
         "readout": args.readout,
         "roi_id_mode": args.roi_id_mode,
+        "num_subjects": args.num_subjects,
+        "graph_bias_scale": args.graph_bias_scale,
         "loss": args.loss,
         "clip_temperature": args.clip_temperature,
         "temperature": args.temperature,

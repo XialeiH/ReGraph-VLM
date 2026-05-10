@@ -17,6 +17,8 @@ class BNTTokenEncoder(nn.Module):
         dropout: float,
         readout: str,
         roi_id_mode: str = "normal",
+        use_graph_bias: bool = False,
+        graph_bias_scale: float = 1.0,
     ):
         super().__init__()
         if readout not in {"cls", "mean", "flat", "gated_flat"}:
@@ -27,6 +29,8 @@ class BNTTokenEncoder(nn.Module):
         self.hidden_dim = hidden_dim
         self.readout = readout
         self.roi_id_mode = roi_id_mode
+        self.use_graph_bias = use_graph_bias
+        self.graph_bias_scale = float(graph_bias_scale)
         self.feature = nn.Linear(in_dim, hidden_dim)
         self.roi_embedding = nn.Embedding(n_nodes, hidden_dim) if roi_id_mode != "none" else None
         if roi_id_mode == "shuffled":
@@ -39,6 +43,8 @@ class BNTTokenEncoder(nn.Module):
             if readout == "gated_flat"
             else None
         )
+        self.graph_proj = nn.Linear(hidden_dim, hidden_dim) if use_graph_bias else None
+        self.graph_norm = nn.LayerNorm(hidden_dim) if use_graph_bias else None
         layer = nn.TransformerEncoderLayer(
             d_model=hidden_dim,
             nhead=num_heads,
@@ -73,6 +79,11 @@ class BNTTokenEncoder(nn.Module):
             if self.roi_permutation is not None:
                 node_ids = self.roi_permutation.to(x.device)
             h = h + self.roi_embedding(node_ids)[None, :, :]
+        if self.use_graph_bias and adjacency is not None:
+            if self.graph_proj is None or self.graph_norm is None:
+                raise RuntimeError("Graph-biased BNT encoder requires graph projection modules")
+            mixed = torch.einsum("ij,bjd->bid", adjacency.to(h.device, h.dtype), h)
+            h = self.graph_norm(h + self.graph_bias_scale * self.graph_proj(mixed))
         if self.cls is not None:
             cls = self.cls.expand(x.shape[0], -1, -1)
             h = torch.cat([cls, h], dim=1)
@@ -99,18 +110,21 @@ class TokenMLPEncoder(nn.Module):
         embedding_dim: int,
         dropout: float,
         roi_id_mode: str = "normal",
+        gated: bool = False,
     ):
         super().__init__()
         if roi_id_mode not in {"normal", "none", "shuffled"}:
             raise ValueError(f"Unsupported ROI ID mode: {roi_id_mode}")
         self.n_nodes = n_nodes
         self.roi_id_mode = roi_id_mode
+        self.gated = gated
         self.feature = nn.Sequential(nn.Linear(in_dim, hidden_dim), nn.GELU(), nn.LayerNorm(hidden_dim))
         self.roi_embedding = nn.Embedding(n_nodes, hidden_dim) if roi_id_mode != "none" else None
         if roi_id_mode == "shuffled":
             self.register_buffer("roi_permutation", torch.randperm(n_nodes), persistent=True)
         else:
             self.roi_permutation = None
+        self.gate = nn.Sequential(nn.LayerNorm(hidden_dim), nn.Linear(hidden_dim, 1), nn.Sigmoid()) if gated else None
         self.head = nn.Sequential(
             nn.LayerNorm(n_nodes * hidden_dim),
             nn.Linear(n_nodes * hidden_dim, max(embedding_dim * 2, hidden_dim)),
@@ -126,6 +140,8 @@ class TokenMLPEncoder(nn.Module):
             if self.roi_permutation is not None:
                 node_ids = self.roi_permutation.to(x.device)
             h = h + self.roi_embedding(node_ids)[None, :, :]
+        if self.gate is not None:
+            h = h * self.gate(h)
         return F.normalize(self.head(h.flatten(start_dim=1)), dim=-1)
 
 
