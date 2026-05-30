@@ -8,21 +8,45 @@ This note tracks external fMRI datasets for reviewer-facing validation. Large da
 
 ## Priority Order
 
-1. **CNeuroMod-THINGS**
+1. **LAION-fMRI**
+
+   Strong future external-validation target. The launch release describes five participants, 25,052 unique natural images, 1,492 shared images, repeated shared images, 7T acquisition, open data access, and GLMsingle single-trial beta estimates. This may be the best next dataset for a paper-level external validation because it has repeated image responses and public single-trial betas. It has not yet been downloaded or tested in this project. If used, all downloads should go directly to Shanghai HPC scratch under `external_validation/laion_fmri`.
+
+2. **CNeuroMod-THINGS**
 
    Best fit for the current paper. It has four participants, shared THINGS object images, and three presentations per image. This is the closest external replication of the strict repeated-image and cross-subject same-image retrieval setup.
 
-2. **BOLD5000**
+3. **BOLD5000**
 
    Strong image-retrieval validation target with four subjects and natural images from COCO, SUN, and ImageNet. It is not a strict T=3 repetition replication, but it is useful for external brain-image retrieval and NSD-to-BOLD5000 transfer because BOLD5000 intentionally overlaps with NSD stimuli.
 
-3. **Natural Object Dataset (NOD)**
+4. **Natural Object Dataset (NOD)**
 
    Large-scale stress test with many subjects and naturalistic images. It is valuable for external generalization but likely requires substantial preprocessing and ROI extraction work before it can be used in the current HCP-MMP ROI-token pipeline.
 
-4. **THINGS-fMRI**
+5. **THINGS-fMRI**
 
    Useful for semantic/concept validation with rich THINGS annotations. It is less directly matched to the current repeated-image setup than CNeuroMod-THINGS.
+
+## Source Check Notes
+
+Current public dataset pages checked on 2026-05-30:
+
+```text
+LAION-fMRI:
+  https://laion-fmri.hebartlab.com/
+  Relevant notes: five participants, 25,052 unique images, 1,492 shared launch-release images,
+  repeated shared images, 7T acquisition, GLMsingle beta estimates, open research access.
+
+CNeuroMod-THINGS:
+  https://www.nature.com/articles/s41597-026-06591-y
+  Relevant notes: four participants, 33--36 sessions, 4,320 THINGS images, three image repetitions,
+  DataLad/CONP access, trial-wise beta derivatives described.
+
+BOLD5000:
+  https://bold5000-dataset.github.io/website/
+  Relevant notes: four subjects, 5,254 images, COCO/SUN/ImageNet stimuli, Release 2.0 available.
+```
 
 ## Immediate Implementation Target
 
