@@ -140,7 +140,7 @@ def main() -> None:
         check_table("session/order pair QC", final / "session_order_pair_qc.csv"),
         check_table("fold difficulty QC", final / "fold_difficulty_qc.csv"),
         check_table("single-reference eval-existing runs", final / "single_ref_matched_all_runs.csv", min_n=72),
-        check_table("single-reference retrained runs", final / "single_ref_matched_allseed_all_runs.csv", min_n=48),
+        check_table("single-reference retrained runs", final / "single_ref_matched_allseed_all_runs.csv", min_n=72),
         check_publication_stats(stats, "main_allfold", "Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP"),
         check_publication_stats(stats, "hard_negative", "Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP"),
         check_publication_stats(stats, "heldout_real_vs_random_available_raw", "Gated ReGraph/BNT+CLIP - Gated random embedding"),
