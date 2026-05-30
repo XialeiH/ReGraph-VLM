@@ -513,7 +513,7 @@ Held-out-image evaluation tests whether CLIP semantics help when images are not 
 
 \subsection{Hard-negative evaluation}
 
-Hard-negative evaluation makes the task more difficult by using semantically or neurally similar different-image candidates. Gated ReGraph+CLIP remains best under hard negatives (Table~\ref{tab:hardneg}). This supports the claim that the retrieval advantage is not only due to easy random negatives.
+Hard-negative evaluation makes the task more difficult by using semantically or neurally similar different-image candidates. Gated ReGraph+CLIP remains best under hard negatives (Table~\ref{tab:hardneg}). Paired fold$\times$seed tests favor Gated ReGraph+CLIP over ROI-MLP+CLIP for AUROC ($+0.0064$, bootstrap 95\% CI $[0.0022,0.0104]$), R@5 ($+0.0102$, CI $[0.0057,0.0145]$), and brain R@5 ($+0.0084$, CI $[0.0038,0.0132]$). This supports the claim that the retrieval advantage is not only due to easy random negatives.
 
 \begin{table}[!htbp]
   \centering
