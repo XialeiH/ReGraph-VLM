@@ -302,30 +302,30 @@ We further compared Gated ReGraph+CLIP against several task-matched brain-decodi
 
 \begin{table}[!htbp]
   \centering
-  \caption{Task-matched decoding component baseline comparison on the cross-subject same-image matching task. Values are point summaries from the submitted component-baseline runs; these are not full image-reconstruction system comparisons.}
+  \caption{Task-matched decoding component baseline comparison on the cross-subject same-image matching task. Values are mean $\pm$ std over the available fold$\times$seed runs. These are not full image-reconstruction system comparisons.}
   \label{tab:sota_baselines}
   \scriptsize
-  \setlength{\tabcolsep}{3.5pt}
+  \setlength{\tabcolsep}{2.8pt}
   \renewcommand{\arraystretch}{1.15}
-  \begin{tabular}{lcccccc}
+  \begin{tabular}{lccccccc}
     \toprule
-    Model & AUROC & AUPRC & R@5 & MRR & Img R@5 & Brain R@5 \\
+    Model & $n$ & AUROC & AUPRC & R@5 & MRR & Img R@5 & Brain R@5 \\
     \midrule
     Our Gated ReGraph+CLIP
-    & $\mathbf{0.8270}$ & $\mathbf{0.8065}$ & $\mathbf{0.0915}$ & $\mathbf{0.0701}$ & $\mathbf{0.0869}$ & $\mathbf{0.1009}$ \\
+    & 24 & $\mathbf{0.8259{\scriptstyle\pm0.0413}}$ & $\mathbf{0.8065{\scriptstyle\pm0.0460}}$ & $\mathbf{0.0899{\scriptstyle\pm0.0356}}$ & $\mathbf{0.0695{\scriptstyle\pm0.0240}}$ & $\mathbf{0.0847{\scriptstyle\pm0.0357}}$ & $\mathbf{0.0996{\scriptstyle\pm0.0369}}$ \\
     MindEye2-style shared ROI mapper
-    & $0.4985$ & $0.5034$ & $0.0082$ & $0.0112$ & $0.0086$ & $0.0088$ \\
+    & 24 & $0.4982{\scriptstyle\pm0.0138}$ & $0.5006{\scriptstyle\pm0.0117}$ & $0.0078{\scriptstyle\pm0.0019}$ & $0.0111{\scriptstyle\pm0.0021}$ & $0.0080{\scriptstyle\pm0.0019}$ & $0.0086{\scriptstyle\pm0.0035}$ \\
     UMBRAE-style subject encoder
-    & $0.7424$ & $0.7009$ & $0.0292$ & $0.0299$ & $0.0344$ & $0.0345$ \\
+    & 24 & $0.7415{\scriptstyle\pm0.0678}$ & $0.7061{\scriptstyle\pm0.0645}$ & $0.0308{\scriptstyle\pm0.0105}$ & $0.0307{\scriptstyle\pm0.0086}$ & $0.0329{\scriptstyle\pm0.0131}$ & $0.0360{\scriptstyle\pm0.0161}$ \\
     MindLink-style subject-adversarial ROI-MLP
-    & $0.8202$ & $0.7953$ & $0.0823$ & $0.0644$ & $0.0766$ & $0.0897$ \\
+    & 24 & $0.8135{\scriptstyle\pm0.0555}$ & $0.7873{\scriptstyle\pm0.0575}$ & $0.0774{\scriptstyle\pm0.0306}$ & $0.0616{\scriptstyle\pm0.0206}$ & $0.0713{\scriptstyle\pm0.0290}$ & $0.0835{\scriptstyle\pm0.0335}$ \\
     MindLink-style subject-adversarial ReGraph
-    & $0.5547$ & $0.5475$ & $0.0146$ & $0.0165$ & $0.0135$ & $0.0161$ \\
+    & 8 & $0.5547{\scriptstyle\pm0.1070}$ & $0.5475{\scriptstyle\pm0.0957}$ & $0.0146{\scriptstyle\pm0.0122}$ & $0.0165{\scriptstyle\pm0.0104}$ & $0.0135{\scriptstyle\pm0.0155}$ & $0.0161{\scriptstyle\pm0.0221}$ \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-The component-baseline comparison gives two useful diagnostics. First, simply sharing an ROI-to-image mapper is insufficient: the MindEye2-style shared ROI mapper collapses to chance, suggesting that our cross-subject graph task cannot be solved by a naive shared mapping. Second, subject conditioning and subject-adversarial training are not automatically beneficial. The UMBRAE-style subject encoder improves over chance but remains far behind Gated ReGraph+CLIP, while the MindLink-style adversarial ROI-MLP is the strongest component baseline but still lower on AUROC, retrieval R@5/MRR, and brain retrieval. The adversarial ReGraph variant is unstable in this setting, indicating that subject-invariance objectives must be tuned carefully for fixed-order ROI graph transformers.
+The component-baseline comparison gives two useful diagnostics. First, simply sharing an ROI-to-image mapper is insufficient: the MindEye2-style shared ROI mapper collapses to chance, suggesting that our cross-subject graph task cannot be solved by a naive shared mapping. Second, subject conditioning and subject-adversarial training are not automatically beneficial. The UMBRAE-style subject encoder improves over chance but remains far behind Gated ReGraph+CLIP, while the MindLink-style adversarial ROI-MLP is the strongest component baseline but still lower on AUROC, retrieval R@5/MRR, and brain retrieval. The adversarial ReGraph variant is unstable in this setting and was therefore kept as a seed-11 diagnostic rather than expanded further, indicating that subject-invariance objectives must be tuned carefully for fixed-order ROI graph transformers.
 
 \subsection{Graph-only and CLIP alignment ablation}
 
