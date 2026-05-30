@@ -19,6 +19,22 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--fold", required=True)
     parser.add_argument("--seed", type=int, required=True)
+    parser.add_argument(
+        "--checkpoint-template",
+        default=(
+            "preproc_v0/repetition_familiarity/results/cross_subject_allfold_final/"
+            "bnt_token_flat_gated_flat_clip/lambda_2/{fold}/seed_{seed}/checkpoint.pt"
+        ),
+        help="Checkpoint path template relative to --root. Supports {fold} and {seed}.",
+    )
+    parser.add_argument(
+        "--fallback-checkpoint-template",
+        default=(
+            "preproc_v0/repetition_familiarity/results/cross_subject_gated_allfold_seed11/"
+            "bnt_token_flat_gated_flat_clip/lambda_2/{fold}/seed_{seed}/checkpoint.pt"
+        ),
+        help="Optional fallback checkpoint template relative to --root.",
+    )
     parser.add_argument("--random-repeats", type=int, default=20)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--batch-size", type=int, default=256)
@@ -50,6 +66,8 @@ def clone_pairs_with_zeroed_rois(pairs: list[dict[str, Any]], roi_ids_1based: li
 
 def build_model(checkpoint: dict[str, Any], sample: dict[str, Any], device: torch.device) -> ReGraphVLM:
     cfg = checkpoint["args"]
+    graph_encoder = str(cfg.get("graph_encoder", "bnt_token_flat"))
+    readout = str(cfg.get("readout", "gated_flat"))
     model = ReGraphVLM(
         n_nodes=int(sample["x1"].shape[0]),
         node_feature_dim=int(sample["x1"].shape[1]),
@@ -57,11 +75,14 @@ def build_model(checkpoint: dict[str, Any], sample: dict[str, Any], device: torc
         hidden_dim=int(cfg.get("hidden_dim", 64)),
         embedding_dim=int(cfg.get("embedding_dim", 128)),
         dropout=float(cfg.get("dropout", 0.3)),
-        readout="gated_flat",
+        readout=readout,
         roi_id_mode=str(cfg.get("roi_id_mode", "normal")),
         num_heads=int(cfg.get("num_heads", 4)),
         num_layers=int(cfg.get("num_layers", 2)),
-        graph_encoder="bnt_token_flat",
+        graph_encoder=graph_encoder,
+        graph_bias_scale=float(cfg.get("graph_bias_scale", 1.0)),
+        attention_bias_scale=float(cfg.get("attention_bias_scale", 1.0)),
+        attention_adjacency_scale=float(cfg.get("attention_adjacency_scale", 0.0)),
     ).to(device)
     model.load_state_dict(checkpoint["model"])
     model.eval()
@@ -72,19 +93,11 @@ def main() -> None:
     args = parse_args()
     root = args.root.resolve()
     device = torch.device(args.device)
-    ckpt = (
-        root
-        / "preproc_v0/repetition_familiarity/results/cross_subject_allfold_final/bnt_token_flat_gated_flat_clip/lambda_2"
-        / args.fold
-        / f"seed_{args.seed}/checkpoint.pt"
-    )
-    if not ckpt.exists() and args.seed == 11:
-        ckpt = (
-            root
-            / "preproc_v0/repetition_familiarity/results/cross_subject_gated_allfold_seed11/bnt_token_flat_gated_flat_clip/lambda_2"
-            / args.fold
-            / "seed_11/checkpoint.pt"
-        )
+    ckpt = root / args.checkpoint_template.format(fold=args.fold, seed=args.seed)
+    if not ckpt.exists() and args.fallback_checkpoint_template:
+        ckpt = root / args.fallback_checkpoint_template.format(fold=args.fold, seed=args.seed)
+    if not ckpt.exists():
+        raise FileNotFoundError(f"Checkpoint not found for {args.fold} seed {args.seed}: {ckpt}")
     checkpoint = torch.load(ckpt, map_location=device, weights_only=False)
     cfg = checkpoint["args"]
     dataset_root = root / cfg["dataset_root"] / args.fold

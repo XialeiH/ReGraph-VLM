@@ -37,12 +37,25 @@ def main() -> None:
         df["lambda_subject_adv"] = 0.0
     key_cols = [
         c
-        for c in ["graph_encoder", "readout", "lambda_clip", "lambda_cross", "lambda_subject_adv", "fold", "seed"]
+        for c in [
+            "graph_encoder",
+            "readout",
+            "lambda_clip",
+            "lambda_cross",
+            "lambda_subject_adv",
+            "adjacency_mode",
+            "fold",
+            "seed",
+        ]
         if c in df.columns
     ]
     if key_cols:
         df = df.sort_values("metrics_path").drop_duplicates(key_cols, keep="last")
-    sort_cols = [c for c in ["graph_encoder", "readout", "lambda_clip", "lambda_subject_adv", "fold", "seed"] if c in df.columns]
+    sort_cols = [
+        c
+        for c in ["graph_encoder", "readout", "lambda_clip", "lambda_subject_adv", "adjacency_mode", "fold", "seed"]
+        if c in df.columns
+    ]
     if sort_cols:
         df = df.sort_values(sort_cols)
     out = root / args.out_csv

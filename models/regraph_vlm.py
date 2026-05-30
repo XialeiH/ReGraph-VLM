@@ -221,6 +221,8 @@ class ReGraphVLM(nn.Module):
         graph_encoder: str = "bnt_token_flat",
         num_subjects: int = 8,
         graph_bias_scale: float = 1.0,
+        attention_bias_scale: float = 1.0,
+        attention_adjacency_scale: float = 0.0,
         init_scale: float = 10.0,
     ) -> None:
         super().__init__()
@@ -237,6 +239,22 @@ class ReGraphVLM(nn.Module):
                 num_heads=num_heads,
                 num_layers=num_layers,
                 use_graph_bias=False,
+            )
+        elif graph_encoder in {"edge_bias_bnt", "edge_bias_graph_bnt"}:
+            self.graph_encoder = BNTTokenEncoder(
+                n_nodes=n_nodes,
+                in_dim=node_feature_dim,
+                hidden_dim=hidden_dim,
+                embedding_dim=embedding_dim,
+                dropout=dropout,
+                readout=readout,
+                roi_id_mode=roi_id_mode,
+                num_heads=num_heads,
+                num_layers=num_layers,
+                use_graph_bias=False,
+                use_attention_bias=True,
+                attention_bias_scale=attention_bias_scale,
+                attention_adjacency_scale=attention_adjacency_scale if graph_encoder == "edge_bias_graph_bnt" else 0.0,
             )
         elif graph_encoder in {"graph_bnt", "regraph_graph"}:
             self.graph_encoder = BNTTokenEncoder(

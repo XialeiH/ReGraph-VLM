@@ -77,6 +77,11 @@ def main() -> None:
         "table_hard_negative_allfold": results / "cross_subject_hardneg_allfold_seed11/regraph_vlm_summary.csv",
         "table_heldout_final": results / "heldout_image_final/regraph_vlm_summary.csv",
         "table_phase2_sota_graph_baselines": results / "phase2_sota_graph_baselines/regraph_vlm_summary.csv",
+        "table_phase3_graph_ablation": results / "phase3_graph_ablation/regraph_vlm_summary.csv",
+        "table_phase3b_clean_graph_ablation": results / "phase3b_clean_graph_ablation/regraph_vlm_summary.csv",
+        "table_phase3c_noadj_gated_final": results / "phase3c_noadj_gated_final/regraph_vlm_summary.csv",
+        "table_phase3c_noadj_gated_heldout": results / "phase3c_noadj_gated_heldout/regraph_vlm_summary.csv",
+        "table_phase3c_noadj_gated_hardneg": results / "phase3c_noadj_gated_hardneg/regraph_vlm_summary.csv",
     }
     compact_rows = []
     for name, path in sources.items():

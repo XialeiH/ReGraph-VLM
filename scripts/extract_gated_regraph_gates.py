@@ -32,10 +32,19 @@ def collate(batch: list[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Extract aggregate gate values from final gated ReGraph checkpoints.")
+    parser = argparse.ArgumentParser(description="Extract aggregate gate values from gated ReGraph/ROI-token checkpoints.")
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--device", default="cpu")
+    parser.add_argument(
+        "--checkpoint-glob",
+        action="append",
+        default=None,
+        help=(
+            "Checkpoint glob relative to --root. Can be passed multiple times. "
+            "If omitted, uses the original final gated ReGraph checkpoint locations."
+        ),
+    )
     parser.add_argument(
         "--output-dir",
         type=Path,
@@ -44,7 +53,12 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def find_checkpoints(root: Path) -> list[Path]:
+def find_checkpoints(root: Path, globs: list[str] | None) -> list[Path]:
+    if globs:
+        paths: list[Path] = []
+        for pattern in globs:
+            paths.extend(sorted(root.glob(pattern)))
+        return sorted(set(paths))
     bases = [
         root / "preproc_v0/repetition_familiarity/results/cross_subject_gated_allfold_seed11",
         root / "preproc_v0/repetition_familiarity/results/cross_subject_allfold_final",
@@ -57,6 +71,8 @@ def find_checkpoints(root: Path) -> list[Path]:
 
 def build_model(checkpoint: dict[str, Any], sample: dict[str, Any], device: torch.device) -> ReGraphVLM:
     cfg = checkpoint["args"]
+    graph_encoder = str(cfg.get("graph_encoder", "bnt_token_flat"))
+    readout = str(cfg.get("readout", "gated_flat"))
     model = ReGraphVLM(
         n_nodes=int(sample["x1"].shape[0]),
         node_feature_dim=int(sample["x1"].shape[1]),
@@ -64,11 +80,14 @@ def build_model(checkpoint: dict[str, Any], sample: dict[str, Any], device: torc
         hidden_dim=int(cfg.get("hidden_dim", 64)),
         embedding_dim=int(cfg.get("embedding_dim", 128)),
         dropout=float(cfg.get("dropout", 0.3)),
-        readout="gated_flat",
+        readout=readout,
         roi_id_mode=str(cfg.get("roi_id_mode", "normal")),
         num_heads=int(cfg.get("num_heads", 4)),
         num_layers=int(cfg.get("num_layers", 2)),
-        graph_encoder="bnt_token_flat",
+        graph_encoder=graph_encoder,
+        graph_bias_scale=float(cfg.get("graph_bias_scale", 1.0)),
+        attention_bias_scale=float(cfg.get("attention_bias_scale", 1.0)),
+        attention_adjacency_scale=float(cfg.get("attention_adjacency_scale", 0.0)),
     ).to(device)
     model.load_state_dict(checkpoint["model"])
     model.eval()
@@ -97,7 +116,7 @@ def main() -> None:
     out_dir = root / args.output_dir
     out_dir.mkdir(parents=True, exist_ok=True)
     rows = []
-    checkpoints = find_checkpoints(root)
+    checkpoints = find_checkpoints(root, args.checkpoint_glob)
     if not checkpoints:
         raise FileNotFoundError("No final gated checkpoints found.")
     for ckpt_path in checkpoints:
@@ -109,7 +128,6 @@ def main() -> None:
         pairs = torch.load(dataset_root / "test_pairs.pt", map_location="cpu", weights_only=False)
         sample = pairs[0]
         model = build_model(checkpoint, sample, device)
-        _adjacency = torch.from_numpy(normalize_adjacency(np.load(dataset_root / "adjacency.npy"))).to(device)
         loader = DataLoader(PairDataset(pairs), batch_size=args.batch_size, shuffle=False, collate_fn=collate)
         n_nodes = int(sample["x1"].shape[0])
         sums = torch.zeros(n_nodes, device=device)
@@ -134,6 +152,8 @@ def main() -> None:
                     "gate_std": float(std[roi].cpu()),
                     "n_graphs": count,
                     "checkpoint": str(ckpt_path),
+                    "graph_encoder": str(cfg.get("graph_encoder", "")),
+                    "readout": str(cfg.get("readout", "")),
                 }
             )
     df = pd.DataFrame(rows)

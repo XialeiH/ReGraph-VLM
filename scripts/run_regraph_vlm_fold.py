@@ -30,6 +30,8 @@ def parse_args() -> argparse.Namespace:
         default="bnt_token_flat",
         choices=[
             "bnt_token_flat",
+            "edge_bias_bnt",
+            "edge_bias_graph_bnt",
             "graph_bnt",
             "regraph_graph",
             "roi_transformer_noadj",
@@ -60,6 +62,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--num-subjects", type=int, default=8)
     parser.add_argument("--graph-bias-scale", type=float, default=1.0)
+    parser.add_argument("--attention-bias-scale", type=float, default=1.0)
+    parser.add_argument("--attention-adjacency-scale", type=float, default=0.1)
     parser.add_argument("--embedding-dim", type=int, default=128)
     parser.add_argument("--hidden-dim", type=int, default=64)
     parser.add_argument("--num-heads", type=int, default=4)
@@ -67,6 +71,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dropout", type=float, default=0.3)
     parser.add_argument("--readout", default="flat", choices=["flat", "gated_flat"])
     parser.add_argument("--roi-id-mode", default="normal", choices=["normal", "none", "shuffled"])
+    parser.add_argument(
+        "--adjacency-mode",
+        default="default",
+        choices=[
+            "default",
+            "topk20_corr",
+            "dense_corr",
+            "identity",
+            "random",
+            "shuffled",
+            "no_adjacency",
+            "anatomical",
+        ],
+        help="Phase 3 graph-ablation adjacency. default uses adjacency.npy.",
+    )
     parser.add_argument("--epochs", type=int, default=80)
     parser.add_argument("--patience", type=int, default=12)
     parser.add_argument("--batch-size", type=int, default=128)
@@ -207,6 +226,51 @@ def normalize_adjacency(adjacency: np.ndarray) -> np.ndarray:
     degree = adj.sum(axis=1)
     inv_sqrt = np.where(degree > 0, degree ** -0.5, 0.0).astype(np.float32)
     return (inv_sqrt[:, None] * adj) * inv_sqrt[None, :]
+
+
+def load_adjacency(fold_dir: Path, mode: str, seed: int) -> np.ndarray:
+    base = np.load(fold_dir / "adjacency.npy").astype(np.float32)
+    n_nodes = int(base.shape[0])
+
+    if mode == "default":
+        return normalize_adjacency(base)
+    if mode == "topk20_corr":
+        path = fold_dir / "adjacency_topk20_corr.npy"
+        if not path.exists():
+            raise FileNotFoundError(f"Missing top-k correlation adjacency: {path}")
+        return normalize_adjacency(np.load(path).astype(np.float32))
+    if mode == "dense_corr":
+        path = fold_dir / "adjacency_dense_corr.npy"
+        if not path.exists():
+            raise FileNotFoundError(f"Missing dense correlation adjacency: {path}")
+        return normalize_adjacency(np.load(path).astype(np.float32))
+    if mode == "identity":
+        return np.eye(n_nodes, dtype=np.float32)
+    if mode == "no_adjacency":
+        return np.zeros((n_nodes, n_nodes), dtype=np.float32)
+    if mode == "anatomical":
+        for name in ["adjacency_anatomical.npy", "anatomical_adjacency.npy"]:
+            path = fold_dir / name
+            if path.exists():
+                return normalize_adjacency(np.load(path).astype(np.float32))
+        raise FileNotFoundError(f"Missing anatomical adjacency in {fold_dir}")
+
+    rng = np.random.default_rng(seed)
+    if mode == "shuffled":
+        perm = rng.permutation(n_nodes)
+        return normalize_adjacency(base[perm][:, perm])
+    if mode == "random":
+        # Preserve the undirected edge count of the base graph but randomize endpoints.
+        upper = np.triu(np.abs(base) > 0, k=1)
+        edge_count = int(upper.sum())
+        candidates = np.array(np.triu_indices(n_nodes, k=1)).T
+        chosen = candidates[rng.choice(len(candidates), size=edge_count, replace=False)]
+        adj = np.zeros((n_nodes, n_nodes), dtype=np.float32)
+        weights = rng.uniform(0.5, 1.0, size=edge_count).astype(np.float32)
+        adj[chosen[:, 0], chosen[:, 1]] = weights
+        adj[chosen[:, 1], chosen[:, 0]] = weights
+        return normalize_adjacency(adj)
+    raise ValueError(f"Unknown adjacency mode: {mode}")
 
 
 def pair_infonce_loss(model: ReGraphVLM, batch: dict[str, torch.Tensor], adjacency: torch.Tensor, temperature: float) -> torch.Tensor:
@@ -504,6 +568,8 @@ def main() -> None:
     root = args.root.resolve()
     fold_dir = (root / args.dataset_root / args.fold).resolve()
     encoder_dir = f"{args.graph_encoder}_clip" if args.readout == "flat" else f"{args.graph_encoder}_{args.readout}_clip"
+    if args.adjacency_mode != "default":
+        encoder_dir = f"{encoder_dir}_adj_{args.adjacency_mode}"
     lambda_dir = f"lambda_{args.lambda_clip:g}"
     if args.lambda_cross != 0.0:
         lambda_dir = f"{lambda_dir}_cross_{args.lambda_cross:g}"
@@ -524,7 +590,7 @@ def main() -> None:
     n_nodes = int(sample["x1"].shape[0])
     node_dim = int(sample["x1"].shape[1])
     clip_dim = int(sample["clip_1"].shape[0])
-    adjacency = torch.from_numpy(normalize_adjacency(np.load(fold_dir / "adjacency.npy"))).to(device)
+    adjacency = torch.from_numpy(load_adjacency(fold_dir, args.adjacency_mode, args.seed)).to(device)
 
     train_loader = DataLoader(ClipPairDataset(train_pairs), batch_size=args.batch_size, shuffle=True, collate_fn=collate_pairs)
     val_loader = DataLoader(ClipPairDataset(val_pairs), batch_size=args.batch_size, shuffle=False, collate_fn=collate_pairs)
@@ -544,6 +610,8 @@ def main() -> None:
         graph_encoder=args.graph_encoder,
         num_subjects=args.num_subjects,
         graph_bias_scale=args.graph_bias_scale,
+        attention_bias_scale=args.attention_bias_scale,
+        attention_adjacency_scale=args.attention_adjacency_scale,
     ).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
@@ -653,8 +721,11 @@ def main() -> None:
         "lambda_subject_adv": args.lambda_subject_adv,
         "readout": args.readout,
         "roi_id_mode": args.roi_id_mode,
+        "adjacency_mode": args.adjacency_mode,
         "num_subjects": args.num_subjects,
         "graph_bias_scale": args.graph_bias_scale,
+        "attention_bias_scale": args.attention_bias_scale,
+        "attention_adjacency_scale": args.attention_adjacency_scale,
         "loss": args.loss,
         "clip_temperature": args.clip_temperature,
         "temperature": args.temperature,
