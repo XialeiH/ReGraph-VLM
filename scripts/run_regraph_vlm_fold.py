@@ -632,7 +632,9 @@ def main() -> None:
                 logits = model.pair_logits(batch["x1"], batch["x2"], adjacency, batch["subject_1"], batch["subject_2"])
                 bce = F.binary_cross_entropy_with_logits(logits, batch["same_image"])
                 nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
-                cross_nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
+                cross_nce = logits.sum() * 0.0
+                if args.lambda_cross > 0:
+                    cross_nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
                 clip_loss = clip_alignment_loss(model, batch, adjacency, args.clip_temperature)
                 adv_loss = batch["x1"].sum() * 0.0
                 if args.lambda_subject_adv > 0:
