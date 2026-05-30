@@ -84,6 +84,32 @@ current status:
   full validation still requires ROI projection/extraction and stimulus alignment
 ```
 
+Public trial-metadata analysis from Shanghai:
+
+```text
+probe path: /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/laion_fmri_probe/trial_metadata
+downloaded/read public trial TSVs: 150
+subjects: sub-01, sub-03, sub-05, sub-06, sub-07
+HTTP-accessible sessions per subject: ses-01 through ses-30
+note: ses-31 through ses-34 trial TSV URLs returned 403 in the public HTTPS probe
+
+per subject:
+  31,856 trials
+  6,204 unique image labels
+  6,204 labels with at least 3 repeats
+  877--879 labels with at least 12 repeats
+  maximum repeats per label: 12
+
+cross-subject repeated-label candidates:
+  labels present in all five public subjects: 1,492
+  labels with at least 3 repeats in all five subjects: 1,492
+  labels with at least 12 repeats in all five subjects: 866
+
+interpretation:
+  LAION-fMRI is a strong future strict-repeat external-validation candidate.
+  The remaining work is ROI extraction/projection from the public single-trial beta maps.
+```
+
 ## Immediate Implementation Target
 
 Use CNeuroMod-THINGS first. The first concrete milestone should be a smoke validation fold:
