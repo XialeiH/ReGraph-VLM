@@ -61,6 +61,29 @@ status: public S3 HTTPS listing works from Shanghai HPC; `aws` CLI was not insta
 large downloads performed: none
 ```
 
+Public GLMsingle subject inventory from the Shanghai probe:
+
+```text
+subject IDs exposed under derivatives/glmsingle-tedana:
+  sub-01, sub-03, sub-05, sub-06, sub-07
+
+per subject:
+  34 sessions
+  34 SingletrialBetas trial TSVs
+  34 SingletrialBetas NIfTI beta maps
+
+estimated listed public data size:
+  sub-01: 80.250 GB listed, 38.956 GB singletrial beta maps
+  sub-03: 85.306 GB listed, 41.370 GB singletrial beta maps
+  sub-05: 82.089 GB listed, 39.771 GB singletrial beta maps
+  sub-06: 76.200 GB listed, 37.097 GB singletrial beta maps
+  sub-07: 78.060 GB listed, 37.955 GB singletrial beta maps
+
+current status:
+  metadata/listing feasibility confirmed only
+  full validation still requires ROI projection/extraction and stimulus alignment
+```
+
 ## Immediate Implementation Target
 
 Use CNeuroMod-THINGS first. The first concrete milestone should be a smoke validation fold:
