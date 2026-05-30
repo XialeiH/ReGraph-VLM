@@ -34,6 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Summarize single-reference session-matched cross-subject controls.")
     parser.add_argument("--results-root", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument("--output-prefix", default="single_ref_matched")
     return parser.parse_args()
 
 
@@ -182,11 +183,12 @@ def main() -> None:
         raise SystemExit(f"No metrics.json files found under {args.results_root}")
     summary_rows = summarize(rows)
     test_rows = paired_tests(rows)
-    write_csv(args.output_dir / "single_ref_matched_all_runs.csv", rows)
-    write_csv(args.output_dir / "single_ref_matched_summary.csv", summary_rows)
-    write_csv(args.output_dir / "single_ref_matched_pairwise_tests.csv", test_rows)
-    write_markdown(args.output_dir / "single_ref_matched_summary.md", summary_rows, test_rows, rows)
-    print((args.output_dir / "single_ref_matched_summary.md").read_text(encoding="utf-8"))
+    prefix = args.output_prefix
+    write_csv(args.output_dir / f"{prefix}_all_runs.csv", rows)
+    write_csv(args.output_dir / f"{prefix}_summary.csv", summary_rows)
+    write_csv(args.output_dir / f"{prefix}_pairwise_tests.csv", test_rows)
+    write_markdown(args.output_dir / f"{prefix}_summary.md", summary_rows, test_rows, rows)
+    print((args.output_dir / f"{prefix}_summary.md").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
