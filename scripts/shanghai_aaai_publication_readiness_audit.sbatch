@@ -18,3 +18,8 @@ export PYTHONPATH="$ROOT:${PYTHONPATH:-}"
 python scripts/audit_aaai_publication_readiness.py \
   --final-tables-dir preproc_v0/repetition_familiarity/results/final_tables \
   --external-summary-dir external_validation/summary
+
+python scripts/audit_manuscript_publication_claims.py \
+  --tex reports/neurips_report/may23.tex \
+  --final-tables-dir preproc_v0/repetition_familiarity/results/final_tables \
+  --output-dir preproc_v0/repetition_familiarity/results/final_tables
