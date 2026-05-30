@@ -26,6 +26,7 @@ class ModelSpec:
     graph_encoder: str | None = None
     readout: str | None = None
     lambda_clip: float | None = None
+    lambda_subject_adv: float | None = None
     model: str | None = None
 
 
@@ -33,6 +34,15 @@ class ModelSpec:
 class Comparison:
     setting: str
     path: str
+    model_a: ModelSpec
+    model_b: ModelSpec
+
+
+@dataclass(frozen=True)
+class CrossTableComparison:
+    setting: str
+    path_a: str
+    path_b: str
     model_a: ModelSpec
     model_b: ModelSpec
 
@@ -118,6 +128,49 @@ COMPARISONS = [
     ),
 ]
 
+CROSS_TABLE_COMPARISONS = [
+    CrossTableComparison(
+        setting="component_baselines",
+        path_a="table_allfold_final.csv",
+        path_b="table_phase2_sota_graph_baselines.csv",
+        model_a=ModelSpec("Gated ReGraph/BNT+CLIP", graph_encoder="bnt_token_flat", readout="gated_flat", lambda_clip=2.0),
+        model_b=ModelSpec("MindEye2-style shared ROI mapper", graph_encoder="mindeye2_shared", readout="flat", lambda_clip=2.0),
+    ),
+    CrossTableComparison(
+        setting="component_baselines",
+        path_a="table_allfold_final.csv",
+        path_b="table_phase2_sota_graph_baselines.csv",
+        model_a=ModelSpec("Gated ReGraph/BNT+CLIP", graph_encoder="bnt_token_flat", readout="gated_flat", lambda_clip=2.0),
+        model_b=ModelSpec("UMBRAE-style subject encoder", graph_encoder="umbrae_subject", readout="flat", lambda_clip=2.0),
+    ),
+    CrossTableComparison(
+        setting="component_baselines",
+        path_a="table_allfold_final.csv",
+        path_b="table_phase2_sota_graph_baselines.csv",
+        model_a=ModelSpec("Gated ReGraph/BNT+CLIP", graph_encoder="bnt_token_flat", readout="gated_flat", lambda_clip=2.0),
+        model_b=ModelSpec(
+            "MindLink-style subject-adversarial ROI-MLP",
+            graph_encoder="roi_mlp",
+            readout="flat",
+            lambda_clip=2.0,
+            lambda_subject_adv=0.1,
+        ),
+    ),
+    CrossTableComparison(
+        setting="component_baselines",
+        path_a="table_allfold_final.csv",
+        path_b="table_phase2_sota_graph_baselines.csv",
+        model_a=ModelSpec("Gated ReGraph/BNT+CLIP", graph_encoder="bnt_token_flat", readout="gated_flat", lambda_clip=2.0),
+        model_b=ModelSpec(
+            "MindLink-style subject-adversarial ReGraph",
+            graph_encoder="graph_bnt",
+            readout="gated_flat",
+            lambda_clip=2.0,
+            lambda_subject_adv=0.1,
+        ),
+    ),
+]
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Create standardized publication paired statistical tests.")
@@ -142,6 +195,8 @@ def filter_model(df: pd.DataFrame, spec: ModelSpec, random_df: pd.DataFrame | No
         out = out[out["readout"] == spec.readout]
     if spec.lambda_clip is not None and "lambda_clip" in out.columns:
         out = out[np.isclose(out["lambda_clip"].astype(float), spec.lambda_clip)]
+    if spec.lambda_subject_adv is not None and "lambda_subject_adv" in out.columns:
+        out = out[np.isclose(out["lambda_subject_adv"].astype(float), spec.lambda_subject_adv)]
     return out.copy()
 
 
@@ -257,6 +312,24 @@ def main() -> None:
         df = pd.read_csv(table_path)
         df_a = filter_model(df, comparison.model_a, random_df=random_df)
         df_b = filter_model(df, comparison.model_b, random_df=random_df)
+        all_rows.extend(
+            paired_rows(
+                setting=comparison.setting,
+                model_a_label=comparison.model_a.label,
+                model_b_label=comparison.model_b.label,
+                df_a=df_a,
+                df_b=df_b,
+                n_bootstrap=args.n_bootstrap,
+                rng=rng,
+            )
+        )
+    for comparison in CROSS_TABLE_COMPARISONS:
+        table_a = args.final_tables_dir / comparison.path_a
+        table_b = args.final_tables_dir / comparison.path_b
+        if not table_a.exists() or not table_b.exists():
+            continue
+        df_a = filter_model(pd.read_csv(table_a), comparison.model_a, random_df=random_df)
+        df_b = filter_model(pd.read_csv(table_b), comparison.model_b, random_df=random_df)
         all_rows.extend(
             paired_rows(
                 setting=comparison.setting,
