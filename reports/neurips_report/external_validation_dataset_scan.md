@@ -37,6 +37,8 @@ LAION-fMRI:
   https://laion-fmri.hebartlab.com/
   Relevant notes: five participants, 25,052 unique images, 1,492 shared launch-release images,
   repeated shared images, 7T acquisition, GLMsingle beta estimates, open research access.
+  Data access notes: CC0 fMRI derivatives are in the public AWS S3 bucket `s3://laion-fmri`;
+  raw stimulus images require the dataset DUA flow and should not be fetched without that step.
 
 CNeuroMod-THINGS:
   https://www.nature.com/articles/s41597-026-06591-y
@@ -46,6 +48,17 @@ CNeuroMod-THINGS:
 BOLD5000:
   https://bold5000-dataset.github.io/website/
   Relevant notes: four subjects, 5,254 images, COCO/SUN/ImageNet stimuli, Release 2.0 available.
+```
+
+Shanghai HPC access probe:
+
+```text
+probe date: 2026-05-30
+probe path: /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/laion_fmri_probe
+root listing: https://laion-fmri.s3.amazonaws.com/?list-type=2&max-keys=50
+GLMsingle listing: https://laion-fmri.s3.amazonaws.com/?list-type=2&prefix=derivatives/glmsingle-tedana/sub-01/&max-keys=50
+status: public S3 HTTPS listing works from Shanghai HPC; `aws` CLI was not installed on the login shell.
+large downloads performed: none
 ```
 
 ## Immediate Implementation Target

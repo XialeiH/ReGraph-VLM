@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=rg_single_bnt
-#SBATCH --partition=debug,acc,gpu,chemcourses,aquila,aml,ai
+#SBATCH --partition=debug,acc,gpu
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=24G
 #SBATCH --time=18:00:00
-#SBATCH --array=0-23%12
+#SBATCH --array=0-23%24
 #SBATCH --output=/gpfsnyu/scratch/xh2906/ReGraph-VLM/slurm_logs/%x_%A_%a.out
 #SBATCH --error=/gpfsnyu/scratch/xh2906/ReGraph-VLM/slurm_logs/%x_%A_%a.err
 
