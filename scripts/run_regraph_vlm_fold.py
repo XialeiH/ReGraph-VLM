@@ -284,11 +284,35 @@ def pair_infonce_loss(model: ReGraphVLM, batch: dict[str, torch.Tensor], adjacen
     return 0.5 * (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels))
 
 
+def pair_infonce_from_embeddings(z1: torch.Tensor, z2: torch.Tensor, pos: torch.Tensor, temperature: float) -> torch.Tensor:
+    if int(pos.sum().item()) < 2:
+        return z1.sum() * 0.0
+    logits = (z1[pos] @ z2[pos].T) / temperature
+    labels = torch.arange(logits.shape[0], device=logits.device)
+    return 0.5 * (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels))
+
+
 def clip_alignment_loss(model: ReGraphVLM, batch: dict[str, torch.Tensor], adjacency: torch.Tensor, temperature: float) -> torch.Tensor:
     xb = torch.cat([batch["x1"], batch["x2"]], dim=0)
     ci = torch.cat([batch["clip_1"], batch["clip_2"]], dim=0)
     subjects = torch.cat([batch["subject_1"], batch["subject_2"]], dim=0)
     zb = model.encode_brain(xb, adjacency, subjects)
+    zi = model.encode_image(ci)
+    logits = (zb @ zi.T) / temperature
+    labels = torch.arange(logits.shape[0], device=logits.device)
+    return 0.5 * (F.cross_entropy(logits, labels) + F.cross_entropy(logits.T, labels))
+
+
+def clip_alignment_from_embeddings(
+    model: ReGraphVLM,
+    z1: torch.Tensor,
+    z2: torch.Tensor,
+    clip_1: torch.Tensor,
+    clip_2: torch.Tensor,
+    temperature: float,
+) -> torch.Tensor:
+    zb = torch.cat([z1, z2], dim=0)
+    ci = torch.cat([clip_1, clip_2], dim=0)
     zi = model.encode_image(ci)
     logits = (zb @ zi.T) / temperature
     labels = torch.arange(logits.shape[0], device=logits.device)
@@ -629,13 +653,17 @@ def main() -> None:
             for batch in train_loader:
                 batch = {k: v.to(device) if isinstance(v, torch.Tensor) else v for k, v in batch.items()}
                 opt.zero_grad(set_to_none=True)
-                logits = model.pair_logits(batch["x1"], batch["x2"], adjacency, batch["subject_1"], batch["subject_2"])
+                z1 = model.encode_brain(batch["x1"], adjacency, batch["subject_1"])
+                z2 = model.encode_brain(batch["x2"], adjacency, batch["subject_2"])
+                cos = (z1 * z2).sum(dim=-1)
+                logits = model.log_scale.exp().clamp(max=100.0) * cos + model.bias
                 bce = F.binary_cross_entropy_with_logits(logits, batch["same_image"])
-                nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
+                pos = batch["same_image"] > 0.5
+                nce = pair_infonce_from_embeddings(z1, z2, pos, args.temperature)
                 cross_nce = logits.sum() * 0.0
                 if args.lambda_cross > 0:
-                    cross_nce = pair_infonce_loss(model, batch, adjacency, args.temperature)
-                clip_loss = clip_alignment_loss(model, batch, adjacency, args.clip_temperature)
+                    cross_nce = pair_infonce_from_embeddings(z1, z2, pos, args.temperature)
+                clip_loss = clip_alignment_from_embeddings(model, z1, z2, batch["clip_1"], batch["clip_2"], args.clip_temperature)
                 adv_loss = batch["x1"].sum() * 0.0
                 if args.lambda_subject_adv > 0:
                     subject_labels = (batch["subject_1"].long() - 1).clamp(min=0, max=args.num_subjects - 1)
