@@ -677,7 +677,11 @@ def main() -> None:
                     break
 
     checkpoint = torch.load(output_dir / "checkpoint.pt", map_location=device, weights_only=False)
-    model.load_state_dict(checkpoint["model"])
+    load_result = model.load_state_dict(checkpoint["model"], strict=False)
+    missing = [key for key in load_result.missing_keys if not key.startswith("subject_classifier.")]
+    unexpected = [key for key in load_result.unexpected_keys if not key.startswith("subject_classifier.")]
+    if missing or unexpected:
+        raise RuntimeError(f"Checkpoint state mismatch. missing={missing}, unexpected={unexpected}")
     if args.eval_only:
         val_labels, val_scores, val_loss = collect_pair_scores(model, val_loader, adjacency, device)
         best_val = auroc(val_labels, val_scores)
