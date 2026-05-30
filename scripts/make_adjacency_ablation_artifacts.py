@@ -43,7 +43,7 @@ def latex_table(table: pd.DataFrame) -> str:
     rows = [
         "\\begin{table}[!htbp]",
         "  \\centering",
-        "  \\caption{Adjacency ablation for the main all-fold cross-subject setting. The no-adjacency gated ROI Transformer is statistically indistinguishable from the adjacency-based Gated ReGraph/BNT model, while both outperform ROI-MLP+CLIP.}",
+        "  \\caption{Adjacency ablation for the main all-fold cross-subject setting. The no-adjacency gated ROI Transformer is statistically indistinguishable from the final BNT/ReGraph ROI-token variant, while both outperform ROI-MLP+CLIP.}",
         "  \\label{tab:adjacency_ablation}",
         "  \\resizebox{\\linewidth}{!}{%",
         "  \\begin{tabular}{lccccc}",
