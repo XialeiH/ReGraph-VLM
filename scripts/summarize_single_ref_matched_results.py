@@ -4,10 +4,16 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+
+try:
+    from scipy import stats
+except Exception:  # pragma: no cover - scipy may be unavailable on minimal installs.
+    stats = None
 
 
 MODEL_LABELS = {
@@ -17,6 +23,11 @@ MODEL_LABELS = {
 }
 
 METRICS = ["AUROC", "AUPRC", "R@5", "MRR", "image_R@5", "brain_R@5", "brain_MRR"]
+PAIRWISE_COMPARISONS = [
+    ("Gated ReGraph/BNT+CLIP", "ROI-MLP+CLIP"),
+    ("No-adj gated ROI Transformer+CLIP", "ROI-MLP+CLIP"),
+    ("Gated ReGraph/BNT+CLIP", "No-adj gated ROI Transformer+CLIP"),
+]
 
 
 def parse_args() -> argparse.Namespace:
@@ -80,7 +91,57 @@ def summarize(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
-def write_markdown(path: Path, summary_rows: list[dict[str, Any]], all_rows: list[dict[str, Any]]) -> None:
+def paired_tests(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    by_model = {
+        model: {(row["fold"], row["seed"]): row for row in rows if row["model"] == model}
+        for model in {row["model"] for row in rows}
+    }
+    out: list[dict[str, Any]] = []
+    for model_a, model_b in PAIRWISE_COMPARISONS:
+        common_keys = sorted(set(by_model.get(model_a, {})) & set(by_model.get(model_b, {})))
+        for metric in METRICS:
+            diffs = np.asarray(
+                [float(by_model[model_a][key][metric]) - float(by_model[model_b][key][metric]) for key in common_keys],
+                dtype=float,
+            )
+            diffs = diffs[np.isfinite(diffs)]
+            n = int(diffs.size)
+            mean_diff = float(diffs.mean()) if n else math.nan
+            std_diff = float(diffs.std(ddof=1)) if n > 1 else math.nan
+            sem = float(std_diff / math.sqrt(n)) if n > 1 else math.nan
+            ci95 = float(1.96 * sem) if n > 1 else math.nan
+            if stats is not None and n > 1 and std_diff > 0:
+                p_value = float(stats.ttest_1samp(diffs, popmean=0.0).pvalue)
+            else:
+                p_value = math.nan
+            out.append(
+                {
+                    "comparison": f"{model_a} - {model_b}",
+                    "metric": metric,
+                    "n": n,
+                    "mean_diff": mean_diff,
+                    "std_diff": std_diff,
+                    "ci95_half_width": ci95,
+                    "paired_t_p": p_value,
+                }
+            )
+    return out
+
+
+def format_float(value: Any) -> str:
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            return "nan"
+        return f"{value:.4g}" if abs(value) < 0.001 and value != 0 else f"{value:.4f}"
+    return str(value)
+
+
+def write_markdown(
+    path: Path,
+    summary_rows: list[dict[str, Any]],
+    test_rows: list[dict[str, Any]],
+    all_rows: list[dict[str, Any]],
+) -> None:
     lines = [
         "# Single-reference session-matched cross-subject control",
         "",
@@ -94,6 +155,12 @@ def write_markdown(path: Path, summary_rows: list[dict[str, Any]], all_rows: lis
     lines.append("| " + " | ".join(["---"] * len(columns)) + " |")
     for row in summary_rows:
         lines.append("| " + " | ".join(str(row[column]) for column in columns) + " |")
+    lines.extend(["", "## Paired fold-by-seed differences", ""])
+    test_columns = ["comparison", "metric", "n", "mean_diff", "std_diff", "ci95_half_width", "paired_t_p"]
+    lines.append("| " + " | ".join(test_columns) + " |")
+    lines.append("| " + " | ".join(["---"] * len(test_columns)) + " |")
+    for row in test_rows:
+        lines.append("| " + " | ".join(format_float(row[column]) for column in test_columns) + " |")
     lines.extend(["", "## Per-fold rows", ""])
     fold_columns = ["model", "fold", "seed", *METRICS]
     lines.append("| " + " | ".join(fold_columns) + " |")
@@ -114,9 +181,11 @@ def main() -> None:
     if not rows:
         raise SystemExit(f"No metrics.json files found under {args.results_root}")
     summary_rows = summarize(rows)
+    test_rows = paired_tests(rows)
     write_csv(args.output_dir / "single_ref_matched_all_runs.csv", rows)
     write_csv(args.output_dir / "single_ref_matched_summary.csv", summary_rows)
-    write_markdown(args.output_dir / "single_ref_matched_summary.md", summary_rows, rows)
+    write_csv(args.output_dir / "single_ref_matched_pairwise_tests.csv", test_rows)
+    write_markdown(args.output_dir / "single_ref_matched_summary.md", summary_rows, test_rows, rows)
     print((args.output_dir / "single_ref_matched_summary.md").read_text(encoding="utf-8"))
 
 

@@ -33,7 +33,7 @@
 \maketitle
 
 \begin{abstract}
-Learning brain representations that generalize across subjects is a central challenge for connecting visual neuroscience with machine learning. We study repeated natural-image fMRI responses from the Natural Scenes Dataset using fixed-order HCP-MMP ROI graphs. We propose \textbf{Gated ReGraph-VLM}, a graph--vision model that encodes trial-level ROI response graphs with a fixed-order ROI transformer, applies a gated anatomy-preserving readout, and aligns brain graph embeddings with CLIP image embeddings. The main task is cross-subject same-image brain graph matching: given brain responses from different subjects, the model must identify whether they correspond to the same visual stimulus and retrieve the matching image or brain representation. Across all 8 held-out-subject folds and 3 random seeds, Gated ReGraph-VLM improves over ROI-MLP+CLIP on AUROC, AUPRC, Recall@5, MRR, image retrieval, and brain retrieval. It also remains strongest under hard-negative evaluation and outperforms task-matched decoding component baselines inspired by MindEye2-style shared ROI mapping, UMBRAE-style subject conditioning, and MindLink-style subject-adversarial training.
+Learning brain representations that generalize across subjects is a central challenge for connecting visual neuroscience with machine learning. We study repeated natural-image fMRI responses from the Natural Scenes Dataset using fixed-order HCP-MMP ROI graphs. We propose \textbf{Gated ReGraph-VLM}, a graph--vision model that encodes trial-level ROI response graphs with a fixed-order ROI transformer, applies a gated anatomy-preserving readout, and aligns brain graph embeddings with CLIP image embeddings. The main task is cross-subject same-image brain graph matching: given brain responses from different subjects, the model must identify whether they correspond to the same visual stimulus and retrieve the matching image or brain representation. Across all 8 held-out-subject folds and 3 random seeds, Gated ReGraph-VLM improves over ROI-MLP+CLIP on AUROC, AUPRC, Recall@5, MRR, image retrieval, and brain retrieval. It also remains strongest under hard-negative evaluation, preserves its advantage over ROI-MLP+CLIP in a stricter single-reference session-matched control, and outperforms task-matched decoding component baselines inspired by MindEye2-style shared ROI mapping, UMBRAE-style subject conditioning, and MindLink-style subject-adversarial training.
 
 A rigorous set of new ablations changes the interpretation of the graph component. A no-adjacency gated ROI Transformer is statistically indistinguishable from the adjacency-based Gated ReGraph model, while ROI-order shuffling collapses performance and uniform or random gates substantially reduce performance. Static adjacency perturbations and learned edge-bias follow-ups do not improve over the no-adjacency gated ROI Transformer. These results show that the key inductive bias is not explicit fixed Pearson adjacency, but fixed anatomical ROI-token layout, learned transformer interactions, gated ROI-preserving readout, and image alignment. Held-out-image experiments further show that random image embeddings remain competitive for pair discrimination but collapse on image/brain retrieval, supporting the role of real CLIP semantics for unseen-image retrieval. Interpretability analyses show stable visual-ROI gates and strong functional importance under matched ROI deletion tests, while confound controls suggest that simple gate--repetition correlations should be interpreted cautiously. Together, these results support a fixed-order ROI-token Transformer-VLM framework for subject-invariant natural-image fMRI retrieval.
 \end{abstract}
@@ -111,7 +111,7 @@ For the main all-fold cross-subject setting, each fold holds out one subject for
 \end{table}
 
 \paragraph{Anchor-side session/order matching.}
-We also audited the serialized cross-subject pair tensors for session/order confounds. For every anchor trial, pair construction creates one positive and one negative example using the same anchor brain response. Thus, the positive and negative examples should share anchor subject, anchor image, repeat index, and anchor session. Table~\ref{tab:session_order_pair_qc} confirms this exactly for all train, validation, and test pairs. This is an anchor-side session/order control; the reference side is an average over training-subject responses and therefore does not define a single reference session.
+We also audited the serialized cross-subject pair tensors for session/order confounds. For every anchor trial, pair construction creates one positive and one negative example using the same anchor brain response. Thus, the positive and negative examples should share anchor subject, anchor image, repeat index, and anchor session. Table~\ref{tab:session_order_pair_qc} confirms this exactly for all train, validation, and test pairs. This is an anchor-side session/order control; the reference side is an average over training-subject responses and therefore does not define a single reference session. We therefore add a stricter single-reference session-matched evaluation in Section~\ref{sec:single_ref_control}.
 
 \begin{table}[!htbp]
   \centering
@@ -362,7 +362,7 @@ The gated graph-only model performs reasonably for pair discrimination but has n
 
 \subsection{Adjacency and ROI-token ablations}
 
-The improvement over ROI-MLP+CLIP is real, but new ablations show that it is not driven by explicit fixed adjacency. A no-adjacency gated ROI Transformer is statistically indistinguishable from the adjacency-based Gated ReGraph model. The stronger conclusion is that fixed ROI-token layout, transformer interactions, gated readout, and CLIP alignment drive the gain.
+The improvement over ROI-MLP+CLIP is real, but new ablations show that it does not come from explicit fixed adjacency. A no-adjacency gated ROI Transformer is statistically indistinguishable from the adjacency-based Gated ReGraph model. The stronger conclusion is that fixed ROI-token layout, transformer interactions, gated readout, and CLIP alignment drive the gain.
 
 \begin{table}[!htbp]
   \centering
@@ -441,6 +441,52 @@ Static adjacency perturbations further support the same interpretation. Removing
     \bottomrule
   \end{tabular}
 \end{table}
+
+\subsection{Single-reference session-matched control}
+\label{sec:single_ref_control}
+
+The main cross-subject tensors compare each held-out-subject anchor response against a training-subject reference graph averaged across available training subjects. This improves reference stability, but it leaves open whether the result depends on averaging away reference-side session structure. To test this, we built a stricter evaluation set in which each positive and matched negative share the same anchor trial, the same reference subject, the same repeat index, and the exact same reference session. We evaluated the final 3-seed checkpoints on this stricter dataset without retraining, so this is a robustness check rather than a replacement for the main training protocol.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Single-reference session-matched cross-subject control. Values are mean $\pm$ std over 8 folds $\times$ 3 seeds ($n=24$) using existing checkpoints evaluated on stricter single-reference pairs.}
+  \label{tab:single_ref_matched}
+  \scriptsize
+  \setlength{\tabcolsep}{2.7pt}
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{lccccccc}
+    \toprule
+    Model & AUROC & AUPRC & R@5 & MRR & Img R@5 & Brain R@5 & Brain MRR \\
+    \midrule
+    ROI-MLP+CLIP
+    & $0.7731{\scriptstyle\pm0.0460}$
+    & $0.7450{\scriptstyle\pm0.0472}$
+    & $0.0535{\scriptstyle\pm0.0196}$
+    & $0.0459{\scriptstyle\pm0.0138}$
+    & $0.0729{\scriptstyle\pm0.0280}$
+    & $0.0837{\scriptstyle\pm0.0291}$
+    & $0.0668{\scriptstyle\pm0.0193}$ \\
+    No-adj gated ROI Transformer+CLIP
+    & $0.7814{\scriptstyle\pm0.0425}$
+    & $0.7584{\scriptstyle\pm0.0435}$
+    & $\mathbf{0.0586}{\scriptstyle\pm0.0197}$
+    & $0.0494{\scriptstyle\pm0.0139}$
+    & $0.0815{\scriptstyle\pm0.0319}$
+    & $0.0965{\scriptstyle\pm0.0320}$
+    & $0.0756{\scriptstyle\pm0.0208}$ \\
+    Gated ReGraph/BNT+CLIP
+    & $\mathbf{0.7828}{\scriptstyle\pm0.0452}$
+    & $\mathbf{0.7606}{\scriptstyle\pm0.0461}$
+    & $0.0577{\scriptstyle\pm0.0191}$
+    & $\mathbf{0.0497}{\scriptstyle\pm0.0138}$
+    & $\mathbf{0.0847}{\scriptstyle\pm0.0318}$
+    & $\mathbf{0.0996}{\scriptstyle\pm0.0310}$
+    & $\mathbf{0.0773}{\scriptstyle\pm0.0207}$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The stricter control preserves the main conclusion but lowers absolute scores, as expected when replacing an averaged reference with a noisier single-subject trial. Paired fold$\times$seed tests still favor Gated ReGraph/BNT+CLIP over ROI-MLP+CLIP for AUROC ($+0.0097$, $p=1.04\times10^{-4}$), AUPRC ($+0.0155$, $p=1.97\times10^{-6}$), and brain R@5 ($+0.0159$, $p=2.98\times10^{-7}$). The adjacency-based and no-adjacency gated models remain statistically tied in this stricter setting, including AUROC ($p=0.529$) and brain R@5 ($p=0.195$), again supporting the fixed ROI-token/gated-readout interpretation rather than an explicit fixed-adjacency claim.
 
 \subsection{Held-out-image semantic retrieval}
 
@@ -740,7 +786,7 @@ Exploratory external smoke tests on public visual-ROI summaries from CNeuroMod-T
 
 A second contribution is interpretability. The gated readout provides a model-native ROI importance signal. The top gated ROIs are concentrated in visual cortex, including early/intermediate visual areas, lateral occipital regions, and ventral-stream regions such as V8, V4, LO1/LO2, PIT, VVC, FFC, and VMV areas. The gate values are stable across folds and seeds, and deletion tests show that removing highly gated ROIs damages model performance much more than removing random or property-matched control ROIs. At the same time, confound-controlled analysis shows that the raw gate--repetition correlation is largely explained by ROI reliability and response properties. Therefore, gates should be interpreted as model-level evidence for reliable, visually informative ROIs, not as causal proof of repetition-specific neural mechanisms.
 
-This work has several limitations. First, the analysis uses atlas-level ROI summaries rather than full voxel patterns, so fine-grained within-ROI information is compressed. Second, although the cross-subject results are strong, the main dataset contains only eight subjects. Our external visual-ROI smoke tests are useful feasibility checks, but full external validation on independent trial-wise atlas-ROI beta maps remains needed for broader generalization. Third, repeat-related effects in NSD can reflect adaptation, familiarity, memory, attention, and session dynamics; our model identifies useful response structure but does not isolate these mechanisms causally. Fourth, the final cross-subject pair tensors are exactly anchor-side session/order matched, but the reference graph is an average over training-subject responses, so a stricter future control should also construct single-reference-session negatives where possible. Fifth, explicit fixed adjacency does not explain the main gain, so future graph-specific work should test stronger learned edge mechanisms or biologically grounded module priors. Finally, although real CLIP embeddings improve held-out image retrieval, the role of semantic structure versus auxiliary image anchoring should be further tested using additional VLMs, controlled prompt sets, and semantically matched hard negatives.
+This work has several limitations. First, the analysis uses atlas-level ROI summaries rather than full voxel patterns, so fine-grained within-ROI information is compressed. Second, although the cross-subject results are strong, the main dataset contains only eight subjects. Our external visual-ROI smoke tests are useful feasibility checks, but full external validation on independent trial-wise atlas-ROI beta maps remains needed for broader generalization. Third, repeat-related effects in NSD can reflect adaptation, familiarity, memory, attention, and session dynamics; our model identifies useful response structure but does not isolate these mechanisms causally. Fourth, the final cross-subject pair tensors are exactly anchor-side session/order matched, and an eval-only single-reference session-matched control preserves the main ranking, but a fully retrained single-reference protocol would be needed to make it the primary benchmark. Fifth, explicit fixed adjacency does not explain the main gain, so future graph-specific work should test stronger learned edge mechanisms or biologically grounded module priors. Finally, although real CLIP embeddings improve held-out image retrieval, the role of semantic structure versus auxiliary image anchoring should be further tested using additional VLMs, controlled prompt sets, and semantically matched hard negatives.
 
 Overall, the results support a stronger conclusion than simple fMRI graph classification. Gated ReGraph-VLM learns a subject-invariant, image-aligned brain graph representation that improves cross-subject retrieval and produces interpretable ROI-level hypotheses. The project therefore contributes both a graph-VLM method for visual fMRI and a neuroscience framework for studying repeat-stable natural-image representations across subjects.
 
