@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import re
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -179,6 +180,41 @@ def audit_math_dollar_balance(text: str) -> AuditRow:
     return AuditRow("TeX math dollar balance", "ready", f"single={single_dollars}, double={double_dollars}")
 
 
+def audit_tracked_figures(tex_path: Path, figure_paths: list[str]) -> AuditRow:
+    root_cmd = ["git", "-C", str(tex_path.parent), "rev-parse", "--show-toplevel"]
+    root_run = subprocess.run(root_cmd, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+    if root_run.returncode != 0:
+        return AuditRow("figure files tracked by Git", "ready", "git metadata unavailable; skipped outside Git checkout")
+
+    git_root = Path(root_run.stdout.strip())
+    tracked_run = subprocess.run(
+        ["git", "-C", str(git_root), "ls-files"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if tracked_run.returncode != 0:
+        return AuditRow("figure files tracked by Git", "incomplete", tracked_run.stderr.strip() or "git ls-files failed")
+
+    tracked = set(tracked_run.stdout.splitlines())
+    missing: list[str] = []
+    for raw_path in figure_paths:
+        absolute = (tex_path.parent / raw_path).resolve()
+        try:
+            relative = absolute.relative_to(git_root.resolve()).as_posix()
+        except ValueError:
+            missing.append(raw_path)
+            continue
+        if relative not in tracked:
+            missing.append(relative)
+    return AuditRow(
+        "figure files tracked by Git",
+        status(not missing),
+        f"{len(figure_paths)} checked, all tracked" if not missing else ", ".join(missing),
+    )
+
+
 def audit_environment_nesting(text: str) -> AuditRow:
     env_pattern = "|".join(re.escape(env) for env in LATEX_ENVIRONMENTS)
     token_re = re.compile(rf"\\(begin|end)\{{({env_pattern})\}}")
@@ -299,6 +335,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
             f"{len(figure_paths)} checked, all present" if not missing_figures else ", ".join(missing_figures),
         )
     )
+    rows.append(audit_tracked_figures(tex_path, figure_paths))
 
     rows.append(audit_group_braces(text))
     rows.append(audit_math_dollar_balance(text))

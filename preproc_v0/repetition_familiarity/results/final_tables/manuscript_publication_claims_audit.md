@@ -2,7 +2,7 @@
 
 This audit checks manuscript/result consistency for the publication-facing ReGraph-VLM story.
 
-Status counts: {'ready': 47}
+Status counts: {'ready': 48}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -15,6 +15,7 @@ Status counts: {'ready': 47}
 | required publication labels | ready | all present |
 | citation bibliography coverage | ready | 18 citation keys covered by 1 bibliography file(s) |
 | figure file availability | ready | 5 checked, all present |
+| figure files tracked by Git | ready | 5 checked, all tracked |
 | TeX group brace balance | ready | all unescaped group braces balanced |
 | TeX math dollar balance | ready | single=766, double=0 |
 | table environment balance | ready | begin=21, end=21 |
