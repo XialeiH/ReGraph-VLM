@@ -8,6 +8,8 @@ unresolved refs,ready,none
 required publication labels,ready,all present
 citation bibliography coverage,ready,18 citation keys covered by 1 bibliography file(s)
 figure file availability,ready,"5 checked, all present"
+TeX group brace balance,ready,all unescaped group braces balanced
+TeX math dollar balance,ready,"single=766, double=0"
 table environment balance,ready,"begin=21, end=21"
 figure environment balance,ready,"begin=5, end=5"
 equation environment balance,ready,"begin=6, end=6"

@@ -119,6 +119,66 @@ def count_env(text: str, env: str) -> tuple[int, int]:
     return begin, end
 
 
+def is_escaped(text: str, index: int) -> bool:
+    backslashes = 0
+    pos = index - 1
+    while pos >= 0 and text[pos] == "\\":
+        backslashes += 1
+        pos -= 1
+    return backslashes % 2 == 1
+
+
+def strip_latex_comments(text: str) -> str:
+    stripped_lines: list[str] = []
+    for line in text.splitlines():
+        for index, char in enumerate(line):
+            if char == "%" and not is_escaped(line, index):
+                line = line[:index]
+                break
+        stripped_lines.append(line)
+    return "\n".join(stripped_lines)
+
+
+def audit_group_braces(text: str) -> AuditRow:
+    clean_text = strip_latex_comments(text)
+    stack: list[int] = []
+    for index, char in enumerate(clean_text):
+        if char not in "{}" or is_escaped(clean_text, index):
+            continue
+        line = clean_text.count("\n", 0, index) + 1
+        if char == "{":
+            stack.append(line)
+            continue
+        if not stack:
+            return AuditRow("TeX group brace balance", "incomplete", f"line {line}: unmatched closing brace")
+        stack.pop()
+    if stack:
+        return AuditRow("TeX group brace balance", "incomplete", f"line {stack[-1]}: unmatched opening brace")
+    return AuditRow("TeX group brace balance", "ready", "all unescaped group braces balanced")
+
+
+def audit_math_dollar_balance(text: str) -> AuditRow:
+    clean_text = strip_latex_comments(text)
+    single_dollars = 0
+    double_dollars = 0
+    index = 0
+    while index < len(clean_text):
+        if clean_text[index] != "$" or is_escaped(clean_text, index):
+            index += 1
+            continue
+        if index + 1 < len(clean_text) and clean_text[index + 1] == "$":
+            double_dollars += 1
+            index += 2
+            continue
+        single_dollars += 1
+        index += 1
+    if single_dollars % 2 != 0:
+        return AuditRow("TeX math dollar balance", "incomplete", f"odd number of unescaped single-dollar delimiters: {single_dollars}")
+    if double_dollars % 2 != 0:
+        return AuditRow("TeX math dollar balance", "incomplete", f"odd number of unescaped double-dollar delimiters: {double_dollars}")
+    return AuditRow("TeX math dollar balance", "ready", f"single={single_dollars}, double={double_dollars}")
+
+
 def audit_environment_nesting(text: str) -> AuditRow:
     env_pattern = "|".join(re.escape(env) for env in LATEX_ENVIRONMENTS)
     token_re = re.compile(rf"\\(begin|end)\{{({env_pattern})\}}")
@@ -240,6 +300,8 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
         )
     )
 
+    rows.append(audit_group_braces(text))
+    rows.append(audit_math_dollar_balance(text))
     for env in LATEX_ENVIRONMENTS:
         begin, end = count_env(text, env)
         rows.append(AuditRow(f"{env} environment balance", status(begin == end), f"begin={begin}, end={end}"))
