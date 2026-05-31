@@ -6,6 +6,7 @@ import csv
 import shutil
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -72,30 +73,33 @@ def compile_tex(root: Path, tex: Path, tool: str) -> Step:
     tex_dir = tex_path.parent
     tex_name = tex_path.name
     stem = tex_path.stem
-    if tool == "latexmk":
-        cmd = ["latexmk", "-pdf", "-interaction=nonstopmode", tex_name]
-        completed = run_command(tex_dir, cmd)
-    elif tool == "pdflatex":
-        commands = [
-            ["pdflatex", "-interaction=nonstopmode", tex_name],
-            ["bibtex", stem],
-            ["pdflatex", "-interaction=nonstopmode", tex_name],
-            ["pdflatex", "-interaction=nonstopmode", tex_name],
-        ]
-        output = []
-        code = 0
-        for cmd in commands:
-            completed = run_command(tex_dir, cmd)
-            output.append(completed.stdout)
-            code = completed.returncode
-            if code != 0:
-                break
-        completed = subprocess.CompletedProcess(commands[-1], code, "\n".join(output), "")
-    else:
-        completed = run_command(tex_dir, ["tectonic", tex_name])
-    if completed.returncode == 0:
-        return Step("TeX compile", "ready", f"{tool} produced {tex_path.with_suffix('.pdf').name}")
-    return Step("TeX compile", "incomplete", first_lines(completed.stdout, n=8))
+    with tempfile.TemporaryDirectory(prefix="regraph_tex_build_") as tmp:
+        build_dir = Path(tmp) / tex_dir.name
+        shutil.copytree(tex_dir, build_dir)
+        if tool == "latexmk":
+            cmd = ["latexmk", "-pdf", "-interaction=nonstopmode", tex_name]
+            completed = run_command(build_dir, cmd)
+        elif tool == "pdflatex":
+            commands = [
+                ["pdflatex", "-interaction=nonstopmode", tex_name],
+                ["bibtex", stem],
+                ["pdflatex", "-interaction=nonstopmode", tex_name],
+                ["pdflatex", "-interaction=nonstopmode", tex_name],
+            ]
+            output = []
+            code = 0
+            for cmd in commands:
+                completed = run_command(build_dir, cmd)
+                output.append(completed.stdout)
+                code = completed.returncode
+                if code != 0:
+                    break
+            completed = subprocess.CompletedProcess(commands[-1], code, "\n".join(output), "")
+        else:
+            completed = run_command(build_dir, ["tectonic", tex_name])
+        if completed.returncode == 0:
+            return Step("TeX compile", "ready", f"{tool} produced {tex_path.with_suffix('.pdf').name} in isolated build dir")
+        return Step("TeX compile", "incomplete", first_lines(completed.stdout, n=8))
 
 
 def write_summary(rows: list[Step]) -> str:
