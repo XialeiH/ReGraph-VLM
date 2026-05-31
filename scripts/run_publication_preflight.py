@@ -189,7 +189,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 8))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 9))
 
     rows.append(
         require_ok(
@@ -208,6 +208,28 @@ def main() -> int:
         )
     )
     rows.append(audit_status(root / final / "manuscript_table_values_audit.csv", 10))
+
+    rows.append(
+        require_ok(
+            "manuscript statistical-claims audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_manuscript_stat_claims.py",
+                    "--tex",
+                    str(tex),
+                    "--paired-stats",
+                    str(final / "publication_paired_stats.csv"),
+                    "--laion-pairwise",
+                    str(external / "laion_fmri_visual_roi_pairwise_tests.csv"),
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "manuscript_stat_claims_audit.csv", 22))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

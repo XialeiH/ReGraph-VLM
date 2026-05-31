@@ -1,0 +1,23 @@
+item,status,evidence
+main all-fold AUROC,ready,"matched +0.0095, p=1.77\times10^{-5}"
+main all-fold AUPRC,ready,"matched +0.0168, p=4.66\times10^{-8}"
+main all-fold R@5,ready,"matched +0.0117, p=2.85\times10^{-5}"
+main all-fold brain R@5,ready,"matched +0.0159, p=2.98\times10^{-7}"
+component baseline AUROC,ready,"matched +0.0124, p=7.77\times10^{-4}"
+component baseline R@5,ready,"matched +0.0125, p=9.39\times10^{-4}"
+component baseline brain R@5,ready,"matched +0.0160, p=6.91\times10^{-5}"
+single-reference AUROC,ready,"matched +0.0097, p=1.04\times10^{-4}"
+single-reference AUPRC,ready,"matched +0.0155, p=1.97\times10^{-6}"
+single-reference brain R@5,ready,"matched +0.0159, p=2.98\times10^{-7}"
+single-reference no-adj AUROC p,ready,matched p=0.529
+single-reference no-adj brain R@5 p,ready,matched p=0.195
+single-reference retrained AUROC,ready,"matched +0.0113, p=0.0023"
+single-reference retrained AUPRC,ready,"matched +0.0188, p=1.72\times10^{-5}"
+single-reference retrained R@5,ready,"matched +0.0088, p=3.30\times10^{-5}"
+single-reference retrained image R@5,ready,"matched +0.0072, p=0.0106"
+single-reference retrained brain R@5,ready,"matched +0.0098, p=1.66\times10^{-4}"
+hard-negative AUROC CI,ready,"matched +0.0064, [0.0022,0.0104]"
+hard-negative R@5 CI,ready,"matched +0.0102, [0.0057,0.0145]"
+hard-negative brain R@5 CI,ready,"matched +0.0084, [0.0038,0.0132]"
+LAION R@5 trend,ready,"matched +0.0093, p=0.0575"
+LAION nonsignificant AUROC/AUPRC wording,ready,AUROC/AUPRC p>0.05 and wording present
