@@ -18,8 +18,9 @@ verifies publication artifact provenance, runs the full manuscript/result audit,
 checks README/BUILD consistency, verifies key manuscript table values and
 statistical claims against committed CSV artifacts, runs the manuscript-only
 audit, and reports whether a local TeX compiler is available. GitHub Actions
-installs a TeX distribution and runs the compile-required preflight on pushes to
-`main` and pull requests. CI also requires a clean Git working tree after
+installs a TeX distribution with recommended/extra LaTeX packages and runs the
+compile-required preflight on pushes to `main` and pull requests. CI also
+requires a clean Git working tree after
 preflight, so tracked-file drift and newly generated untracked artifacts both
 fail the build.
 

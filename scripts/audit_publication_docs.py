@@ -136,6 +136,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "workflow installs TeX and runs compile-required preflight",
         ),
         AuditRow(
+            "CI installs recommended TeX packages",
+            ready("texlive-latex-recommended" in workflow and "texlive-latex-extra" in workflow),
+            "workflow includes recommended and extra LaTeX package bundles",
+        ),
+        AuditRow(
             "CI verifies generated artifacts",
             ready("git status --porcelain" in workflow),
             "workflow fails on tracked or untracked generated artifact drift",
