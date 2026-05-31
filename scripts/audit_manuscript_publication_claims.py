@@ -92,6 +92,8 @@ OVERCLAIM_PATTERNS = [
     r"explicit fixed adjacency improves",
 ]
 
+LATEX_ENVIRONMENTS = ["table", "figure", "equation", "tabular", "tabularx"]
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit manuscript/result consistency for the AAAI-style ReGraph-VLM submission.")
@@ -115,6 +117,31 @@ def count_env(text: str, env: str) -> tuple[int, int]:
     begin = len(re.findall(rf"\\begin\{{{re.escape(env)}\}}", text))
     end = len(re.findall(rf"\\end\{{{re.escape(env)}\}}", text))
     return begin, end
+
+
+def audit_environment_nesting(text: str) -> AuditRow:
+    env_pattern = "|".join(re.escape(env) for env in LATEX_ENVIRONMENTS)
+    token_re = re.compile(rf"\\(begin|end)\{{({env_pattern})\}}")
+    stack: list[tuple[str, int]] = []
+    for match in token_re.finditer(text):
+        kind, env = match.group(1), match.group(2)
+        line = text.count("\n", 0, match.start()) + 1
+        if kind == "begin":
+            stack.append((env, line))
+            continue
+        if not stack:
+            return AuditRow("LaTeX environment nesting", "incomplete", f"line {line}: unmatched \\end{{{env}}}")
+        open_env, open_line = stack.pop()
+        if open_env != env:
+            return AuditRow(
+                "LaTeX environment nesting",
+                "incomplete",
+                f"line {line}: \\end{{{env}}} closes \\begin{{{open_env}}} from line {open_line}",
+            )
+    if stack:
+        open_env, open_line = stack[-1]
+        return AuditRow("LaTeX environment nesting", "incomplete", f"line {open_line}: unclosed \\begin{{{open_env}}}")
+    return AuditRow("LaTeX environment nesting", "ready", f"{len(list(token_re.finditer(text)))} begin/end tokens nested correctly")
 
 
 def read_csv(path: Path) -> pd.DataFrame:
@@ -213,9 +240,10 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
         )
     )
 
-    for env in ["table", "figure", "equation", "tabular", "tabularx"]:
+    for env in LATEX_ENVIRONMENTS:
         begin, end = count_env(text, env)
         rows.append(AuditRow(f"{env} environment balance", status(begin == end), f"begin={begin}, end={end}"))
+    rows.append(audit_environment_nesting(text))
 
     return rows
 
