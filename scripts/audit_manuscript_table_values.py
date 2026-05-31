@@ -45,6 +45,11 @@ TABLE_SPECS = [
     TableSpec("tab:fold_difficulty", "fold_difficulty_qc.csv", (), ("test_seq", "repeat_corr", "raw_AUROC", "raw_gap", "model_AUROC", "brain_R@5")),
 ]
 
+MANUAL_TABLE_LABELS = {
+    "tab:implementation_details": "architecture/protocol table without numeric result artifact",
+    "tab:top_gated_roi_names": "manual ROI-name interpretation table in neuroscience section",
+}
+
 MODEL_ALIASES = {
     ("tab:cross_subject_main", "Gated ReGraph/BNT+CLIP"): "Gated ReGraph+CLIP",
     ("tab:heldout", "Gated ReGraph/BNT+CLIP"): "Gated ReGraph+CLIP",
@@ -85,6 +90,24 @@ def find_table_block(tex: str, label: str) -> str:
     if start < 0 or end < 0:
         return ""
     return tex[start : end + len("\\end{table}")]
+
+
+def manuscript_table_labels(tex: str) -> set[str]:
+    return set(re.findall(r"\\label\{(tab:[^}]+)\}", tex))
+
+
+def audit_table_coverage(tex: str) -> AuditRow:
+    manuscript_labels = manuscript_table_labels(tex)
+    audited_labels = {spec.label for spec in TABLE_SPECS}
+    classified_labels = audited_labels | set(MANUAL_TABLE_LABELS)
+    missing = sorted(manuscript_labels - classified_labels)
+    stale = sorted(classified_labels - manuscript_labels)
+    if missing:
+        return AuditRow("table audit coverage", "incomplete", "unclassified manuscript tables: " + ", ".join(missing))
+    if stale:
+        return AuditRow("table audit coverage", "incomplete", "classified labels not in manuscript: " + ", ".join(stale))
+    evidence = f"{len(audited_labels)} artifact-backed tables, {len(MANUAL_TABLE_LABELS)} manual tables classified"
+    return AuditRow("table audit coverage", "ready", evidence)
 
 
 def tex_number(value: str) -> str:
@@ -223,7 +246,7 @@ def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) ->
 def main() -> int:
     args = parse_args()
     tex = args.tex.read_text(encoding="utf-8", errors="replace")
-    rows = [audit_spec(tex, args.final_tables_dir, spec) for spec in TABLE_SPECS]
+    rows = [audit_table_coverage(tex), *[audit_spec(tex, args.final_tables_dir, spec) for spec in TABLE_SPECS]]
     write_outputs(args.final_tables_dir, args.output_prefix, rows)
     return 0 if all(row.status == "ready" for row in rows) else 1
 

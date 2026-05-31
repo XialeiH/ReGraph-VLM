@@ -1,9 +1,10 @@
 # Manuscript Table Values Audit
 
-Status counts: {'ready': 19}
+Status counts: {'ready': 20}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
+| table audit coverage | ready | 19 artifact-backed tables, 2 manual tables classified |
 | tab:split_accounting | ready | 56 numeric fragments match rows in split_accounting.csv |
 | tab:session_order_pair_qc | ready | 24 numeric fragments match rows in session_order_pair_qc.csv |
 | tab:within_subject | ready | 17 numeric fragments match rows in table_within_subject.csv |
