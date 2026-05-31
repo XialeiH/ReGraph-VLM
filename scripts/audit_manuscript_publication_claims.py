@@ -213,7 +213,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
         )
     )
 
-    for env in ["table", "figure", "equation"]:
+    for env in ["table", "figure", "equation", "tabular", "tabularx"]:
         begin, end = count_env(text, env)
         rows.append(AuditRow(f"{env} environment balance", status(begin == end), f"begin={begin}, end={end}"))
 

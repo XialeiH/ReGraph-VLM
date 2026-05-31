@@ -2,7 +2,7 @@
 
 This audit checks manuscript/result consistency for the publication-facing ReGraph-VLM story.
 
-Status counts: {'ready': 42}
+Status counts: {'ready': 44}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -18,6 +18,8 @@ Status counts: {'ready': 42}
 | table environment balance | ready | begin=21, end=21 |
 | figure environment balance | ready | begin=5, end=5 |
 | equation environment balance | ready | begin=6, end=6 |
+| tabular environment balance | ready | begin=19, end=19 |
+| tabularx environment balance | ready | begin=2, end=2 |
 | result file: split_accounting.csv | ready | 8 rows, support n=8, expected at least 8 |
 | result file: session_order_pair_qc.csv | ready | 4 rows, support n=4, expected at least 1 |
 | result file: table_within_subject.csv | ready | 6 rows, support n=6, expected at least 1 |
