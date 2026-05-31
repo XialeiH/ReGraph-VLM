@@ -101,6 +101,7 @@ def check_text_file(item: str, path: Path, required_text: str | None = None) -> 
 def write_outputs(out_prefix: Path, rows: list[CheckResult]) -> None:
     csv_path = out_prefix.with_suffix(".csv")
     md_path = out_prefix.with_suffix(".md")
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=["item", "status", "evidence"])
         writer.writeheader()
