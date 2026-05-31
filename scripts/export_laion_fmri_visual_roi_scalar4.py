@@ -20,6 +20,7 @@ BASE_URL = "https://laion-fmri.s3.amazonaws.com"
 XML_NS = {"s3": "http://s3.amazonaws.com/doc/2006-03-01/"}
 FEATURE_NAMES = ["mean_beta", "std_beta", "q90_beta", "positive_fraction"]
 DEFAULT_SUBJECTS = ["sub-01", "sub-03", "sub-05", "sub-06", "sub-07"]
+DEFAULT_ROI_CATEGORIES = ["laion", "retinotopy", "face", "object", "place", "body", "motion", "character"]
 ROI_RE = re.compile(r"/(?P<category>[^/]+)/[^/]+_space-T1w_res-1pt8_label-(?P<label>.+)_mask\.nii\.gz$")
 
 
@@ -36,6 +37,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-repeats", type=int, default=3)
     parser.add_argument("--max-labels", type=int, default=200)
     parser.add_argument("--max-rois", type=int, default=64)
+    parser.add_argument("--roi-categories", nargs="+", default=DEFAULT_ROI_CATEGORIES)
     parser.add_argument("--top-quantile", type=float, default=0.90)
     parser.add_argument("--keep-downloads", action="store_true")
     parser.add_argument("--download-only", action="store_true")
@@ -87,11 +89,6 @@ def download(key: str, path: Path, local_only: bool = False) -> None:
 
 def beta_key(subject: str, session: str) -> str:
     name = f"{subject}_{session}_task-images_space-T1w_stat-effect_desc-SingletrialBetas_statmap.nii.gz"
-    return f"derivatives/glmsingle-tedana/{subject}/{session}/func/{name}"
-
-
-def trials_key(subject: str, session: str) -> str:
-    name = f"{subject}_{session}_task-images_desc-SingletrialBetas_trials.tsv"
     return f"derivatives/glmsingle-tedana/{subject}/{session}/func/{name}"
 
 
@@ -150,7 +147,7 @@ def select_labels(
     return common, selected
 
 
-def common_roi_keys(subjects: list[str], max_rois: int) -> list[tuple[str, str, dict[str, str]]]:
+def common_roi_keys(subjects: list[str], max_rois: int, roi_categories: list[str]) -> list[tuple[str, str, dict[str, str]]]:
     subject_maps: dict[str, dict[tuple[str, str], str]] = {}
     for subject in subjects:
         mapping: dict[tuple[str, str], str] = {}
@@ -165,6 +162,12 @@ def common_roi_keys(subjects: list[str], max_rois: int) -> list[tuple[str, str, 
     common = sorted(set.intersection(*(set(mapping) for mapping in subject_maps.values())))
     if not common:
         raise RuntimeError("No common LAION-fMRI T1w 1.8mm ROI masks found across subjects.")
+    allowed = {category for category in roi_categories}
+    common = [item for item in common if item[0] in allowed]
+    if not common:
+        raise RuntimeError(f"No common ROI masks left after filtering to categories: {sorted(allowed)}")
+    priority = {category: idx for idx, category in enumerate(roi_categories)}
+    common = sorted(common, key=lambda item: (priority.get(item[0], len(priority)), item[1]))
     if max_rois > 0:
         common = common[:max_rois]
     return [(category, label, {subject: subject_maps[subject][(category, label)] for subject in subjects}) for category, label in common]
@@ -348,6 +351,7 @@ def main() -> None:
 
     if args.selection_manifest:
         manifest = json.loads(args.selection_manifest.read_text(encoding="utf-8"))
+        args.subjects = [str(subject) for subject in manifest["subjects"]]
         labels = [str(label) for label in manifest["labels"]]
         selected = {
             str(subject): {
@@ -362,7 +366,7 @@ def main() -> None:
         labels, selected = select_labels(rows_by_subject, args.subjects, args.min_repeats, args.max_labels)
         if not labels:
             raise RuntimeError("No labels satisfy the requested LAION-fMRI repeat/session constraints.")
-        roi_keys = common_roi_keys(args.subjects, args.max_rois)
+        roi_keys = common_roi_keys(args.subjects, args.max_rois, args.roi_categories)
 
     if args.download_only:
         downloads = download_selection_files(args.subjects, selected, labels, roi_keys, args.root)
@@ -372,6 +376,7 @@ def main() -> None:
             "min_repeats": args.min_repeats,
             "n_labels": len(labels),
             "labels": labels,
+            "roi_categories": args.roi_categories,
             "selected": selected,
             "roi_keys": [
                 {"category": category, "label": label, "keys": key_by_subject}

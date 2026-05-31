@@ -119,7 +119,7 @@ Use LAION-fMRI first for the next paper-level external validation because it has
 subjects: sub-01, sub-03, sub-05, sub-06, sub-07
 sessions: ses-01 through ses-10
 shared labels: first 200 labels with at least 3 repeats in every subject within the selected sessions
-ROI source: public T1w 1.8mm LAION/visual category masks
+ROI source: public T1w 1.8mm ROI masks, prioritizing LAION-defined, retinotopy, and visual category masks
 feature format: scalar4, padded to the 180-token interface
 models: ROI-MLP and gated ROI Transformer
 training: all 10 subject pairs, seeds 11/22/33
