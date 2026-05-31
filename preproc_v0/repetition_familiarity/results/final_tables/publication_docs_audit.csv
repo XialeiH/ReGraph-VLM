@@ -1,11 +1,15 @@
 item,status,evidence
 README exists,ready,README.md
 BUILD doc exists,ready,reports/neurips_report/BUILD.md
+publication preflight workflow exists,ready,.github/workflows/publication-preflight.yml
 active report documented,ready,README and BUILD point to may30.tex
 one-command preflight documented,ready,preflight command present in README and BUILD
 compile path documented,ready,--compile command present in README and BUILD
 statistical-claims audit documented,ready,README and BUILD mention statistical-claims verification
 artifact-provenance audit documented,ready,README and BUILD mention artifact-provenance verification
+CI runs publication preflight,ready,workflow runs preflight command
+CI verifies generated artifacts,ready,workflow fails on generated artifact drift
+CI covers main and pull requests,ready,workflow triggers on main pushes and pull requests
 stale may23 references,ready,none found
 documentation deanonymizing strings,ready,none found
 README main-result table values,ready,all values match table_allfold_final.csv

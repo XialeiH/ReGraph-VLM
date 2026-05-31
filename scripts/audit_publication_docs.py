@@ -34,6 +34,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit README/BUILD publication documentation consistency.")
     parser.add_argument("--readme", type=Path, default=Path("README.md"))
     parser.add_argument("--build-doc", type=Path, default=Path("reports/neurips_report/BUILD.md"))
+    parser.add_argument("--workflow", type=Path, default=Path(".github/workflows/publication-preflight.yml"))
     parser.add_argument(
         "--allfold-table",
         type=Path,
@@ -90,13 +91,15 @@ def audit_readme_values(readme: str, table_rows: list[dict[str, str]]) -> AuditR
     )
 
 
-def audit_docs(readme_path: Path, build_path: Path, allfold_path: Path) -> list[AuditRow]:
+def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold_path: Path) -> list[AuditRow]:
     readme = read_text(readme_path)
     build = read_text(build_path)
+    workflow = read_text(workflow_path)
     combined = readme + "\n" + build
     rows = [
         AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
         AuditRow("BUILD doc exists", "ready" if build else "missing", str(build_path)),
+        AuditRow("publication preflight workflow exists", "ready" if workflow else "missing", str(workflow_path)),
         AuditRow(
             "active report documented",
             ready("reports/neurips_report/may30.tex" in readme and "may30.tex" in build),
@@ -121,6 +124,21 @@ def audit_docs(readme_path: Path, build_path: Path, allfold_path: Path) -> list[
             "artifact-provenance audit documented",
             ready("artifact provenance" in readme and "artifact provenance" in build),
             "README and BUILD mention artifact-provenance verification",
+        ),
+        AuditRow(
+            "CI runs publication preflight",
+            ready("python scripts/run_publication_preflight.py" in workflow),
+            "workflow runs preflight command",
+        ),
+        AuditRow(
+            "CI verifies generated artifacts",
+            ready("git diff --exit-code" in workflow),
+            "workflow fails on generated artifact drift",
+        ),
+        AuditRow(
+            "CI covers main and pull requests",
+            ready("branches:" in workflow and "- main" in workflow and "pull_request:" in workflow),
+            "workflow triggers on main pushes and pull requests",
         ),
         AuditRow("stale may23 references", ready("may23" not in combined), "none found" if "may23" not in combined else "may23 found"),
     ]
@@ -165,7 +183,7 @@ def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) ->
 
 def main() -> int:
     args = parse_args()
-    rows = audit_docs(args.readme, args.build_doc, args.allfold_table)
+    rows = audit_docs(args.readme, args.build_doc, args.workflow, args.allfold_table)
     write_outputs(args.output_dir, args.output_prefix, rows)
     return 0 if all(row.status == "ready" for row in rows) else 1
 
