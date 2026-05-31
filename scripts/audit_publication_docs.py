@@ -27,6 +27,7 @@ PUBLICATION_DOC_PATHS = [
     Path("README.md"),
     Path("reports/neurips_report/BUILD.md"),
     Path("reports/neurips_report/may30.tex"),
+    Path("reports/neurips_report/regraph_vlm_report.tex"),
     Path("reports/neurips_report/external_validation_dataset_scan.md"),
 ]
 
