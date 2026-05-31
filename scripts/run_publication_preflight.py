@@ -170,7 +170,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "aaai_publication_readiness_audit.csv", 30))
+    rows.append(audit_status(root / final / "aaai_publication_readiness_audit.csv", 32))
 
     rows.append(
         require_ok(

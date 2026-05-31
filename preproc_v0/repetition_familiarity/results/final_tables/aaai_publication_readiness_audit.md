@@ -2,11 +2,12 @@
 
 This audit checks whether the current publication-facing result artifacts exist and contain the expected evidence. It does not replace manuscript review.
 
-Status counts: {'ready': 30}
+Status counts: {'ready': 32}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
 | split accounting table | ready | split_accounting.csv: 8 rows |
+| split accounting invariants | ready | split_accounting.csv: 8 unique held-out folds; strict T=3 pair-count invariant holds |
 | within-subject smoke table | ready | table_within_subject.csv: 6 rows |
 | main all-fold final table | ready | table_allfold_final.csv: 3 rows, support n=72, expected at least 24 |
 | hard-negative all-fold table | ready | table_hard_negative_allfold.csv: 3 rows, support n=72, expected at least 24 |
@@ -18,6 +19,7 @@ Status counts: {'ready': 30}
 | static adjacency perturbation table | ready | table_adjacency_perturbation.csv: 5 rows |
 | edge-bias follow-up table | ready | table_edge_bias_followup.csv: 3 rows |
 | session/order pair QC | ready | session_order_pair_qc.csv: 4 rows |
+| session/order QC invariants | ready | session_order_pair_qc.csv: balanced positives/negatives, 100% anchor match, split totals consistent |
 | fold difficulty QC | ready | fold_difficulty_qc.csv: 8 rows |
 | single-reference eval-existing summary | ready | single_ref_matched_summary.csv: 3 rows, support n=72, expected at least 72 |
 | single-reference retrained summary | ready | single_ref_matched_allseed_summary.csv: 3 rows, support n=72, expected at least 72 |
@@ -27,11 +29,11 @@ Status counts: {'ready': 30}
 | matched deletion table | ready | table_matched_deletion.csv: 6 rows |
 | single-reference eval-existing LaTeX rows | ready | single_ref_matched_latex.txt: 5 lines |
 | single-reference retrained LaTeX rows | ready | single_ref_matched_allseed_latex.txt: 5 lines |
-| paired stats: main_allfold / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | publication_paired_stats.csv: 7 paired metric rows |
-| paired stats: hard_negative / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | publication_paired_stats.csv: 7 paired metric rows |
-| paired stats: heldout_real_vs_random_available_raw / Gated ReGraph/BNT+CLIP - Gated random embedding | ready | publication_paired_stats.csv: 7 paired metric rows |
-| paired stats: component_baselines / MindLink-style subject-adversarial ROI-MLP | ready | publication_paired_stats.csv: 7 paired metric rows |
-| paired stats: single_ref_retrained / No-adj gated ROI Transformer+CLIP - ROI-MLP+CLIP | ready | publication_paired_stats.csv: 7 paired metric rows |
+| paired stats: main_allfold / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | publication_paired_stats.csv: 7 numeric paired metric rows valid |
+| paired stats: hard_negative / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | publication_paired_stats.csv: 7 numeric paired metric rows valid |
+| paired stats: heldout_real_vs_random_available_raw / Gated ReGraph/BNT+CLIP - Gated random embedding | ready | publication_paired_stats.csv: 7 numeric paired metric rows valid |
+| paired stats: component_baselines / MindLink-style subject-adversarial ROI-MLP | ready | publication_paired_stats.csv: 7 numeric paired metric rows valid |
+| paired stats: single_ref_retrained / No-adj gated ROI Transformer+CLIP - ROI-MLP+CLIP | ready | publication_paired_stats.csv: 7 numeric paired metric rows valid |
 | AAAI ROI-token story summary | ready | aaai_roi_token_story_summary.md: 11 lines |
 | external visual-ROI smoke summary | ready | external_visual_roi_all4_summary.md: 18 lines |
 | LAION trial-wise external validation summary | ready | laion_fmri_visual_roi_summary.md: 19 lines |

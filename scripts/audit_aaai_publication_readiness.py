@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 import pandas as pd
 
@@ -69,6 +69,11 @@ def support_n(df: pd.DataFrame) -> int:
     return len(df)
 
 
+def finite_numeric(series: pd.Series) -> pd.Series:
+    values = pd.to_numeric(series, errors="coerce")
+    return values.map(lambda value: pd.notna(value) and math.isfinite(float(value)))
+
+
 def check_table(
     item: str,
     path: Path,
@@ -94,6 +99,78 @@ def check_table(
     return CheckResult(item, "ready", f"{path.name}: {len(df)} rows")
 
 
+def check_split_invariants(path: Path) -> CheckResult:
+    item = "split accounting invariants"
+    if not path.exists():
+        return CheckResult(item, "missing", f"{path} not found")
+    df = read_csv(path)
+    required = {"fold", "test_subject", "val_subject", "train_seq", "val_seq", "test_seq", "train_pairs", "val_pairs", "test_pairs", "test_imgs"}
+    if df.empty or not required.issubset(df.columns):
+        return CheckResult(item, "incomplete", f"{path.name}: missing expected columns")
+    problems: list[str] = []
+    if len(df) != 8:
+        problems.append(f"fold rows={len(df)}, expected 8")
+    if df["test_subject"].nunique() != 8:
+        problems.append(f"unique test subjects={df['test_subject'].nunique()}, expected 8")
+    if (df["test_subject"] == df["val_subject"]).any():
+        problems.append("validation subject overlaps test subject")
+    for split in ("train", "val", "test"):
+        seq = pd.to_numeric(df[f"{split}_seq"], errors="coerce")
+        pairs = pd.to_numeric(df[f"{split}_pairs"], errors="coerce")
+        if not pairs.eq(seq * 6).all():
+            problems.append(f"{split}_pairs do not equal {split}_seq x 6")
+    test_seq = pd.to_numeric(df["test_seq"], errors="coerce")
+    test_imgs = pd.to_numeric(df["test_imgs"], errors="coerce")
+    if not test_imgs.eq(test_seq).all():
+        problems.append("test_imgs does not equal test_seq")
+    return CheckResult(
+        item,
+        "ready" if not problems else "incomplete",
+        f"{path.name}: 8 unique held-out folds; strict T=3 pair-count invariant holds" if not problems else "; ".join(problems[:6]),
+    )
+
+
+def check_session_qc_invariants(path: Path) -> CheckResult:
+    item = "session/order QC invariants"
+    if not path.exists():
+        return CheckResult(item, "missing", f"{path} not found")
+    df = read_csv(path)
+    required = {"split", "pairs", "positive", "negative", "complete_groups", "problem_groups", "anchor_match"}
+    if df.empty or not required.issubset(df.columns):
+        return CheckResult(item, "incomplete", f"{path.name}: missing expected columns")
+    problems: list[str] = []
+    by_split = {row["split"]: row for row in df.to_dict("records")}
+    if {"Train", "Val", "Test", "All"} - set(by_split):
+        problems.append("expected Train/Val/Test/All rows")
+    for split, row in by_split.items():
+        pairs = int(row["pairs"])
+        positive = int(row["positive"])
+        negative = int(row["negative"])
+        complete_groups = int(row["complete_groups"])
+        problem_groups = int(row["problem_groups"])
+        if pairs != positive + negative:
+            problems.append(f"{split}: pairs != positive + negative")
+        if positive != negative:
+            problems.append(f"{split}: positive != negative")
+        if complete_groups != positive:
+            problems.append(f"{split}: complete_groups != positive")
+        if problem_groups != 0:
+            problems.append(f"{split}: problem_groups={problem_groups}")
+        if row["anchor_match"] != "100%":
+            problems.append(f"{split}: anchor_match={row['anchor_match']}")
+    if "All" in by_split:
+        for column in ("pairs", "positive", "negative", "complete_groups", "problem_groups"):
+            observed = int(by_split["All"][column])
+            expected = sum(int(by_split[split][column]) for split in ("Train", "Val", "Test") if split in by_split)
+            if observed != expected:
+                problems.append(f"All {column}={observed}, expected {expected}")
+    return CheckResult(
+        item,
+        "ready" if not problems else "incomplete",
+        f"{path.name}: balanced positives/negatives, 100% anchor match, split totals consistent" if not problems else "; ".join(problems[:6]),
+    )
+
+
 def check_publication_stats(path: Path, setting: str, comparison_substr: str, min_metrics: int = 3) -> CheckResult:
     item = f"paired stats: {setting} / {comparison_substr}"
     if not path.exists():
@@ -104,7 +181,35 @@ def check_publication_stats(path: Path, setting: str, comparison_substr: str, mi
     sub = df[(df["setting"] == setting) & (df["comparison"].str.contains(comparison_substr, regex=False))]
     if len(sub) < min_metrics:
         return CheckResult(item, "incomplete", f"{path.name}: {len(sub)} metrics, expected at least {min_metrics}")
-    return CheckResult(item, "ready", f"{path.name}: {len(sub)} paired metric rows")
+    required = ["n", "mean_diff", "std_diff", "bootstrap_ci_low", "bootstrap_ci_high", "paired_t_p"]
+    if not set(required).issubset(sub.columns):
+        return CheckResult(item, "incomplete", f"{path.name}: missing numeric columns")
+    problems: list[str] = []
+    for column in required[:-1]:
+        mask = finite_numeric(sub[column])
+        if not mask.all():
+            problems.append(f"{column} invalid={int((~mask).sum())}")
+    p_values = pd.to_numeric(sub["paired_t_p"], errors="coerce")
+    p_finite = finite_numeric(sub["paired_t_p"])
+    zero_tie = pd.to_numeric(sub["mean_diff"], errors="coerce").eq(0.0) & pd.to_numeric(sub["std_diff"], errors="coerce").eq(0.0)
+    if ((~p_finite) & ~zero_tie).any():
+        problems.append(f"paired_t_p invalid={int(((~p_finite) & ~zero_tie).sum())}")
+    if not pd.to_numeric(sub["n"], errors="coerce").gt(0).all():
+        problems.append("n must be positive")
+    if not pd.to_numeric(sub["std_diff"], errors="coerce").ge(0).all():
+        problems.append("std_diff must be nonnegative")
+    if not pd.to_numeric(sub["bootstrap_ci_low"], errors="coerce").le(pd.to_numeric(sub["bootstrap_ci_high"], errors="coerce")).all():
+        problems.append("bootstrap CI low must be <= high")
+    if not p_values[p_finite].between(0.0, 1.0).all():
+        problems.append("paired_t_p must be in [0, 1]")
+    tie_note = f", exact-zero ties={int(((~p_finite) & zero_tie).sum())}" if ((~p_finite) & zero_tie).any() else ""
+    return CheckResult(
+        item,
+        "ready" if not problems else "incomplete",
+        f"{path.name}: {len(sub)} numeric paired metric rows valid{tie_note}" if not problems else "; ".join(problems[:6]),
+    )
+
+
 
 
 def check_text_file(item: str, path: Path, required_text: str | None = None) -> CheckResult:
@@ -149,6 +254,7 @@ def main() -> None:
     stats = final / "publication_paired_stats.csv"
     rows = [
         check_table("split accounting table", final / "split_accounting.csv"),
+        check_split_invariants(final / "split_accounting.csv"),
         check_table("within-subject smoke table", final / "table_within_subject.csv"),
         check_table("main all-fold final table", final / "table_allfold_final.csv", min_n=24),
         check_table("hard-negative all-fold table", final / "table_hard_negative_allfold.csv", min_n=24),
@@ -160,6 +266,7 @@ def main() -> None:
         check_table("static adjacency perturbation table", final / "table_adjacency_perturbation.csv"),
         check_table("edge-bias follow-up table", final / "table_edge_bias_followup.csv"),
         check_table("session/order pair QC", final / "session_order_pair_qc.csv"),
+        check_session_qc_invariants(final / "session_order_pair_qc.csv"),
         check_table("fold difficulty QC", final / "fold_difficulty_qc.csv"),
         check_table("single-reference eval-existing summary", final / "single_ref_matched_summary.csv", min_n=72),
         check_table("single-reference retrained summary", final / "single_ref_matched_allseed_summary.csv", min_n=72),
