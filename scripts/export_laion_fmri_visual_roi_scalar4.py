@@ -257,7 +257,9 @@ def export_subject(
         )
         if not selected_indices:
             continue
-        volume = np.asanyarray(img.dataobj[..., selected_indices], dtype=np.float32)
+        # Nibabel ArrayProxy does not support fancy indexing on the 4th dimension.
+        # Load one session at a time, then select the required trial betas in memory.
+        volume = np.asanyarray(img.dataobj, dtype=np.float32)[..., selected_indices]
         if volume.ndim == 3:
             volume = volume[..., None]
         flat = volume.reshape(-1, len(selected_indices))
