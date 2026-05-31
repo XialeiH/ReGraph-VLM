@@ -1,0 +1,5 @@
+model,n,source,AUROC_mean,AUROC_std,AUPRC_mean,AUPRC_std,R@5_mean,R@5_std,MRR_mean,MRR_std,image_R@5_mean,image_R@5_std,brain_R@5_mean,brain_R@5_std,brain_MRR_mean,brain_MRR_std
+ROI-MLP+CLIP,24,reports/neurips_report/may30.tex: Table tab:heldout,0.8097,0.0547,0.7847,0.0507,0.2282,0.062,0.1616,0.0407,0.1706,0.0419,0.1823,0.048,,
+Flat ReGraph+CLIP,24,reports/neurips_report/may30.tex: Table tab:heldout,0.8063,0.0521,0.7869,0.046,0.2385,0.0689,0.1672,0.0426,0.1779,0.0496,0.1924,0.0439,,
+Gated ReGraph/BNT+CLIP,24,reports/neurips_report/may30.tex: Table tab:heldout,0.8104,0.0574,0.7893,0.0532,0.2466,0.0717,0.1718,0.0451,0.1874,0.0429,0.2014,0.0462,,
+Gated random embedding,24,reports/neurips_report/may30.tex: Table tab:heldout,0.8128,0.0567,0.7902,0.0538,0.2489,0.0649,0.1728,0.0436,0.0407,0.0125,0.0394,0.0088,,

@@ -1,0 +1,6 @@
+model,n,source,AUROC_mean,AUROC_std,AUPRC_mean,AUPRC_std,R@5_mean,R@5_std,MRR_mean,MRR_std,image_R@5_mean,image_R@5_std,brain_R@5_mean,brain_R@5_std,brain_MRR_mean,brain_MRR_std
+No-adj gated ROI-T,24,reports/neurips_report/may30.tex: Table tab:roi_token_controls,0.8258,0.0513,0.8061,0.0504,0.0884,0.0361,0.0692,0.0239,,,0.0965,0.032,,
+Zero ROI embedding,24,reports/neurips_report/may30.tex: Table tab:roi_token_controls,0.8258,0.0513,0.806,0.0504,0.0883,0.0358,0.0691,0.0238,,,0.0965,0.032,,
+Uniform gate,24,reports/neurips_report/may30.tex: Table tab:roi_token_controls,0.7549,0.0472,0.7303,0.0441,0.0653,0.0242,0.0531,0.017,,,0.0792,0.0235,,
+Random fixed gate,24,reports/neurips_report/may30.tex: Table tab:roi_token_controls,0.7261,0.0524,0.702,0.0472,0.0576,0.0195,0.0478,0.0131,,,0.0571,0.0186,,
+ROI-order shuffle,24,reports/neurips_report/may30.tex: Table tab:roi_token_controls,0.5795,0.0458,0.5688,0.0387,0.0206,0.0055,0.0212,0.0044,,,0.0083,0.0035,,

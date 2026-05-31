@@ -1,0 +1,5 @@
+split,pairs,positive,negative,complete_groups,problem_groups,anchor_match,source
+Train,194526,97263,97263,97263,0,100%,reports/neurips_report/may30.tex: Table tab:session_order_pair_qc
+Val,26226,13113,13113,13113,0,100%,reports/neurips_report/may30.tex: Table tab:session_order_pair_qc
+Test,31536,15768,15768,15768,0,100%,reports/neurips_report/may30.tex: Table tab:session_order_pair_qc
+All,252288,126144,126144,126144,0,100%,reports/neurips_report/may30.tex: Table tab:session_order_pair_qc

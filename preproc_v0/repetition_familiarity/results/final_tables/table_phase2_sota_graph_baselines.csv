@@ -1,0 +1,6 @@
+model,n,source,AUROC_mean,AUROC_std,AUPRC_mean,AUPRC_std,R@5_mean,R@5_std,MRR_mean,MRR_std,image_R@5_mean,image_R@5_std,brain_R@5_mean,brain_R@5_std,brain_MRR_mean,brain_MRR_std
+Our Gated ReGraph+CLIP,24,reports/neurips_report/may30.tex: Table tab:sota_baselines,0.8259,0.0413,0.8065,0.046,0.0899,0.0356,0.0695,0.024,0.0847,0.0357,0.0996,0.0369,,
+MindEye2-style shared ROI mapper,24,reports/neurips_report/may30.tex: Table tab:sota_baselines,0.4982,0.0138,0.5006,0.0117,0.0078,0.0019,0.0111,0.0021,0.008,0.0019,0.0086,0.0035,,
+UMBRAE-style subject encoder,24,reports/neurips_report/may30.tex: Table tab:sota_baselines,0.7415,0.0678,0.7061,0.0645,0.0308,0.0105,0.0307,0.0086,0.0329,0.0131,0.036,0.0161,,
+MindLink-style subject-adversarial ROI-MLP,24,reports/neurips_report/may30.tex: Table tab:sota_baselines,0.8135,0.0555,0.7873,0.0575,0.0774,0.0306,0.0616,0.0206,0.0713,0.029,0.0835,0.0335,,
+MindLink-style subject-adversarial ReGraph,8,reports/neurips_report/may30.tex: Table tab:sota_baselines,0.5547,0.107,0.5475,0.0957,0.0146,0.0122,0.0165,0.0104,0.0135,0.0155,0.0161,0.0221,,

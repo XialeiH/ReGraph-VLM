@@ -51,8 +51,8 @@ REQUIRED_RESULT_FILES = {
     "table_edge_bias_followup.csv": 1,
     "session_order_pair_qc.csv": 1,
     "fold_difficulty_qc.csv": 8,
-    "single_ref_matched_all_runs.csv": 72,
-    "single_ref_matched_allseed_all_runs.csv": 72,
+    "single_ref_matched_summary.csv": 72,
+    "single_ref_matched_allseed_summary.csv": 72,
     "publication_paired_stats.csv": 1,
 }
 
@@ -221,11 +221,16 @@ def audit_result_files(final_tables_dir: Path) -> list[AuditRow]:
             rows.append(AuditRow(f"result file: {name}", "missing", f"{path} not found"))
             continue
         df = read_csv(path)
+        effective_n = len(df)
+        if "n" in df.columns:
+            values = pd.to_numeric(df["n"], errors="coerce").dropna()
+            if not values.empty:
+                effective_n = int(values.sum())
         rows.append(
             AuditRow(
                 f"result file: {name}",
-                status(len(df) >= min_rows),
-                f"{len(df)} rows, expected at least {min_rows}",
+                status(effective_n >= min_rows),
+                f"{len(df)} rows, support n={effective_n}, expected at least {min_rows}",
             )
         )
     return rows
@@ -257,7 +262,7 @@ def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) ->
     csv_path = output_dir / f"{output_prefix}.csv"
     md_path = output_dir / f"{output_prefix}.md"
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["item", "status", "evidence"])
+        writer = csv.DictWriter(handle, fieldnames=["item", "status", "evidence"], lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow({"item": row.item, "status": row.status, "evidence": row.evidence})

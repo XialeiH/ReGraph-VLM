@@ -258,7 +258,7 @@ Table~\ref{tab:within_subject} reports the completed within-subject repeat-match
 
 \subsection{All-fold cross-subject matching}
 
-The main final result is all-fold cross-subject same-image matching over 8 held-out-subject folds and 3 seeds. Gated ReGraph+CLIP improves over ROI-MLP+CLIP and flat ReGraph+CLIP on all listed metrics (Table~\ref{tab:cross_subject_main}). Paired tests over fold$\times$seed are strong for the comparison against ROI-MLP+CLIP: AUROC difference $+0.0095$ with $p\approx 6.95\times10^{-8}$, AUPRC difference $+0.0168$ with $p\approx 1.78\times10^{-15}$, R@5 difference $+0.0117$ with $p\approx 2.01\times10^{-7}$, and brain R@5 difference $+0.0159$ with $p\approx 1.08\times10^{-12}$.
+The main final result is all-fold cross-subject same-image matching over 8 held-out-subject folds and 3 seeds. Gated ReGraph+CLIP improves over ROI-MLP+CLIP and flat ReGraph+CLIP on all listed metrics (Table~\ref{tab:cross_subject_main}). Paired tests over fold$\times$seed are strong for the comparison against ROI-MLP+CLIP: AUROC difference $+0.0095$ with $p=1.77\times10^{-5}$, AUPRC difference $+0.0168$ with $p=4.66\times10^{-8}$, R@5 difference $+0.0117$ with $p=2.85\times10^{-5}$, and brain R@5 difference $+0.0159$ with $p=2.98\times10^{-7}$.
 
 \begin{table}[!htbp]
   \centering
@@ -272,26 +272,26 @@ The main final result is all-fold cross-subject same-image matching over 8 held-
     Model & AUROC & AUPRC & R@5 & MRR & Img R@5 & Brain R@5 \\
     \midrule
     ROI-MLP+CLIP
-    & $0.8164{\scriptstyle\pm0.0451}$
-    & $0.7896{\scriptstyle\pm0.0500}$
-    & $0.0782{\scriptstyle\pm0.0353}$
-    & $0.0636{\scriptstyle\pm0.0243}$
-    & $0.0729{\scriptstyle\pm0.0344}$
-    & $0.0837{\scriptstyle\pm0.0364}$ \\
+    & $0.8164{\scriptstyle\pm0.0518}$
+    & $0.7896{\scriptstyle\pm0.0532}$
+    & $0.0782{\scriptstyle\pm0.0273}$
+    & $0.0636{\scriptstyle\pm0.0190}$
+    & $0.0729{\scriptstyle\pm0.0280}$
+    & $0.0837{\scriptstyle\pm0.0291}$ \\
     Flat ReGraph+CLIP
-    & $0.8210{\scriptstyle\pm0.0451}$
-    & $0.8022{\scriptstyle\pm0.0459}$
-    & $0.0865{\scriptstyle\pm0.0366}$
-    & $0.0677{\scriptstyle\pm0.0244}$
-    & $0.0812{\scriptstyle\pm0.0354}$
-    & $0.0966{\scriptstyle\pm0.0383}$ \\
+    & $0.8210{\scriptstyle\pm0.0481}$
+    & $0.8022{\scriptstyle\pm0.0460}$
+    & $0.0865{\scriptstyle\pm0.0318}$
+    & $0.0677{\scriptstyle\pm0.0213}$
+    & $0.0812{\scriptstyle\pm0.0305}$
+    & $0.0966{\scriptstyle\pm0.0299}$ \\
     Gated ReGraph+CLIP
-    & $\mathbf{0.8259}{\scriptstyle\pm0.0413}$
-    & $\mathbf{0.8065}{\scriptstyle\pm0.0460}$
-    & $\mathbf{0.0899}{\scriptstyle\pm0.0356}$
+    & $\mathbf{0.8259}{\scriptstyle\pm0.0523}$
+    & $\mathbf{0.8065}{\scriptstyle\pm0.0528}$
+    & $\mathbf{0.0899}{\scriptstyle\pm0.0357}$
     & $\mathbf{0.0695}{\scriptstyle\pm0.0240}$
-    & $\mathbf{0.0847}{\scriptstyle\pm0.0357}$
-    & $\mathbf{0.0996}{\scriptstyle\pm0.0369}$ \\
+    & $\mathbf{0.0847}{\scriptstyle\pm0.0318}$
+    & $\mathbf{0.0996}{\scriptstyle\pm0.0310}$ \\
     \bottomrule
   \end{tabular}
 \end{table}

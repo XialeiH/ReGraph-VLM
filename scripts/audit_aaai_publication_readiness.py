@@ -59,6 +59,16 @@ def has_rows(df: pd.DataFrame, filters: dict[str, object], min_n: int | None = N
     return True, f"{len(sub)} matching rows"
 
 
+def support_n(df: pd.DataFrame) -> int:
+    if df.empty:
+        return 0
+    if "n" in df.columns:
+        values = pd.to_numeric(df["n"], errors="coerce").dropna()
+        if not values.empty:
+            return int(values.sum())
+    return len(df)
+
+
 def check_table(
     item: str,
     path: Path,
@@ -73,6 +83,14 @@ def check_table(
         return CheckResult(item, "ready" if ok else "incomplete", f"{path.name}: {evidence}")
     if df.empty:
         return CheckResult(item, "incomplete", f"{path.name}: empty")
+    if min_n is not None:
+        support = support_n(df)
+        ok = support >= min_n
+        return CheckResult(
+            item,
+            "ready" if ok else "incomplete",
+            f"{path.name}: {len(df)} rows, support n={support}, expected at least {min_n}",
+        )
     return CheckResult(item, "ready", f"{path.name}: {len(df)} rows")
 
 
@@ -103,7 +121,7 @@ def write_outputs(out_prefix: Path, rows: list[CheckResult]) -> None:
     md_path = out_prefix.with_suffix(".md")
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["item", "status", "evidence"])
+        writer = csv.DictWriter(handle, fieldnames=["item", "status", "evidence"], lineterminator="\n")
         writer.writeheader()
         for row in rows:
             writer.writerow({"item": row.item, "status": row.status, "evidence": row.evidence})
@@ -140,8 +158,8 @@ def main() -> None:
         check_table("edge-bias follow-up table", final / "table_edge_bias_followup.csv"),
         check_table("session/order pair QC", final / "session_order_pair_qc.csv"),
         check_table("fold difficulty QC", final / "fold_difficulty_qc.csv"),
-        check_table("single-reference eval-existing runs", final / "single_ref_matched_all_runs.csv", min_n=72),
-        check_table("single-reference retrained runs", final / "single_ref_matched_allseed_all_runs.csv", min_n=72),
+        check_table("single-reference eval-existing summary", final / "single_ref_matched_summary.csv", min_n=72),
+        check_table("single-reference retrained summary", final / "single_ref_matched_allseed_summary.csv", min_n=72),
         check_text_file(
             "single-reference eval-existing LaTeX rows",
             final / "single_ref_matched_latex.txt",

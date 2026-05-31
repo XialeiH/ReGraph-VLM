@@ -1,0 +1,16 @@
+\begin{table}[!htbp]
+  \centering
+  \caption{Adjacency ablation for the main all-fold cross-subject setting. The no-adjacency gated ROI Transformer is statistically indistinguishable from the adjacency-based Gated ReGraph/BNT model, while both outperform ROI-MLP+CLIP.}
+  \label{tab:adjacency_ablation}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{lccccc}
+    \toprule
+    Model & AUROC & AUPRC & R@5 & MRR & Brain R@5 \\
+    \midrule
+    ROI-MLP+CLIP & 0.8164 $\pm$ 0.0518 & 0.7896 $\pm$ 0.0532 & 0.0782 $\pm$ 0.0273 & 0.0636 $\pm$ 0.0190 & 0.0837 $\pm$ 0.0291 \\
+    No-adj gated ROI Transformer+CLIP & 0.8258 $\pm$ 0.0513 & 0.8061 $\pm$ 0.0504 & 0.0884 $\pm$ 0.0361 & 0.0692 $\pm$ 0.0239 & 0.0965 $\pm$ 0.0320 \\
+    Gated ReGraph/BNT+CLIP & 0.8259 $\pm$ 0.0523 & 0.8065 $\pm$ 0.0528 & 0.0899 $\pm$ 0.0357 & 0.0695 $\pm$ 0.0240 & 0.0996 $\pm$ 0.0310 \\
+    \bottomrule
+  \end{tabular}%
+  }
+\end{table}
