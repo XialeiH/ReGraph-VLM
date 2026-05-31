@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -60,10 +61,20 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
-def audit_table(final_tables_dir: Path, source_tex: str, csv_name: str, label: str) -> AuditRow:
+def manuscript_labels(source_tex: str) -> set[str]:
+    path = Path(source_tex)
+    if not path.exists():
+        return set()
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return set(re.findall(r"\\label\{([^}]+)\}", text))
+
+
+def audit_table(final_tables_dir: Path, source_tex: str, labels: set[str], csv_name: str, label: str) -> AuditRow:
     path = final_tables_dir / csv_name
     if not path.exists():
         return AuditRow(csv_name, "missing", f"{path} not found")
+    if label not in labels:
+        return AuditRow(csv_name, "incomplete", f"{source_tex} does not define Table {label}")
     rows = read_csv(path)
     if not rows:
         return AuditRow(csv_name, "incomplete", "empty artifact")
@@ -77,7 +88,7 @@ def audit_table(final_tables_dir: Path, source_tex: str, csv_name: str, label: s
     return AuditRow(
         csv_name,
         ready(not missing),
-        f"{len(rows)} rows cite {source_tex}: Table {label}" if not missing else "; ".join(missing[:5]),
+        f"{len(rows)} rows cite existing {source_tex}: Table {label}" if not missing else "; ".join(missing[:5]),
     )
 
 
@@ -107,8 +118,9 @@ def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) ->
 
 def main() -> int:
     args = parse_args()
+    labels = manuscript_labels(args.source_tex)
     rows = [
-        audit_table(args.final_tables_dir, args.source_tex, csv_name, label)
+        audit_table(args.final_tables_dir, args.source_tex, labels, csv_name, label)
         for csv_name, label in EXPECTED_TABLE_SOURCES.items()
     ]
     write_outputs(args.final_tables_dir, args.output_prefix, rows)
