@@ -2,9 +2,15 @@
 from __future__ import annotations
 
 import argparse
+import math
 from pathlib import Path
 
 import pandas as pd
+
+try:
+    from scipy import stats
+except ImportError:  # pragma: no cover - fallback for minimal HPC environments.
+    stats = None
 
 
 METRICS = ["test_AUROC", "test_AUPRC", "test_R@5", "test_MRR"]
@@ -68,6 +74,47 @@ def markdown_table(df: pd.DataFrame) -> str:
     return "\n".join(lines)
 
 
+def paired_tests(all_runs: pd.DataFrame) -> pd.DataFrame:
+    models = sorted(all_runs["model"].unique())
+    if models != ["roi_mlp", "roi_transformer_gated"]:
+        return pd.DataFrame()
+
+    rows = []
+    for metric in METRICS:
+        wide = all_runs.pivot_table(index=["pair", "seed"], columns="model", values=metric)
+        wide = wide.dropna(subset=models)
+        if wide.empty:
+            continue
+        diff = wide["roi_transformer_gated"] - wide["roi_mlp"]
+        n = int(diff.shape[0])
+        mean_diff = float(diff.mean())
+        std_diff = float(diff.std(ddof=1)) if n > 1 else float("nan")
+        sem = std_diff / math.sqrt(n) if n > 1 else float("nan")
+        if stats is not None and n > 1:
+            p_value = float(stats.ttest_rel(wide["roi_transformer_gated"], wide["roi_mlp"]).pvalue)
+            ci_delta = float(stats.t.ppf(0.975, n - 1) * sem)
+        elif n > 1 and sem > 0:
+            z = abs(mean_diff / sem)
+            p_value = float(math.erfc(z / math.sqrt(2.0)))
+            ci_delta = float(1.96 * sem)
+        else:
+            p_value = float("nan")
+            ci_delta = float("nan")
+        rows.append(
+            {
+                "comparison": "Gated ROI Transformer - ROI-MLP",
+                "metric": metric,
+                "n": n,
+                "mean_diff": mean_diff,
+                "std_diff": std_diff,
+                "ci95_low": mean_diff - ci_delta,
+                "ci95_high": mean_diff + ci_delta,
+                "paired_p": p_value,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def main() -> None:
     args = parse_args()
     rows = []
@@ -95,13 +142,21 @@ def main() -> None:
         grouped_rows.append(row)
     summary = pd.DataFrame(grouped_rows).sort_values("model")
     summary.to_csv(args.out_dir / "laion_fmri_visual_roi_summary.csv", index=False)
+    tests = paired_tests(all_runs)
+    tests.to_csv(args.out_dir / "laion_fmri_visual_roi_pairwise_tests.csv", index=False)
     write_latex(args.out_dir / "laion_fmri_visual_roi_latex.txt", summary)
+    test_text = ""
+    if not tests.empty:
+        test_text = (
+            "\n\nPaired tests compare Gated ROI Transformer against ROI-MLP over matched subject-pair × seed runs.\n\n"
+            + markdown_table(tests)
+        )
     (args.out_dir / "laion_fmri_visual_roi_summary.md").write_text(
         "# LAION-fMRI External Visual-ROI Validation\n\n"
         "Trial-wise public LAION-fMRI beta maps were summarized with public visual ROI masks, padded to the same 180-token interface, and evaluated with cross-subject same-image retrieval. Values are mean ± std over subject-pair × seed runs.\n\n"
         + markdown_table(summary)
-        + "\n\nLaTeX rows are available in `laion_fmri_visual_roi_latex.txt`.\n"
-        + "\n",
+        + test_text
+        + "\n\nLaTeX rows are available in `laion_fmri_visual_roi_latex.txt`.\n",
         encoding="utf-8",
     )
     print({"all_runs": len(all_runs), "summary": str(args.out_dir / "laion_fmri_visual_roi_summary.csv")})

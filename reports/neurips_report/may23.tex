@@ -606,7 +606,7 @@ To address external generalization pragmatically, we ran exploratory smoke valid
   \end{tabular}
 \end{table}
 
-All external smoke checks show above-chance cross-subject same-image signal, but they do not replicate the main NSD ordering. In these public compact visual-ROI settings, ROI-MLP is stronger on most aggregate metrics, while the gated ROI Transformer is competitive only on selected retrieval metrics and subject pairs. We therefore treat these experiments as external feasibility evidence and as a constraint on the manuscript claim: full external validation should use trial-wise atlas/HCP-MMP beta maps, not only compact visual-localizer or table-format visual ROI summaries.
+All external smoke checks show above-chance cross-subject same-image signal, but they do not replicate the main NSD ordering. In these public compact visual-ROI settings, ROI-MLP is stronger on most aggregate metrics, while the gated ROI Transformer is competitive only on selected retrieval metrics and subject pairs. On LAION-fMRI, paired tests over subject-pair$\times$seed runs show no significant AUROC or AUPRC difference between the gated ROI Transformer and ROI-MLP, with only a trend toward higher retrieval R@5 for the gated transformer ($+0.0093$, $p=0.0575$). We therefore treat these experiments as external feasibility evidence and as a constraint on the manuscript claim: full external validation should use trial-wise atlas/HCP-MMP beta maps, not only compact visual-localizer or table-format visual ROI summaries.
 
 \section{Interpretability of the Gated Model}
 
