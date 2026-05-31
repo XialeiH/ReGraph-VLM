@@ -111,6 +111,41 @@ def read_csv(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def citation_keys(text: str) -> list[str]:
+    keys = []
+    for match in re.findall(r"\\cite\w*(?:\[[^\]]*\]){0,2}\{([^}]+)\}", text):
+        keys.extend(key.strip() for key in match.split(",") if key.strip())
+    return sorted(set(keys))
+
+
+def bibliography_paths(tex_path: Path, text: str) -> list[Path]:
+    paths: list[Path] = []
+    for match in re.findall(r"\\bibliography\{([^}]+)\}", text):
+        for raw_name in match.split(","):
+            name = raw_name.strip()
+            if not name:
+                continue
+            path = Path(name)
+            if path.suffix != ".bib":
+                path = path.with_suffix(".bib")
+            if not path.is_absolute():
+                path = tex_path.parent / path
+            paths.append(path)
+    return paths
+
+
+def bib_keys(paths: list[Path]) -> tuple[set[str], list[Path]]:
+    keys: set[str] = set()
+    missing_paths: list[Path] = []
+    for path in paths:
+        if not path.exists():
+            missing_paths.append(path)
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        keys.update(re.findall(r"@\w+\{([^,]+),", text))
+    return keys, missing_paths
+
+
 def audit_text(tex_path: Path) -> list[AuditRow]:
     if not tex_path.exists():
         return [AuditRow("manuscript exists", "missing", f"{tex_path} not found")]
@@ -140,6 +175,21 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
 
     missing_required = sorted(set(REQUIRED_LABELS) - set(labels))
     rows.append(AuditRow("required publication labels", status(not missing_required), "all present" if not missing_required else ", ".join(missing_required)))
+
+    cite_keys = citation_keys(text)
+    bib_paths = bibliography_paths(tex_path, text)
+    defined_bib_keys, missing_bib_paths = bib_keys(bib_paths)
+    missing_cites = sorted(set(cite_keys) - defined_bib_keys)
+    if missing_bib_paths:
+        cite_status = "missing"
+        cite_evidence = "missing bibliography files: " + ", ".join(str(path) for path in missing_bib_paths)
+    elif missing_cites:
+        cite_status = "incomplete"
+        cite_evidence = "missing citation keys: " + ", ".join(missing_cites)
+    else:
+        cite_status = "ready"
+        cite_evidence = f"{len(cite_keys)} citation keys covered by {len(bib_paths)} bibliography file(s)"
+    rows.append(AuditRow("citation bibliography coverage", cite_status, cite_evidence))
 
     figure_paths = re.findall(r"\\IfFileExists\{([^}]+)\}", text)
     missing_figures = sorted(path for path in figure_paths if not (tex_path.parent / path).exists())
