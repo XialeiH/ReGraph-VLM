@@ -255,6 +255,10 @@ def citation_keys(text: str) -> list[str]:
     return sorted(set(keys))
 
 
+def pattern_line_numbers(text: str, pattern: str) -> list[int]:
+    return [text.count("\n", 0, match.start()) + 1 for match in re.finditer(pattern, text)]
+
+
 def bibliography_paths(tex_path: Path, text: str) -> list[Path]:
     paths: list[Path] = []
     for match in re.findall(r"\\bibliography\{([^}]+)\}", text):
@@ -335,6 +339,18 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
             "figure file availability",
             status(not missing_figures),
             f"{len(figure_paths)} checked, all present" if not missing_figures else ", ".join(missing_figures),
+        )
+    )
+    needupdate_lines = pattern_line_numbers(text, r"\\needupdate\{")
+    rows.append(
+        AuditRow(
+            "unresolved manuscript placeholders",
+            status(not needupdate_lines and not missing_figures),
+            (
+                f"no \\needupdate uses and all {len(figure_paths)} figure fallbacks resolve to files"
+                if not needupdate_lines and not missing_figures
+                else f"\\needupdate lines={needupdate_lines or 'none'}; missing figures={missing_figures or 'none'}"
+            ),
         )
     )
     rows.append(audit_tracked_figures(tex_path, figure_paths))
