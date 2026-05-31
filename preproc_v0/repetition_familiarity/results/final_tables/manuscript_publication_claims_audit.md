@@ -46,13 +46,13 @@ Status counts: {'ready': 50}
 | result file: table_matched_deletion.csv | ready | 6 rows, support n=6, expected at least 6 |
 | result file: fold_difficulty_qc.csv | ready | 8 rows, support n=8, expected at least 8 |
 | result file: publication_paired_stats.csv | ready | 119 rows, support n=2744, expected at least 1 |
-| paired stats: main_allfold / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 metric rows, expected at least 3 |
-| paired stats: main_allfold / Gated ReGraph/BNT+CLIP - Flat ReGraph+CLIP | ready | 7 metric rows, expected at least 3 |
-| paired stats: hard_negative / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 metric rows, expected at least 3 |
-| paired stats: heldout_real_vs_random_available_raw / Gated ReGraph/BNT+CLIP - Gated random embedding | ready | 7 metric rows, expected at least 3 |
-| paired stats: component_baselines / Gated ReGraph/BNT+CLIP - MindLink-style subject-adversarial ROI-MLP | ready | 7 metric rows, expected at least 3 |
-| paired stats: single_ref_eval_existing / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 metric rows, expected at least 3 |
-| paired stats: single_ref_eval_existing / Gated ReGraph/BNT+CLIP - No-adj gated ROI Transformer+CLIP | ready | 7 metric rows, expected at least 3 |
-| paired stats: single_ref_retrained / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 metric rows, expected at least 3 |
-| paired stats: single_ref_retrained / Gated ReGraph/BNT+CLIP - No-adj gated ROI Transformer+CLIP | ready | 7 metric rows, expected at least 3 |
-| paired stats: single_ref_retrained / No-adj gated ROI Transformer+CLIP - ROI-MLP+CLIP | ready | 7 metric rows, expected at least 3 |
+| paired stats: main_allfold / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |
+| paired stats: main_allfold / Gated ReGraph/BNT+CLIP - Flat ReGraph+CLIP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |
+| paired stats: hard_negative / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |
+| paired stats: heldout_real_vs_random_available_raw / Gated ReGraph/BNT+CLIP - Gated random embedding | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |
+| paired stats: component_baselines / Gated ReGraph/BNT+CLIP - MindLink-style subject-adversarial ROI-MLP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |
+| paired stats: single_ref_eval_existing / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |
+| paired stats: single_ref_eval_existing / Gated ReGraph/BNT+CLIP - No-adj gated ROI Transformer+CLIP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |
+| paired stats: single_ref_retrained / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |
+| paired stats: single_ref_retrained / Gated ReGraph/BNT+CLIP - No-adj gated ROI Transformer+CLIP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid, exact-zero tie rows=3 |
+| paired stats: single_ref_retrained / No-adj gated ROI Transformer+CLIP - ROI-MLP+CLIP | ready | 7 rows/7 metrics; n=24-24; numeric fields valid |

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import math
 import re
 import subprocess
 from dataclasses import dataclass
@@ -76,6 +77,9 @@ REQUIRED_STATS = [
     ("single_ref_retrained", "Gated ReGraph/BNT+CLIP - No-adj gated ROI Transformer+CLIP"),
     ("single_ref_retrained", "No-adj gated ROI Transformer+CLIP - ROI-MLP+CLIP"),
 ]
+
+STAT_NUMERIC_COLUMNS = ["n", "mean_diff", "std_diff", "bootstrap_ci_low", "bootstrap_ci_high", "paired_t_p"]
+STAT_BASE_NUMERIC_COLUMNS = ["n", "mean_diff", "std_diff", "bootstrap_ci_low", "bootstrap_ci_high"]
 
 def deanon_patterns() -> list[str]:
     literals = [
@@ -425,6 +429,63 @@ def audit_result_files(final_tables_dir: Path) -> list[AuditRow]:
     return rows
 
 
+def finite_numeric(series: pd.Series) -> pd.Series:
+    values = pd.to_numeric(series, errors="coerce")
+    return values.map(lambda value: pd.notna(value) and math.isfinite(float(value)))
+
+
+def exact_zero_diff_tie(sub: pd.DataFrame) -> pd.Series:
+    mean_diff = pd.to_numeric(sub["mean_diff"], errors="coerce")
+    std_diff = pd.to_numeric(sub["std_diff"], errors="coerce")
+    return mean_diff.eq(0.0) & std_diff.eq(0.0)
+
+
+def audit_stat_rows(sub: pd.DataFrame) -> tuple[bool, str]:
+    missing_columns = [column for column in STAT_NUMERIC_COLUMNS if column not in sub.columns]
+    if missing_columns:
+        return False, "missing numeric columns: " + ", ".join(missing_columns)
+
+    metric_count = sub["metric"].nunique() if "metric" in sub.columns else 0
+    if metric_count < 3:
+        return False, f"{len(sub)} metric rows, expected at least 3"
+
+    invalid: list[str] = []
+    for column in STAT_BASE_NUMERIC_COLUMNS:
+        mask = finite_numeric(sub[column])
+        if not mask.all():
+            invalid.append(f"{column} invalid={int((~mask).sum())}")
+
+    p_values = pd.to_numeric(sub["paired_t_p"], errors="coerce")
+    p_finite = finite_numeric(sub["paired_t_p"])
+    p_missing = ~p_finite
+    zero_tie = exact_zero_diff_tie(sub)
+    if (p_missing & ~zero_tie).any():
+        invalid.append(f"paired_t_p invalid={int((p_missing & ~zero_tie).sum())}")
+
+    n_values = pd.to_numeric(sub["n"], errors="coerce")
+    if not n_values.gt(0).all():
+        invalid.append("n must be positive")
+    std_values = pd.to_numeric(sub["std_diff"], errors="coerce")
+    if not std_values.ge(0).all():
+        invalid.append("std_diff must be nonnegative")
+    low_values = pd.to_numeric(sub["bootstrap_ci_low"], errors="coerce")
+    high_values = pd.to_numeric(sub["bootstrap_ci_high"], errors="coerce")
+    if not low_values.le(high_values).all():
+        invalid.append("bootstrap CI low must be <= high")
+    if not p_values[p_finite].between(0.0, 1.0).all():
+        invalid.append("paired_t_p must be in [0, 1]")
+
+    if invalid:
+        return False, "; ".join(invalid)
+
+    tie_count = int((p_missing & zero_tie).sum())
+    tie_note = f", exact-zero tie rows={tie_count}" if tie_count else ""
+    return (
+        True,
+        f"{len(sub)} rows/{metric_count} metrics; n={int(n_values.min())}-{int(n_values.max())}; numeric fields valid{tie_note}",
+    )
+
+
 def audit_publication_stats(final_tables_dir: Path) -> list[AuditRow]:
     path = final_tables_dir / "publication_paired_stats.csv"
     if not path.exists():
@@ -432,15 +493,17 @@ def audit_publication_stats(final_tables_dir: Path) -> list[AuditRow]:
     df = read_csv(path)
     rows: list[AuditRow] = []
     for setting, comparison in REQUIRED_STATS:
-        if df.empty or "setting" not in df.columns or "comparison" not in df.columns:
+        required_columns = {"setting", "comparison", "metric", *STAT_NUMERIC_COLUMNS}
+        if df.empty or not required_columns.issubset(df.columns):
             rows.append(AuditRow(f"paired stats: {setting} / {comparison}", "incomplete", "missing expected columns"))
             continue
         sub = df[(df["setting"] == setting) & (df["comparison"] == comparison)]
+        ok, evidence = audit_stat_rows(sub)
         rows.append(
             AuditRow(
                 f"paired stats: {setting} / {comparison}",
-                status(len(sub) >= 3),
-                f"{len(sub)} metric rows, expected at least 3",
+                status(ok),
+                evidence,
             )
         )
     return rows
