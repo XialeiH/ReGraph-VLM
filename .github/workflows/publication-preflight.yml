@@ -1,0 +1,20 @@
+name: publication-preflight
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  publication-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install audit dependencies
+        run: python -m pip install pandas
+      - name: Run publication preflight
+        run: python scripts/run_publication_preflight.py

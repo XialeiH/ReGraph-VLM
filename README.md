@@ -74,9 +74,9 @@ Values are mean +/- std over 8 folds x 3 seeds.
 
 | Model | AUROC | AUPRC | R@5 | MRR | Img R@5 | Brain R@5 |
 |---|---:|---:|---:|---:|---:|---:|
-| ROI-MLP+CLIP | 0.8164 +/- 0.0451 | 0.7896 +/- 0.0500 | 0.0782 +/- 0.0353 | 0.0636 +/- 0.0243 | 0.0729 +/- 0.0344 | 0.0837 +/- 0.0364 |
-| Flat ReGraph+CLIP | 0.8210 +/- 0.0451 | 0.8022 +/- 0.0459 | 0.0865 +/- 0.0366 | 0.0677 +/- 0.0244 | 0.0812 +/- 0.0354 | 0.0966 +/- 0.0383 |
-| Gated ReGraph+CLIP | 0.8259 +/- 0.0413 | 0.8065 +/- 0.0460 | 0.0899 +/- 0.0356 | 0.0695 +/- 0.0240 | 0.0847 +/- 0.0357 | 0.0996 +/- 0.0369 |
+| ROI-MLP+CLIP | 0.8164 +/- 0.0518 | 0.7896 +/- 0.0532 | 0.0782 +/- 0.0273 | 0.0636 +/- 0.0190 | 0.0729 +/- 0.0280 | 0.0837 +/- 0.0291 |
+| Flat ReGraph+CLIP | 0.8210 +/- 0.0481 | 0.8022 +/- 0.0460 | 0.0865 +/- 0.0318 | 0.0677 +/- 0.0213 | 0.0812 +/- 0.0305 | 0.0966 +/- 0.0299 |
+| Gated ReGraph+CLIP | 0.8259 +/- 0.0523 | 0.8065 +/- 0.0528 | 0.0899 +/- 0.0357 | 0.0695 +/- 0.0240 | 0.0847 +/- 0.0318 | 0.0996 +/- 0.0310 |
 
 ### Controlled adjacency conclusion
 
@@ -116,7 +116,16 @@ Paired LAION tests show no significant AUROC/AUPRC difference and only a trend t
 
 ## Report Preflight
 
-Run the manuscript-only audit from the project root before compiling the report:
+Run the full preflight from the project root before compiling or submitting:
+
+```bash
+python3 scripts/run_publication_preflight.py
+```
+
+This regenerates lightweight result artifacts, runs the AAAI artifact audit, runs the full manuscript/result audit, runs the manuscript-only audit, and reports whether a local TeX compiler is available.
+The same non-compile preflight runs in GitHub Actions on pushes to `main` and pull requests.
+
+Run the manuscript-only audit directly when you only need a fast TeX-facing check:
 
 ```bash
 python3 scripts/audit_manuscript_publication_claims.py \
@@ -138,11 +147,7 @@ This checks:
 To compile on a machine with a TeX distribution:
 
 ```bash
-cd reports/neurips_report
-pdflatex may30.tex
-bibtex may30
-pdflatex may30.tex
-pdflatex may30.tex
+python3 scripts/run_publication_preflight.py --compile
 ```
 
 This local machine may not have a TeX compiler installed. In that case, use the preflight audit plus a TeX-enabled machine for final PDF compilation.
@@ -157,6 +162,8 @@ scripts/
   run_regraph_vlm_fold.py
   audit_manuscript_publication_claims.py
   audit_aaai_publication_readiness.py
+  materialize_publication_readiness_artifacts.py
+  run_publication_preflight.py
   summarize_laion_fmri_external_results.py
   export_laion_fmri_visual_roi_scalar4.py
   shanghai_*.sbatch
