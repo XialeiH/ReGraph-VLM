@@ -177,6 +177,19 @@ def write_component_and_ablation_tables(final: Path, tex: str) -> None:
 
 def write_qc_and_single_ref(final: Path, tex: str) -> None:
     write_csv(
+        final / "split_accounting.csv",
+        [
+            {"fold": "fold_01", "test_subject": "subj01", "val_subject": "subj08", "train_seq": 3975, "val_seq": 515, "test_seq": 766, "train_pairs": 23850, "val_pairs": 3090, "test_pairs": 4596, "test_imgs": 766, "source": f"{tex}: Table tab:split_accounting"},
+            {"fold": "fold_02", "test_subject": "subj02", "val_subject": "subj08", "train_seq": 3975, "val_seq": 515, "test_seq": 766, "train_pairs": 23850, "val_pairs": 3090, "test_pairs": 4596, "test_imgs": 766, "source": f"{tex}: Table tab:split_accounting"},
+            {"fold": "fold_03", "test_subject": "subj03", "val_subject": "subj08", "train_seq": 4160, "val_seq": 515, "test_seq": 581, "train_pairs": 24960, "val_pairs": 3090, "test_pairs": 3486, "test_imgs": 581, "source": f"{tex}: Table tab:split_accounting"},
+            {"fold": "fold_04", "test_subject": "subj04", "val_subject": "subj08", "train_seq": 4226, "val_seq": 515, "test_seq": 515, "train_pairs": 25356, "val_pairs": 3090, "test_pairs": 3090, "test_imgs": 515, "source": f"{tex}: Table tab:split_accounting"},
+            {"fold": "fold_05", "test_subject": "subj05", "val_subject": "subj08", "train_seq": 3975, "val_seq": 515, "test_seq": 766, "train_pairs": 23850, "val_pairs": 3090, "test_pairs": 4596, "test_imgs": 766, "source": f"{tex}: Table tab:split_accounting"},
+            {"fold": "fold_06", "test_subject": "subj06", "val_subject": "subj08", "train_seq": 4160, "val_seq": 515, "test_seq": 581, "train_pairs": 24960, "val_pairs": 3090, "test_pairs": 3486, "test_imgs": 581, "source": f"{tex}: Table tab:split_accounting"},
+            {"fold": "fold_07", "test_subject": "subj07", "val_subject": "subj08", "train_seq": 3975, "val_seq": 515, "test_seq": 766, "train_pairs": 23850, "val_pairs": 3090, "test_pairs": 4596, "test_imgs": 766, "source": f"{tex}: Table tab:split_accounting"},
+            {"fold": "fold_08", "test_subject": "subj08", "val_subject": "subj07", "train_seq": 3975, "val_seq": 766, "test_seq": 515, "train_pairs": 23850, "val_pairs": 4596, "test_pairs": 3090, "test_imgs": 515, "source": f"{tex}: Table tab:split_accounting"},
+        ],
+    )
+    write_csv(
         final / "session_order_pair_qc.csv",
         [
             {"split": "Train", "pairs": 194526, "positive": 97263, "negative": 97263, "complete_groups": 97263, "problem_groups": 0, "anchor_match": "100%", "source": f"{tex}: Table tab:session_order_pair_qc"},
@@ -204,6 +217,69 @@ def write_qc_and_single_ref(final: Path, tex: str) -> None:
             row(f"{tex}: Table tab:single_ref_matched", "ROI-MLP+CLIP", 24, {"AUROC": (0.7731, 0.0460), "AUPRC": (0.7450, 0.0472), "R@5": (0.0535, 0.0196), "MRR": (0.0459, 0.0138), "image_R@5": (0.0729, 0.0280), "brain_R@5": (0.0837, 0.0291), "brain_MRR": (0.0668, 0.0193)}),
             row(f"{tex}: Table tab:single_ref_matched", "No-adj gated ROI Transformer+CLIP", 24, {"AUROC": (0.7814, 0.0425), "AUPRC": (0.7584, 0.0435), "R@5": (0.0586, 0.0197), "MRR": (0.0494, 0.0139), "image_R@5": (0.0815, 0.0319), "brain_R@5": (0.0965, 0.0320), "brain_MRR": (0.0756, 0.0208)}),
             row(f"{tex}: Table tab:single_ref_matched", "Gated ReGraph/BNT+CLIP", 24, {"AUROC": (0.7828, 0.0452), "AUPRC": (0.7606, 0.0461), "R@5": (0.0577, 0.0191), "MRR": (0.0497, 0.0138), "image_R@5": (0.0847, 0.0318), "brain_R@5": (0.0996, 0.0310), "brain_MRR": (0.0773, 0.0207)}),
+        ],
+    )
+
+
+def write_additional_publication_tables(final: Path, tex: str) -> None:
+    write_csv(
+        final / "table_within_subject.csv",
+        [
+            {"model": "Raw Pearson flat", "AUROC": 0.6182, "AUPRC": "", "R@5": 0.0522, "MRR": 0.0433, "source": f"{tex}: Table tab:within_subject"},
+            {"model": "ROI MLP + BCE", "AUROC": 0.7672, "AUPRC": 0.7336, "R@5": 0.0543, "MRR": 0.0442, "source": f"{tex}: Table tab:within_subject"},
+            {"model": "ROI MLP + BCE+InfoNCE", "AUROC": 0.7778, "AUPRC": 0.7540, "R@5": 0.0758, "MRR": 0.0592, "source": f"{tex}: Table tab:within_subject"},
+            {"model": "Naive GCN", "AUROC": 0.5000, "AUPRC": "", "R@5": "", "MRR": "", "source": f"{tex}: Table tab:within_subject"},
+            {"model": "BrainGNN Siamese", "AUROC": 0.5000, "AUPRC": "", "R@5": "", "MRR": "", "source": f"{tex}: Table tab:within_subject"},
+            {"model": "BNT-token + BCE+InfoNCE", "AUROC": 0.7693, "AUPRC": 0.7512, "R@5": 0.0718, "MRR": 0.0584, "source": f"{tex}: Table tab:within_subject"},
+        ],
+    )
+    write_csv(
+        final / "table_graph_only.csv",
+        [
+            row(f"{tex}: Table tab:graph_only", "Gated ReGraph", 24, {"AUROC": (0.8192, 0.0502), "AUPRC": (0.7940, 0.0510), "R@5": (0.0802, 0.0322), "MRR": (0.0639, 0.0213), "image_R@5": (0.0075, 0.0028), "brain_R@5": (0.0075, 0.0022)}),
+            row(f"{tex}: Table tab:graph_only", "Gated ReGraph + CLIP", 24, {"AUROC": (0.8259, 0.0413), "AUPRC": (0.8065, 0.0460), "R@5": (0.0899, 0.0356), "MRR": (0.0695, 0.0240), "image_R@5": (0.0847, 0.0357), "brain_R@5": (0.0996, 0.0369)}),
+        ],
+    )
+    write_csv(
+        final / "table_lowshot_calibration.csv",
+        [
+            {"row_label": "0 & 24", "calibration_images": 0, "n": 24, "image_R@5_mean": 0.1253, "image_R@5_std": 0.0646, "image_MRR_mean": 0.0950, "image_MRR_std": 0.0449, "source": f"{tex}: Table tab:lowshot"},
+            {"row_label": "10 & 24", "calibration_images": 10, "n": 24, "image_R@5_mean": 0.0471, "image_R@5_std": 0.0185, "image_MRR_mean": 0.0422, "image_MRR_std": 0.0133, "source": f"{tex}: Table tab:lowshot"},
+            {"row_label": "30 & 24", "calibration_images": 30, "n": 24, "image_R@5_mean": 0.0812, "image_R@5_std": 0.0242, "image_MRR_mean": 0.0679, "image_MRR_std": 0.0163, "source": f"{tex}: Table tab:lowshot"},
+            {"row_label": "60 & 24", "calibration_images": 60, "n": 24, "image_R@5_mean": 0.1288, "image_R@5_std": 0.0370, "image_MRR_mean": 0.0957, "image_MRR_std": 0.0241, "source": f"{tex}: Table tab:lowshot"},
+            {"row_label": "120 & 24", "calibration_images": 120, "n": 24, "image_R@5_mean": 0.1715, "image_R@5_std": 0.0496, "image_MRR_mean": 0.1242, "image_MRR_std": 0.0316, "source": f"{tex}: Table tab:lowshot"},
+        ],
+    )
+    write_csv(
+        final / "table_external_visual_roi_smoke.csv",
+        [
+            row(f"{tex}: Table tab:external_visual_roi_smoke", "BOLD5000 visual ROI & ROI-MLP", 18, {"AUROC": (0.6561, 0.0315), "AUPRC": (0.0094, 0.0013), "R@5": (0.0539, 0.0143), "MRR": (0.0533, 0.0084)}),
+            row(f"{tex}: Table tab:external_visual_roi_smoke", "BOLD5000 visual ROI & Gated ROI Transformer", 18, {"AUROC": (0.6240, 0.0611), "AUPRC": (0.0085, 0.0020), "R@5": (0.0561, 0.0139), "MRR": (0.0513, 0.0103)}),
+            row(f"{tex}: Table tab:external_visual_roi_smoke", "CNeuroMod visual ROI & ROI-MLP", 18, {"AUROC": (0.6248, 0.0212), "AUPRC": (0.0164, 0.0023), "R@5": (0.1058, 0.0147), "MRR": (0.0879, 0.0102)}),
+            row(f"{tex}: Table tab:external_visual_roi_smoke", "CNeuroMod visual ROI & Gated ROI Transformer", 18, {"AUROC": (0.6071, 0.0423), "AUPRC": (0.0159, 0.0034), "R@5": (0.0979, 0.0184), "MRR": (0.0827, 0.0111)}),
+            row(f"{tex}: Table tab:external_visual_roi_smoke", "THINGS-fMRI visual ROI & ROI-MLP", 9, {"AUROC": (0.5777, 0.0352), "AUPRC": (0.0067, 0.0011), "R@5": (0.0506, 0.0159), "MRR": (0.0456, 0.0092)}),
+            row(f"{tex}: Table tab:external_visual_roi_smoke", "THINGS-fMRI visual ROI & Gated ROI Transformer", 9, {"AUROC": (0.5291, 0.0377), "AUPRC": (0.0057, 0.0008), "R@5": (0.0308, 0.0132), "MRR": (0.0335, 0.0076)}),
+            row(f"{tex}: Table tab:external_visual_roi_smoke", "LAION-fMRI visual ROI & ROI-MLP", 30, {"AUROC": (0.5315, 0.0213), "AUPRC": (0.0284, 0.0022), "R@5": (0.1481, 0.0185), "MRR": (0.1215, 0.0103)}),
+            row(f"{tex}: Table tab:external_visual_roi_smoke", "LAION-fMRI visual ROI & Gated ROI Transformer", 30, {"AUROC": (0.5296, 0.0221), "AUPRC": (0.0284, 0.0023), "R@5": (0.1574, 0.0283), "MRR": (0.1252, 0.0126)}),
+        ],
+    )
+    write_csv(
+        final / "table_gate_confound.csv",
+        [
+            {"row_label": "$|\\Delta_{21}|$", "spearman": 0.4184, "partial_spearman": -0.0740, "n_roi": 180, "source": f"{tex}: Table tab:gate_confound"},
+            {"row_label": "$|\\Delta_{31}|$", "spearman": 0.4215, "partial_spearman": -0.0653, "n_roi": 180, "source": f"{tex}: Table tab:gate_confound"},
+            {"row_label": "$|\\Delta_{32}|$", "spearman": 0.4073, "partial_spearman": -0.1252, "n_roi": 180, "source": f"{tex}: Table tab:gate_confound"},
+        ],
+    )
+    write_csv(
+        final / "table_matched_deletion.csv",
+        [
+            {"row_label": "Property-matched random & 5", "deletion_set": "Property-matched random", "k": 5, "AUROC_drop": 0.0301, "R@5_drop": 0.0105, "brain_R@5_drop": 0.0168, "source": f"{tex}: Table tab:matched_deletion"},
+            {"row_label": "Top gated ROIs & 5", "deletion_set": "Top gated ROIs", "k": 5, "AUROC_drop": 0.0548, "R@5_drop": 0.0186, "brain_R@5_drop": 0.0326, "source": f"{tex}: Table tab:matched_deletion"},
+            {"row_label": "Property-matched random & 20", "deletion_set": "Property-matched random", "k": 20, "AUROC_drop": 0.0714, "R@5_drop": 0.0218, "brain_R@5_drop": 0.0384, "source": f"{tex}: Table tab:matched_deletion"},
+            {"row_label": "Top gated ROIs & 20", "deletion_set": "Top gated ROIs", "k": 20, "AUROC_drop": 0.1106, "R@5_drop": 0.0461, "brain_R@5_drop": 0.0586, "source": f"{tex}: Table tab:matched_deletion"},
+            {"row_label": "Property-matched random & 40", "deletion_set": "Property-matched random", "k": 40, "AUROC_drop": 0.0244, "R@5_drop": 0.0094, "brain_R@5_drop": 0.0111, "source": f"{tex}: Table tab:matched_deletion"},
+            {"row_label": "Top gated ROIs & 40", "deletion_set": "Top gated ROIs", "k": 40, "AUROC_drop": 0.2577, "R@5_drop": 0.0684, "brain_R@5_drop": 0.0827, "source": f"{tex}: Table tab:matched_deletion"},
         ],
     )
 
@@ -252,6 +328,7 @@ def main() -> None:
     write_main_tables(args.final_tables_dir, args.source_tex)
     write_component_and_ablation_tables(args.final_tables_dir, args.source_tex)
     write_qc_and_single_ref(args.final_tables_dir, args.source_tex)
+    write_additional_publication_tables(args.final_tables_dir, args.source_tex)
     write_story_and_external(args.final_tables_dir, args.external_summary_dir, args.source_tex)
     print(f"Wrote publication artifacts to {args.final_tables_dir} and {args.external_summary_dir}")
 

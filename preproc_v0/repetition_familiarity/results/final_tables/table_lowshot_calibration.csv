@@ -1,0 +1,6 @@
+row_label,calibration_images,n,image_R@5_mean,image_R@5_std,image_MRR_mean,image_MRR_std,source
+0 & 24,0,24,0.1253,0.0646,0.095,0.0449,reports/neurips_report/may30.tex: Table tab:lowshot
+10 & 24,10,24,0.0471,0.0185,0.0422,0.0133,reports/neurips_report/may30.tex: Table tab:lowshot
+30 & 24,30,24,0.0812,0.0242,0.0679,0.0163,reports/neurips_report/may30.tex: Table tab:lowshot
+60 & 24,60,24,0.1288,0.037,0.0957,0.0241,reports/neurips_report/may30.tex: Table tab:lowshot
+120 & 24,120,24,0.1715,0.0496,0.1242,0.0316,reports/neurips_report/may30.tex: Table tab:lowshot

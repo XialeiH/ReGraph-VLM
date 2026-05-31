@@ -153,7 +153,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "aaai_publication_readiness_audit.csv", 23))
+    rows.append(audit_status(root / final / "aaai_publication_readiness_audit.csv", 30))
 
     rows.append(
         require_ok(
@@ -173,7 +173,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "manuscript_publication_claims_audit.csv", 35))
+    rows.append(audit_status(root / final / "manuscript_publication_claims_audit.csv", 42))
 
     rows.append(
         require_ok(
@@ -207,7 +207,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "manuscript_table_values_audit.csv", 10))
+    rows.append(audit_status(root / final / "manuscript_table_values_audit.csv", 19))
 
     rows.append(
         require_ok(

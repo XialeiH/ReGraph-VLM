@@ -1,11 +1,15 @@
 # Manuscript Table Values Audit
 
-Status counts: {'ready': 10}
+Status counts: {'ready': 19}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
+| tab:split_accounting | ready | 56 numeric fragments match rows in split_accounting.csv |
+| tab:session_order_pair_qc | ready | 24 numeric fragments match rows in session_order_pair_qc.csv |
+| tab:within_subject | ready | 17 numeric fragments match rows in table_within_subject.csv |
 | tab:cross_subject_main | ready | 36 numeric fragments match rows in table_allfold_final.csv |
 | tab:sota_baselines | ready | 60 numeric fragments match rows in table_phase2_sota_graph_baselines.csv |
+| tab:graph_only | ready | 24 numeric fragments match rows in table_graph_only.csv |
 | tab:adjacency_ablation | ready | 30 numeric fragments match rows in table_adjacency_ablation.csv |
 | tab:roi_token_controls | ready | 50 numeric fragments match rows in table_roi_token_controls.csv |
 | tab:adjacency_perturbation | ready | 50 numeric fragments match rows in table_adjacency_perturbation.csv |
@@ -14,3 +18,8 @@ Status counts: {'ready': 10}
 | tab:single_ref_retrained | ready | 42 numeric fragments match rows in single_ref_matched_allseed_summary.csv |
 | tab:heldout | ready | 48 numeric fragments match rows in table_heldout_image.csv |
 | tab:hardneg | ready | 33 numeric fragments match rows in table_hard_negative_allfold.csv |
+| tab:lowshot | ready | 25 numeric fragments match rows in table_lowshot_calibration.csv |
+| tab:external_visual_roi_smoke | ready | 72 numeric fragments match rows in table_external_visual_roi_smoke.csv |
+| tab:gate_confound | ready | 9 numeric fragments match rows in table_gate_confound.csv |
+| tab:matched_deletion | ready | 24 numeric fragments match rows in table_matched_deletion.csv |
+| tab:fold_difficulty | ready | 48 numeric fragments match rows in fold_difficulty_qc.csv |

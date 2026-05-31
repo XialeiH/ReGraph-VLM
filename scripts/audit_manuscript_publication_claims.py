@@ -41,18 +41,25 @@ REQUIRED_LABELS = [
 ]
 
 REQUIRED_RESULT_FILES = {
+    "split_accounting.csv": 8,
+    "session_order_pair_qc.csv": 1,
+    "table_within_subject.csv": 1,
     "table_allfold_final.csv": 24,
     "table_hard_negative_allfold.csv": 24,
     "table_heldout_image.csv": 24,
     "table_phase2_sota_graph_baselines.csv": 100,
+    "table_graph_only.csv": 48,
     "table_adjacency_ablation.csv": 1,
     "table_roi_token_controls.csv": 1,
     "table_adjacency_perturbation.csv": 1,
     "table_edge_bias_followup.csv": 1,
-    "session_order_pair_qc.csv": 1,
-    "fold_difficulty_qc.csv": 8,
     "single_ref_matched_summary.csv": 72,
     "single_ref_matched_allseed_summary.csv": 72,
+    "table_lowshot_calibration.csv": 120,
+    "table_external_visual_roi_smoke.csv": 100,
+    "table_gate_confound.csv": 3,
+    "table_matched_deletion.csv": 6,
+    "fold_difficulty_qc.csv": 8,
     "publication_paired_stats.csv": 1,
 }
 

@@ -1,0 +1,4 @@
+row_label,spearman,partial_spearman,n_roi,source
+$|\Delta_{21}|$,0.4184,-0.074,180,reports/neurips_report/may30.tex: Table tab:gate_confound
+$|\Delta_{31}|$,0.4215,-0.0653,180,reports/neurips_report/may30.tex: Table tab:gate_confound
+$|\Delta_{32}|$,0.4073,-0.1252,180,reports/neurips_report/may30.tex: Table tab:gate_confound

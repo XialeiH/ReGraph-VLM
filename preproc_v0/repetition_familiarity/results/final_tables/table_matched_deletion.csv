@@ -1,0 +1,7 @@
+row_label,deletion_set,k,AUROC_drop,R@5_drop,brain_R@5_drop,source
+Property-matched random & 5,Property-matched random,5,0.0301,0.0105,0.0168,reports/neurips_report/may30.tex: Table tab:matched_deletion
+Top gated ROIs & 5,Top gated ROIs,5,0.0548,0.0186,0.0326,reports/neurips_report/may30.tex: Table tab:matched_deletion
+Property-matched random & 20,Property-matched random,20,0.0714,0.0218,0.0384,reports/neurips_report/may30.tex: Table tab:matched_deletion
+Top gated ROIs & 20,Top gated ROIs,20,0.1106,0.0461,0.0586,reports/neurips_report/may30.tex: Table tab:matched_deletion
+Property-matched random & 40,Property-matched random,40,0.0244,0.0094,0.0111,reports/neurips_report/may30.tex: Table tab:matched_deletion
+Top gated ROIs & 40,Top gated ROIs,40,0.2577,0.0684,0.0827,reports/neurips_report/may30.tex: Table tab:matched_deletion

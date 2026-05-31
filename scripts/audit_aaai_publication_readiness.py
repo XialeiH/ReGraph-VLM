@@ -148,10 +148,13 @@ def main() -> None:
     final = args.final_tables_dir
     stats = final / "publication_paired_stats.csv"
     rows = [
+        check_table("split accounting table", final / "split_accounting.csv"),
+        check_table("within-subject smoke table", final / "table_within_subject.csv"),
         check_table("main all-fold final table", final / "table_allfold_final.csv", min_n=24),
         check_table("hard-negative all-fold table", final / "table_hard_negative_allfold.csv", min_n=24),
         check_table("held-out-image table", final / "table_heldout_image.csv", min_n=24),
         check_table("component baseline table", final / "table_phase2_sota_graph_baselines.csv", min_n=100),
+        check_table("graph-only CLIP ablation table", final / "table_graph_only.csv", min_n=48),
         check_table("adjacency ablation table", final / "table_adjacency_ablation.csv"),
         check_table("ROI-token control table", final / "table_roi_token_controls.csv"),
         check_table("static adjacency perturbation table", final / "table_adjacency_perturbation.csv"),
@@ -160,6 +163,10 @@ def main() -> None:
         check_table("fold difficulty QC", final / "fold_difficulty_qc.csv"),
         check_table("single-reference eval-existing summary", final / "single_ref_matched_summary.csv", min_n=72),
         check_table("single-reference retrained summary", final / "single_ref_matched_allseed_summary.csv", min_n=72),
+        check_table("low-shot calibration table", final / "table_lowshot_calibration.csv", min_n=120),
+        check_table("external visual-ROI smoke table", final / "table_external_visual_roi_smoke.csv", min_n=100),
+        check_table("gate confound table", final / "table_gate_confound.csv"),
+        check_table("matched deletion table", final / "table_matched_deletion.csv"),
         check_text_file(
             "single-reference eval-existing LaTeX rows",
             final / "single_ref_matched_latex.txt",

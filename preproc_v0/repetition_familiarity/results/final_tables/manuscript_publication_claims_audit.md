@@ -2,7 +2,7 @@
 
 This audit checks manuscript/result consistency for the publication-facing ReGraph-VLM story.
 
-Status counts: {'ready': 35}
+Status counts: {'ready': 42}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -18,18 +18,25 @@ Status counts: {'ready': 35}
 | table environment balance | ready | begin=21, end=21 |
 | figure environment balance | ready | begin=5, end=5 |
 | equation environment balance | ready | begin=6, end=6 |
+| result file: split_accounting.csv | ready | 8 rows, support n=8, expected at least 8 |
+| result file: session_order_pair_qc.csv | ready | 4 rows, support n=4, expected at least 1 |
+| result file: table_within_subject.csv | ready | 6 rows, support n=6, expected at least 1 |
 | result file: table_allfold_final.csv | ready | 3 rows, support n=72, expected at least 24 |
 | result file: table_hard_negative_allfold.csv | ready | 3 rows, support n=72, expected at least 24 |
 | result file: table_heldout_image.csv | ready | 4 rows, support n=96, expected at least 24 |
 | result file: table_phase2_sota_graph_baselines.csv | ready | 5 rows, support n=104, expected at least 100 |
+| result file: table_graph_only.csv | ready | 2 rows, support n=48, expected at least 48 |
 | result file: table_adjacency_ablation.csv | ready | 3 rows, support n=72, expected at least 1 |
 | result file: table_roi_token_controls.csv | ready | 5 rows, support n=120, expected at least 1 |
 | result file: table_adjacency_perturbation.csv | ready | 5 rows, support n=5, expected at least 1 |
 | result file: table_edge_bias_followup.csv | ready | 3 rows, support n=38, expected at least 1 |
-| result file: session_order_pair_qc.csv | ready | 4 rows, support n=4, expected at least 1 |
-| result file: fold_difficulty_qc.csv | ready | 8 rows, support n=8, expected at least 8 |
 | result file: single_ref_matched_summary.csv | ready | 3 rows, support n=72, expected at least 72 |
 | result file: single_ref_matched_allseed_summary.csv | ready | 3 rows, support n=72, expected at least 72 |
+| result file: table_lowshot_calibration.csv | ready | 5 rows, support n=120, expected at least 120 |
+| result file: table_external_visual_roi_smoke.csv | ready | 8 rows, support n=150, expected at least 100 |
+| result file: table_gate_confound.csv | ready | 3 rows, support n=3, expected at least 3 |
+| result file: table_matched_deletion.csv | ready | 6 rows, support n=6, expected at least 6 |
+| result file: fold_difficulty_qc.csv | ready | 8 rows, support n=8, expected at least 8 |
 | result file: publication_paired_stats.csv | ready | 119 rows, support n=2744, expected at least 1 |
 | paired stats: main_allfold / Gated ReGraph/BNT+CLIP - ROI-MLP+CLIP | ready | 7 metric rows, expected at least 3 |
 | paired stats: main_allfold / Gated ReGraph/BNT+CLIP - Flat ReGraph+CLIP | ready | 7 metric rows, expected at least 3 |
