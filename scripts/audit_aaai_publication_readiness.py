@@ -152,6 +152,16 @@ def main() -> None:
             args.external_summary_dir / "external_visual_roi_all4_summary.md",
             "not full HCP-MMP",
         ),
+        check_text_file(
+            "LAION trial-wise external validation summary",
+            args.external_summary_dir / "laion_fmri_visual_roi_summary.md",
+            "Trial-wise public LAION-fMRI beta maps",
+        ),
+        check_text_file(
+            "LAION trial-wise external validation LaTeX rows",
+            args.external_summary_dir / "laion_fmri_visual_roi_latex.txt",
+            "LAION-fMRI external visual-ROI validation",
+        ),
     ]
     write_outputs(final / args.output_prefix, rows)
 
