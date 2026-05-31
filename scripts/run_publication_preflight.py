@@ -98,6 +98,9 @@ def compile_tex(root: Path, tex: Path, tool: str) -> Step:
         else:
             completed = run_command(build_dir, ["tectonic", tex_name])
         if completed.returncode == 0:
+            built_pdf = build_dir / f"{stem}.pdf"
+            if not built_pdf.exists():
+                return Step("TeX compile", "incomplete", f"{tool} exited 0 but did not produce {built_pdf.name}")
             return Step("TeX compile", "ready", f"{tool} produced {tex_path.with_suffix('.pdf').name} in isolated build dir")
         return Step("TeX compile", "incomplete", first_lines(completed.stdout, n=8))
 
