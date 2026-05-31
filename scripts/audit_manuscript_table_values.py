@@ -50,6 +50,30 @@ MANUAL_TABLE_LABELS = {
     "tab:top_gated_roi_names": "manual ROI-name interpretation table in neuroscience section",
 }
 
+CAPTION_REQUIREMENTS = {
+    "tab:split_accounting": ("Sequence counts", "pair counts"),
+    "tab:session_order_pair_qc": ("Session/order QC", "same anchor trial"),
+    "tab:implementation_details": ("Implementation and training details",),
+    "tab:within_subject": ("available smoke folds and seeds",),
+    "tab:cross_subject_main": ("mean $\\pm$ std", "8 held-out-subject folds and 3 random seeds"),
+    "tab:sota_baselines": ("mean $\\pm$ std", "not full image-reconstruction system comparisons"),
+    "tab:graph_only": ("mean $\\pm$ std", "8 held-out-subject folds and 3 random seeds"),
+    "tab:adjacency_ablation": ("mean $\\pm$ std", "fold$\\times$seed"),
+    "tab:roi_token_controls": ("mean $\\pm$ std", "fold$\\times$seed"),
+    "tab:adjacency_perturbation": ("mean $\\pm$ std", "available diagnostic runs"),
+    "tab:edge_bias_followup": ("mean $\\pm$ std", "$n$ gives"),
+    "tab:single_ref_matched": ("mean $\\pm$ std", "$n=24$"),
+    "tab:single_ref_retrained": ("mean $\\pm$ std", "$n=24$"),
+    "tab:heldout": ("mean $\\pm$ std", "8 folds $\\times$ 3 seeds"),
+    "tab:hardneg": ("mean $\\pm$ std where available", "point summaries"),
+    "tab:lowshot": ("mean $\\pm$ std", "$n$ fold$\\times$seed"),
+    "tab:external_visual_roi_smoke": ("mean $\\pm$ std", "not full HCP-MMP 180-ROI external validations"),
+    "tab:gate_confound": ("before and after controlling",),
+    "tab:matched_deletion": ("Drops are absolute performance decreases",),
+    "tab:fold_difficulty": ("Fold-level robustness diagnostic", "computed from Pearson correlations"),
+    "tab:top_gated_roi_names": ("Top gated ROIs", "approximate HCP-MMP"),
+}
+
 MODEL_ALIASES = {
     ("tab:cross_subject_main", "Gated ReGraph/BNT+CLIP"): "Gated ReGraph+CLIP",
     ("tab:heldout", "Gated ReGraph/BNT+CLIP"): "Gated ReGraph+CLIP",
@@ -108,6 +132,39 @@ def audit_table_coverage(tex: str) -> AuditRow:
         return AuditRow("table audit coverage", "incomplete", "classified labels not in manuscript: " + ", ".join(stale))
     evidence = f"{len(audited_labels)} artifact-backed tables, {len(MANUAL_TABLE_LABELS)} manual tables classified"
     return AuditRow("table audit coverage", "ready", evidence)
+
+
+def table_caption(tex: str, label: str) -> str:
+    block = find_table_block(tex, label)
+    if not block:
+        return ""
+    match = re.search(r"\\caption\{(.*?)\}", block, flags=re.S)
+    return " ".join(match.group(1).split()) if match else ""
+
+
+def audit_caption_reporting(tex: str) -> AuditRow:
+    manuscript_labels = manuscript_table_labels(tex)
+    missing_specs = sorted(manuscript_labels - set(CAPTION_REQUIREMENTS))
+    stale_specs = sorted(set(CAPTION_REQUIREMENTS) - manuscript_labels)
+    if missing_specs:
+        return AuditRow("table caption reporting", "incomplete", "missing caption requirements for: " + ", ".join(missing_specs))
+    if stale_specs:
+        return AuditRow("table caption reporting", "incomplete", "caption requirements for absent tables: " + ", ".join(stale_specs))
+
+    missing_fragments: list[str] = []
+    for label, fragments in CAPTION_REQUIREMENTS.items():
+        caption = table_caption(tex, label)
+        if not caption:
+            missing_fragments.append(f"{label}: caption missing")
+            continue
+        for fragment in fragments:
+            if fragment not in caption:
+                missing_fragments.append(f"{label}: {fragment}")
+    return AuditRow(
+        "table caption reporting",
+        ready(not missing_fragments),
+        f"{len(CAPTION_REQUIREMENTS)} table captions declare reporting basis" if not missing_fragments else "; ".join(missing_fragments[:8]),
+    )
 
 
 def tex_number(value: str) -> str:
@@ -246,7 +303,11 @@ def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) ->
 def main() -> int:
     args = parse_args()
     tex = args.tex.read_text(encoding="utf-8", errors="replace")
-    rows = [audit_table_coverage(tex), *[audit_spec(tex, args.final_tables_dir, spec) for spec in TABLE_SPECS]]
+    rows = [
+        audit_table_coverage(tex),
+        audit_caption_reporting(tex),
+        *[audit_spec(tex, args.final_tables_dir, spec) for spec in TABLE_SPECS],
+    ]
     write_outputs(args.final_tables_dir, args.output_prefix, rows)
     return 0 if all(row.status == "ready" for row in rows) else 1
 
