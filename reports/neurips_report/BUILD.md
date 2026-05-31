@@ -7,6 +7,18 @@ This directory contains the NeurIPS-style report source:
 - `neurips_2025.sty`
 - `figures/*.pdf` and `figures/*.png`
 
+Run the manuscript preflight audit from the project root before compiling:
+
+```bash
+python3 scripts/audit_manuscript_publication_claims.py \
+  --tex reports/neurips_report/may30.tex \
+  --final-tables-dir preproc_v0/repetition_familiarity/results/final_tables
+```
+
+The audit checks anonymity strings, fixed-adjacency overclaims, duplicate labels,
+unresolved refs, required labels, citation coverage in `references.bib`, figure
+file availability, LaTeX environment balance, and result-artifact coverage.
+
 To compile on a machine with a TeX distribution:
 
 ```bash
