@@ -92,6 +92,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--final-tables-dir", type=Path, default=Path("preproc_v0/repetition_familiarity/results/final_tables"))
     parser.add_argument("--output-dir", type=Path, default=Path("preproc_v0/repetition_familiarity/results/final_tables"))
     parser.add_argument("--output-prefix", default="manuscript_publication_claims_audit")
+    parser.add_argument(
+        "--manuscript-only",
+        action="store_true",
+        help="Check TeX-facing manuscript issues without requiring local copies of all result-table artifacts.",
+    )
     return parser.parse_args()
 
 
@@ -276,11 +281,10 @@ def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) ->
 
 def main() -> None:
     args = parse_args()
-    rows = [
-        *audit_text(args.tex),
-        *audit_result_files(args.final_tables_dir),
-        *audit_publication_stats(args.final_tables_dir),
-    ]
+    rows = [*audit_text(args.tex)]
+    if not args.manuscript_only:
+        rows.extend(audit_result_files(args.final_tables_dir))
+        rows.extend(audit_publication_stats(args.final_tables_dir))
     write_outputs(args.output_dir, args.output_prefix, rows)
 
 
