@@ -276,6 +276,80 @@ def audit_spec(tex: str, final_tables_dir: Path, spec: TableSpec) -> AuditRow:
     )
 
 
+def integer(row: dict[str, str], column: str) -> int:
+    return int(float(row[column]))
+
+
+def audit_split_accounting_invariants(final_tables_dir: Path) -> AuditRow:
+    rows = read_csv(final_tables_dir / "split_accounting.csv")
+    if not rows:
+        return AuditRow("split accounting invariants", "missing", "split_accounting.csv missing or empty")
+    missing: list[str] = []
+    test_subjects: set[str] = set()
+    for row in rows:
+        fold = row.get("fold", "fold")
+        test_subject = row.get("test_subject", "")
+        val_subject = row.get("val_subject", "")
+        if test_subject:
+            test_subjects.add(test_subject)
+        if test_subject and val_subject and test_subject == val_subject:
+            missing.append(f"{fold}: validation subject equals test subject")
+        for split in ("train", "val", "test"):
+            seq = integer(row, f"{split}_seq")
+            pairs = integer(row, f"{split}_pairs")
+            expected_pairs = seq * 6
+            if pairs != expected_pairs:
+                missing.append(f"{fold}: {split}_pairs={pairs}, expected {expected_pairs}")
+        if integer(row, "test_imgs") != integer(row, "test_seq"):
+            missing.append(f"{fold}: test_imgs != test_seq")
+    if len(rows) != 8:
+        missing.append(f"fold rows={len(rows)}, expected 8")
+    if len(test_subjects) != 8:
+        missing.append(f"unique test subjects={len(test_subjects)}, expected 8")
+    return AuditRow(
+        "split accounting invariants",
+        ready(not missing),
+        "8 folds; unique held-out subjects; pair counts equal strict T=3 sequences x 6" if not missing else "; ".join(missing[:8]),
+    )
+
+
+def audit_session_order_qc_invariants(final_tables_dir: Path) -> AuditRow:
+    rows = read_csv(final_tables_dir / "session_order_pair_qc.csv")
+    if not rows:
+        return AuditRow("session/order QC invariants", "missing", "session_order_pair_qc.csv missing or empty")
+    by_split = {row.get("split", ""): row for row in rows}
+    missing: list[str] = []
+    for split, row in by_split.items():
+        pairs = integer(row, "pairs")
+        positive = integer(row, "positive")
+        negative = integer(row, "negative")
+        complete_groups = integer(row, "complete_groups")
+        problem_groups = integer(row, "problem_groups")
+        if pairs != positive + negative:
+            missing.append(f"{split}: pairs != positive + negative")
+        if positive != negative:
+            missing.append(f"{split}: positive != negative")
+        if complete_groups != positive:
+            missing.append(f"{split}: complete_groups != positive")
+        if problem_groups != 0:
+            missing.append(f"{split}: problem_groups={problem_groups}")
+        if row.get("anchor_match") != "100%":
+            missing.append(f"{split}: anchor_match={row.get('anchor_match')}")
+    if {"Train", "Val", "Test", "All"} - set(by_split):
+        missing.append("expected Train/Val/Test/All rows")
+    if "All" in by_split:
+        for column in ("pairs", "positive", "negative", "complete_groups", "problem_groups"):
+            observed = integer(by_split["All"], column)
+            expected = sum(integer(by_split[split], column) for split in ("Train", "Val", "Test") if split in by_split)
+            if observed != expected:
+                missing.append(f"All {column}={observed}, expected {expected}")
+    return AuditRow(
+        "session/order QC invariants",
+        ready(not missing),
+        "positive/negative counts are balanced, anchor matches are 100%, and All totals match splits" if not missing else "; ".join(missing[:8]),
+    )
+
+
 def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = output_dir / f"{output_prefix}.csv"
@@ -306,6 +380,8 @@ def main() -> int:
     rows = [
         audit_table_coverage(tex),
         audit_caption_reporting(tex),
+        audit_split_accounting_invariants(args.final_tables_dir),
+        audit_session_order_qc_invariants(args.final_tables_dir),
         *[audit_spec(tex, args.final_tables_dir, spec) for spec in TABLE_SPECS],
     ]
     write_outputs(args.final_tables_dir, args.output_prefix, rows)
