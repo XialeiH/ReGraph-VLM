@@ -35,6 +35,12 @@ TABLE_SPECS = [
     TableSpec("tab:hardneg", "table_hard_negative_allfold.csv", ("AUROC", "AUPRC", "R@5", "MRR", "image_R@5", "brain_R@5", "brain_MRR")),
 ]
 
+MODEL_ALIASES = {
+    ("tab:cross_subject_main", "Gated ReGraph/BNT+CLIP"): "Gated ReGraph+CLIP",
+    ("tab:heldout", "Gated ReGraph/BNT+CLIP"): "Gated ReGraph+CLIP",
+    ("tab:hardneg", "Gated ReGraph/BNT+CLIP"): "Gated ReGraph+CLIP",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit that key may30.tex table numbers match committed CSV artifacts.")
@@ -96,6 +102,39 @@ def expected_fragments(row: dict[str, str], metrics: tuple[str, ...]) -> list[st
     return fragments
 
 
+def row_label(row: dict[str, str]) -> str:
+    for key in ("model", "Model", "condition", "Condition", "setting", "Setting"):
+        value = row.get(key, "").strip()
+        if value:
+            return value
+    return "row"
+
+
+def display_label(spec_label: str, label: str) -> str:
+    display = MODEL_ALIASES.get((spec_label, label), label)
+    return display.replace("%", r"\%")
+
+
+def find_row_block(table_block: str, label: str) -> str:
+    start = 0
+    while True:
+        idx = table_block.find(label, start)
+        if idx < 0:
+            return ""
+        row_start = table_block.rfind("\n", 0, idx) + 1
+        row_end = table_block.find("\\\\", idx)
+        if row_end < 0:
+            row_end = table_block.find("\n", idx)
+        if row_end < 0:
+            row_end = min(len(table_block), idx + 500)
+        else:
+            row_end += 2
+        row_block = table_block[row_start:row_end]
+        if "&" in row_block and re.search(r"\d+\.\d+", row_block):
+            return row_block
+        start = idx + len(label)
+
+
 def audit_spec(tex: str, final_tables_dir: Path, spec: TableSpec) -> AuditRow:
     block = find_table_block(tex, spec.label)
     if not block:
@@ -107,17 +146,22 @@ def audit_spec(tex: str, final_tables_dir: Path, spec: TableSpec) -> AuditRow:
     missing: list[str] = []
     checked = 0
     for row in rows:
-        model = row.get("model", "row")
+        model = row_label(row)
+        manuscript_label = display_label(spec.label, model)
+        row_block = find_row_block(block, manuscript_label)
+        if not row_block:
+            missing.append(f"{model}: row not found as {manuscript_label}")
+            continue
         for fragment in expected_fragments(row, spec.metrics):
             checked += 1
-            if fragment not in block:
+            if fragment not in row_block:
                 missing.append(f"{model}: {fragment}")
     if checked == 0:
         return AuditRow(spec.label, "incomplete", f"no numeric fragments extracted from {spec.csv_name}")
     return AuditRow(
         spec.label,
         ready(not missing),
-        f"{checked} numeric fragments match {spec.csv_name}" if not missing else "; ".join(missing[:10]),
+        f"{checked} numeric fragments match rows in {spec.csv_name}" if not missing else "; ".join(missing[:10]),
     )
 
 
