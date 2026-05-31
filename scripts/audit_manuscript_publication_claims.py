@@ -141,6 +141,16 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
     missing_required = sorted(set(REQUIRED_LABELS) - set(labels))
     rows.append(AuditRow("required publication labels", status(not missing_required), "all present" if not missing_required else ", ".join(missing_required)))
 
+    figure_paths = re.findall(r"\\IfFileExists\{([^}]+)\}", text)
+    missing_figures = sorted(path for path in figure_paths if not (tex_path.parent / path).exists())
+    rows.append(
+        AuditRow(
+            "figure file availability",
+            status(not missing_figures),
+            f"{len(figure_paths)} checked, all present" if not missing_figures else ", ".join(missing_figures),
+        )
+    )
+
     for env in ["table", "figure", "equation"]:
         begin, end = count_env(text, env)
         rows.append(AuditRow(f"{env} environment balance", status(begin == end), f"begin={begin}, end={end}"))
