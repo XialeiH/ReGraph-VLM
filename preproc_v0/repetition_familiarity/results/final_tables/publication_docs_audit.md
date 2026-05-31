@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 14}
+Status counts: {'ready': 15}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -13,6 +13,7 @@ Status counts: {'ready': 14}
 | statistical-claims audit documented | ready | README and BUILD mention statistical-claims verification |
 | artifact-provenance audit documented | ready | README and BUILD mention artifact-provenance verification |
 | CI runs publication preflight | ready | workflow runs preflight command |
+| CI requires TeX compilation | ready | workflow installs TeX and runs compile-required preflight |
 | CI verifies generated artifacts | ready | workflow fails on generated artifact drift |
 | CI covers main and pull requests | ready | workflow triggers on main pushes and pull requests |
 | stale may23 references | ready | none found |

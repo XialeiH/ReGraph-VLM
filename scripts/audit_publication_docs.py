@@ -131,6 +131,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "workflow runs preflight command",
         ),
         AuditRow(
+            "CI requires TeX compilation",
+            ready("--compile" in workflow and "latexmk" in workflow),
+            "workflow installs TeX and runs compile-required preflight",
+        ),
+        AuditRow(
             "CI verifies generated artifacts",
             ready("git diff --exit-code" in workflow),
             "workflow fails on generated artifact drift",

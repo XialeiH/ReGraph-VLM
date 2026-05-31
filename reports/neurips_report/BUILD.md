@@ -17,7 +17,9 @@ This regenerates lightweight publication tables, runs the AAAI artifact audit,
 verifies publication artifact provenance, runs the full manuscript/result audit,
 checks README/BUILD consistency, verifies key manuscript table values and
 statistical claims against committed CSV artifacts, runs the manuscript-only
-audit, and reports whether a local TeX compiler is available.
+audit, and reports whether a local TeX compiler is available. GitHub Actions
+installs a TeX distribution and runs the compile-required preflight on pushes to
+`main` and pull requests.
 
 If a TeX distribution is installed, compile through the same preflight:
 
