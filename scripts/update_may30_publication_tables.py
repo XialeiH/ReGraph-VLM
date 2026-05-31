@@ -16,8 +16,8 @@ LAION_METRICS = ["test_AUROC", "test_AUPRC", "test_R@5", "test_MRR"]
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Update publication result-table blocks in reports/neurips_report/may23.tex.")
-    parser.add_argument("--tex", type=Path, default=Path("reports/neurips_report/may23.tex"))
+    parser = argparse.ArgumentParser(description="Update publication result-table blocks in reports/neurips_report/may30.tex.")
+    parser.add_argument("--tex", type=Path, default=Path("reports/neurips_report/may30.tex"))
     parser.add_argument(
         "--single-ref-latex",
         type=Path,

@@ -88,7 +88,7 @@ OVERCLAIM_PATTERNS = [
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit manuscript/result consistency for the AAAI-style ReGraph-VLM submission.")
-    parser.add_argument("--tex", type=Path, default=Path("reports/neurips_report/may23.tex"))
+    parser.add_argument("--tex", type=Path, default=Path("reports/neurips_report/may30.tex"))
     parser.add_argument("--final-tables-dir", type=Path, default=Path("preproc_v0/repetition_familiarity/results/final_tables"))
     parser.add_argument("--output-dir", type=Path, default=Path("preproc_v0/repetition_familiarity/results/final_tables"))
     parser.add_argument("--output-prefix", default="manuscript_publication_claims_audit")
