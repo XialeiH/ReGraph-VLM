@@ -198,7 +198,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "manuscript_publication_claims_audit.csv", 49))
+    rows.append(audit_status(root / final / "manuscript_publication_claims_audit.csv", 50))
 
     rows.append(
         require_ok(
@@ -274,7 +274,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(manuscript_only_dir / "manuscript_publication_claims_audit.csv", 19))
+    rows.append(audit_status(manuscript_only_dir / "manuscript_publication_claims_audit.csv", 20))
 
     tex_tool = detect_tex_tool()
     if args.compile:

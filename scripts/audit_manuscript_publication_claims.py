@@ -183,10 +183,14 @@ def audit_math_dollar_balance(text: str) -> AuditRow:
 
 
 def audit_tracked_figures(tex_path: Path, figure_paths: list[str]) -> AuditRow:
+    return audit_tracked_paths(tex_path, figure_paths, "figure files tracked by Git")
+
+
+def audit_tracked_paths(tex_path: Path, raw_paths: list[str], item: str) -> AuditRow:
     root_cmd = ["git", "-C", str(tex_path.parent), "rev-parse", "--show-toplevel"]
     root_run = subprocess.run(root_cmd, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
     if root_run.returncode != 0:
-        return AuditRow("figure files tracked by Git", "ready", "git metadata unavailable; skipped outside Git checkout")
+        return AuditRow(item, "ready", "git metadata unavailable; skipped outside Git checkout")
 
     git_root = Path(root_run.stdout.strip())
     tracked_run = subprocess.run(
@@ -197,11 +201,11 @@ def audit_tracked_figures(tex_path: Path, figure_paths: list[str]) -> AuditRow:
         check=False,
     )
     if tracked_run.returncode != 0:
-        return AuditRow("figure files tracked by Git", "incomplete", tracked_run.stderr.strip() or "git ls-files failed")
+        return AuditRow(item, "incomplete", tracked_run.stderr.strip() or "git ls-files failed")
 
     tracked = set(tracked_run.stdout.splitlines())
     missing: list[str] = []
-    for raw_path in figure_paths:
+    for raw_path in raw_paths:
         absolute = (tex_path.parent / raw_path).resolve()
         try:
             relative = absolute.relative_to(git_root.resolve()).as_posix()
@@ -211,9 +215,9 @@ def audit_tracked_figures(tex_path: Path, figure_paths: list[str]) -> AuditRow:
         if relative not in tracked:
             missing.append(relative)
     return AuditRow(
-        "figure files tracked by Git",
+        item,
         status(not missing),
-        f"{len(figure_paths)} checked, all tracked" if not missing else ", ".join(missing),
+        f"{len(raw_paths)} checked, all tracked" if not missing else ", ".join(missing),
     )
 
 
@@ -275,6 +279,29 @@ def bibliography_paths(tex_path: Path, text: str) -> list[Path]:
     return paths
 
 
+def local_style_paths(tex_path: Path, text: str) -> list[Path]:
+    paths: list[Path] = []
+    for match in re.findall(r"\\usepackage(?:\[[^\]]*\])?\{([^}]+)\}", text):
+        for raw_name in match.split(","):
+            name = raw_name.strip()
+            if not name:
+                continue
+            style_path = tex_path.parent / f"{name}.sty"
+            if style_path.exists():
+                paths.append(style_path)
+    return paths
+
+
+def relative_to_tex_dir(tex_path: Path, paths: list[Path]) -> list[str]:
+    raw_paths: list[str] = []
+    for path in paths:
+        try:
+            raw_paths.append(path.resolve().relative_to(tex_path.parent.resolve()).as_posix())
+        except ValueError:
+            raw_paths.append(str(path))
+    return raw_paths
+
+
 def bib_keys(paths: list[Path]) -> tuple[set[str], list[Path]]:
     keys: set[str] = set()
     missing_paths: list[Path] = []
@@ -331,6 +358,9 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
         cite_status = "ready"
         cite_evidence = f"{len(cite_keys)} citation keys covered by {len(bib_paths)} bibliography file(s)"
     rows.append(AuditRow("citation bibliography coverage", cite_status, cite_evidence))
+
+    support_files = relative_to_tex_dir(tex_path, [*bib_paths, *local_style_paths(tex_path, text)])
+    rows.append(audit_tracked_paths(tex_path, support_files, "manuscript support files tracked by Git"))
 
     figure_paths = re.findall(r"\\IfFileExists\{([^}]+)\}", text)
     missing_figures = sorted(path for path in figure_paths if not (tex_path.parent / path).exists())
