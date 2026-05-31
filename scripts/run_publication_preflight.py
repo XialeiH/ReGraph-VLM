@@ -29,6 +29,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--external-summary-dir", type=Path, default=Path("external_validation/summary"))
     parser.add_argument("--compile", action="store_true", help="Compile the TeX file when a supported TeX tool is available.")
+    parser.add_argument("--require-clean", action="store_true", help="Fail if preflight leaves tracked or untracked Git changes.")
     return parser.parse_args()
 
 
@@ -103,6 +104,15 @@ def compile_tex(root: Path, tex: Path, tool: str) -> Step:
                 return Step("TeX compile", "incomplete", f"{tool} exited 0 but did not produce {built_pdf.name}")
             return Step("TeX compile", "ready", f"{tool} produced {tex_path.with_suffix('.pdf').name} in isolated build dir")
         return Step("TeX compile", "incomplete", first_lines(completed.stdout, n=8))
+
+
+def audit_clean_worktree(root: Path) -> Step:
+    completed = run_command(root, ["git", "status", "--porcelain"])
+    if completed.returncode != 0:
+        return Step("Git working tree clean", "incomplete", first_lines(completed.stdout, n=8))
+    if completed.stdout.strip():
+        return Step("Git working tree clean", "incomplete", first_lines(completed.stdout, n=8))
+    return Step("Git working tree clean", "ready", "no tracked or untracked artifact drift")
 
 
 def write_summary(rows: list[Step]) -> str:
@@ -284,6 +294,9 @@ def main() -> int:
             rows.append(compile_tex(root, tex, tex_tool))
     else:
         rows.append(Step("TeX compile", "skipped", tex_tool or "no local TeX compiler found; pass --compile to require PDF build"))
+
+    if args.require_clean:
+        rows.append(audit_clean_worktree(root))
 
     summary = write_summary(rows)
     print(summary, end="")

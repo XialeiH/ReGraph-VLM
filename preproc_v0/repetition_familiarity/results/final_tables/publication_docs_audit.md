@@ -15,8 +15,8 @@ Status counts: {'ready': 17}
 | CI runs publication preflight | ready | workflow runs preflight command |
 | CI requires TeX compilation | ready | workflow installs TeX and runs compile-required preflight |
 | CI installs recommended TeX packages | ready | workflow includes recommended and extra LaTeX package bundles |
-| CI verifies generated artifacts | ready | workflow fails on tracked or untracked generated artifact drift |
-| CI catches untracked artifacts | ready | workflow uses full working-tree cleanliness instead of tracked-file diff only |
+| CI verifies generated artifacts | ready | workflow delegates tracked/untracked artifact drift check to preflight |
+| CI catches untracked artifacts | ready | workflow uses preflight working-tree cleanliness instead of tracked-file diff only |
 | CI covers main and pull requests | ready | workflow triggers on main pushes and pull requests |
 | stale may23 references | ready | none found |
 | publication-facing docs deanonymizing strings | ready | none found |
