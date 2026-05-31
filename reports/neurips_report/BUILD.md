@@ -27,7 +27,7 @@ For the full publication artifact audit, run the same script without
 To compile on a machine with a TeX distribution:
 
 ```bash
-cd "/Users/xialeihuang/Desktop/NYU Shanghai courses/Machine Learning with Graphs/Final_Project/reports/neurips_report"
+cd reports/neurips_report
 pdflatex may30.tex
 bibtex may30
 pdflatex may30.tex
