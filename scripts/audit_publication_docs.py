@@ -117,6 +117,11 @@ def audit_docs(readme_path: Path, build_path: Path, allfold_path: Path) -> list[
             ready("statistical claims" in readme and "statistical claims" in build),
             "README and BUILD mention statistical-claims verification",
         ),
+        AuditRow(
+            "artifact-provenance audit documented",
+            ready("artifact provenance" in readme and "artifact provenance" in build),
+            "README and BUILD mention artifact-provenance verification",
+        ),
         AuditRow("stale may23 references", ready("may23" not in combined), "none found" if "may23" not in combined else "may23 found"),
     ]
 

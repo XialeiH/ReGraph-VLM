@@ -157,6 +157,24 @@ def main() -> int:
 
     rows.append(
         require_ok(
+            "publication artifact provenance audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_publication_artifact_provenance.py",
+                    "--final-tables-dir",
+                    str(final),
+                    "--source-tex",
+                    str(tex),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 19))
+
+    rows.append(
+        require_ok(
             "full manuscript/result audit",
             run_command(
                 root,
@@ -189,7 +207,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 9))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 10))
 
     rows.append(
         require_ok(

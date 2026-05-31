@@ -137,6 +137,17 @@ def write_component_and_ablation_tables(final: Path, tex: str) -> None:
         return [row(source, name, n, values) for name, n, values in items]
 
     write_csv(
+        final / "table_adjacency_ablation.csv",
+        simple_rows(
+            f"{tex}: Table tab:adjacency_ablation",
+            [
+                ("ROI-MLP+CLIP", 24, {"AUROC": (0.8164, 0.0518), "AUPRC": (0.7896, 0.0532), "R@5": (0.0782, 0.0273), "MRR": (0.0636, 0.0190), "brain_R@5": (0.0837, 0.0291)}),
+                ("No-adj gated ROI Transformer+CLIP", 24, {"AUROC": (0.8258, 0.0513), "AUPRC": (0.8061, 0.0504), "R@5": (0.0884, 0.0361), "MRR": (0.0692, 0.0239), "brain_R@5": (0.0965, 0.0320)}),
+                ("Gated ReGraph/BNT+CLIP", 24, {"AUROC": (0.8259, 0.0523), "AUPRC": (0.8065, 0.0528), "R@5": (0.0899, 0.0357), "MRR": (0.0695, 0.0240), "brain_R@5": (0.0996, 0.0310)}),
+            ],
+        ),
+    )
+    write_csv(
         final / "table_roi_token_controls.csv",
         simple_rows(
             f"{tex}: Table tab:roi_token_controls",
@@ -217,6 +228,14 @@ def write_qc_and_single_ref(final: Path, tex: str) -> None:
             row(f"{tex}: Table tab:single_ref_matched", "ROI-MLP+CLIP", 24, {"AUROC": (0.7731, 0.0460), "AUPRC": (0.7450, 0.0472), "R@5": (0.0535, 0.0196), "MRR": (0.0459, 0.0138), "image_R@5": (0.0729, 0.0280), "brain_R@5": (0.0837, 0.0291), "brain_MRR": (0.0668, 0.0193)}),
             row(f"{tex}: Table tab:single_ref_matched", "No-adj gated ROI Transformer+CLIP", 24, {"AUROC": (0.7814, 0.0425), "AUPRC": (0.7584, 0.0435), "R@5": (0.0586, 0.0197), "MRR": (0.0494, 0.0139), "image_R@5": (0.0815, 0.0319), "brain_R@5": (0.0965, 0.0320), "brain_MRR": (0.0756, 0.0208)}),
             row(f"{tex}: Table tab:single_ref_matched", "Gated ReGraph/BNT+CLIP", 24, {"AUROC": (0.7828, 0.0452), "AUPRC": (0.7606, 0.0461), "R@5": (0.0577, 0.0191), "MRR": (0.0497, 0.0138), "image_R@5": (0.0847, 0.0318), "brain_R@5": (0.0996, 0.0310), "brain_MRR": (0.0773, 0.0207)}),
+        ],
+    )
+    write_csv(
+        final / "single_ref_matched_allseed_summary.csv",
+        [
+            row(f"{tex}: Table tab:single_ref_retrained", "Gated ReGraph/BNT+CLIP", 24, {"AUROC": (0.7873, 0.0465), "AUPRC": (0.7657, 0.0480), "R@5": (0.0600, 0.0214), "MRR": (0.0504, 0.0149), "image_R@5": (0.0728, 0.0265), "brain_R@5": (0.0871, 0.0260), "brain_MRR": (0.0688, 0.0176)}),
+            row(f"{tex}: Table tab:single_ref_retrained", "No-adj gated ROI Transformer+CLIP", 24, {"AUROC": (0.7873, 0.0465), "AUPRC": (0.7657, 0.0480), "R@5": (0.0600, 0.0214), "MRR": (0.0504, 0.0149), "image_R@5": (0.0728, 0.0265), "brain_R@5": (0.0871, 0.0260), "brain_MRR": (0.0688, 0.0176)}),
+            row(f"{tex}: Table tab:single_ref_retrained", "ROI-MLP+CLIP", 24, {"AUROC": (0.7759, 0.0460), "AUPRC": (0.7468, 0.0470), "R@5": (0.0512, 0.0187), "MRR": (0.0447, 0.0136), "image_R@5": (0.0656, 0.0238), "brain_R@5": (0.0773, 0.0244), "brain_MRR": (0.0621, 0.0163)}),
         ],
     )
 

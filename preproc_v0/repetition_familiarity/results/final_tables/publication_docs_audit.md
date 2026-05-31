@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 9}
+Status counts: {'ready': 10}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -10,6 +10,7 @@ Status counts: {'ready': 9}
 | one-command preflight documented | ready | preflight command present in README and BUILD |
 | compile path documented | ready | --compile command present in README and BUILD |
 | statistical-claims audit documented | ready | README and BUILD mention statistical-claims verification |
+| artifact-provenance audit documented | ready | README and BUILD mention artifact-provenance verification |
 | stale may23 references | ready | none found |
 | documentation deanonymizing strings | ready | none found |
 | README main-result table values | ready | all values match table_allfold_final.csv |
