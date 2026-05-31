@@ -191,6 +191,24 @@ def main() -> int:
     )
     rows.append(audit_status(root / final / "publication_docs_audit.csv", 8))
 
+    rows.append(
+        require_ok(
+            "manuscript table-values audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_manuscript_table_values.py",
+                    "--tex",
+                    str(tex),
+                    "--final-tables-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "manuscript_table_values_audit.csv", 10))
+
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(
         require_ok(

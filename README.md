@@ -122,7 +122,7 @@ Run the full preflight from the project root before compiling or submitting:
 python3 scripts/run_publication_preflight.py
 ```
 
-This regenerates lightweight result artifacts, runs the AAAI artifact audit, runs the full manuscript/result audit, checks README/BUILD consistency, runs the manuscript-only audit, and reports whether a local TeX compiler is available.
+This regenerates lightweight result artifacts, runs the AAAI artifact audit, runs the full manuscript/result audit, checks README/BUILD consistency, verifies key manuscript table values against committed CSV artifacts, runs the manuscript-only audit, and reports whether a local TeX compiler is available.
 The same non-compile preflight runs in GitHub Actions on pushes to `main` and pull requests.
 
 Run the manuscript-only audit directly when you only need a fast TeX-facing check:
