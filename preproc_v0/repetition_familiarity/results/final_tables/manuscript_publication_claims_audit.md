@@ -16,7 +16,7 @@ Status counts: {'ready': 50}
 | citation bibliography coverage | ready | 18 citation keys covered by 1 bibliography file(s) |
 | manuscript support files tracked by Git | ready | 2 checked, all tracked |
 | figure file availability | ready | 5 checked, all present |
-| unresolved manuscript placeholders | ready | no \needupdate uses and all 5 figure fallbacks resolve to files |
+| unresolved manuscript placeholders | ready | no \needupdate uses and all 5 figure dependencies resolve to files |
 | figure files tracked by Git | ready | 5 checked, all tracked |
 | TeX group brace balance | ready | all unescaped group braces balanced |
 | TeX math dollar balance | ready | single=766, double=0 |

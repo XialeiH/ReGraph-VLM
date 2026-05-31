@@ -302,6 +302,13 @@ def relative_to_tex_dir(tex_path: Path, paths: list[Path]) -> list[str]:
     return raw_paths
 
 
+def figure_dependency_paths(text: str) -> list[str]:
+    paths: list[str] = []
+    paths.extend(re.findall(r"\\IfFileExists\{([^}]+)\}", text))
+    paths.extend(re.findall(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", text))
+    return list(dict.fromkeys(paths))
+
+
 def bib_keys(paths: list[Path]) -> tuple[set[str], list[Path]]:
     keys: set[str] = set()
     missing_paths: list[Path] = []
@@ -362,7 +369,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
     support_files = relative_to_tex_dir(tex_path, [*bib_paths, *local_style_paths(tex_path, text)])
     rows.append(audit_tracked_paths(tex_path, support_files, "manuscript support files tracked by Git"))
 
-    figure_paths = re.findall(r"\\IfFileExists\{([^}]+)\}", text)
+    figure_paths = figure_dependency_paths(text)
     missing_figures = sorted(path for path in figure_paths if not (tex_path.parent / path).exists())
     rows.append(
         AuditRow(
@@ -377,7 +384,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
             "unresolved manuscript placeholders",
             status(not needupdate_lines and not missing_figures),
             (
-                f"no \\needupdate uses and all {len(figure_paths)} figure fallbacks resolve to files"
+                f"no \\needupdate uses and all {len(figure_paths)} figure dependencies resolve to files"
                 if not needupdate_lines and not missing_figures
                 else f"\\needupdate lines={needupdate_lines or 'none'}; missing figures={missing_figures or 'none'}"
             ),
