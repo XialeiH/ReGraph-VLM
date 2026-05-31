@@ -101,6 +101,18 @@ OVERCLAIM_PATTERNS = [
 
 LATEX_ENVIRONMENTS = ["table", "figure", "equation", "tabular", "tabularx"]
 
+IMPLEMENTATION_DETAIL_REQUIREMENTS = {
+    "BCE loss": ("\\mathcal{L}_{\\mathrm{BCE}}", "pair matching"),
+    "repeat InfoNCE": ("\\mathcal{L}_{\\mathrm{repeat\\ InfoNCE}}", "other positive pairs in the minibatch as negatives", "L2-normalize"),
+    "CLIP alignment": ("frozen CLIP image embeddings", "\\tau_{\\mathrm{clip}}", "\\lambda_{\\mathrm{clip}}=2.0"),
+    "train-only adjacency": ("training data only", "absolute ROI-response correlations", "Validation and test responses are never used"),
+    "brain encoder": ("hidden dimension 64", "2 layers", "4 heads", "dropout 0.3"),
+    "projection/readout": ("gated-flat ROI-preserving readout", "final embedding dimension 128", "shared 128-d space"),
+    "optimization": ("AdamW", "learning rate $10^{-3}$", "weight decay $10^{-4}$", "batch size 128", "gradient clipping at 5.0"),
+    "training selection": ("Up to 80 epochs", "patience 12", "validation AUROC"),
+    "evaluation protocol": ("8 held-out-subject folds", "seeds 11, 22, and 33"),
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit manuscript/result consistency for the AAAI-style ReGraph-VLM submission.")
@@ -313,6 +325,31 @@ def figure_dependency_paths(text: str) -> list[str]:
     return list(dict.fromkeys(paths))
 
 
+def implementation_detail_block(text: str) -> str:
+    marker = "\\subsection{Experimental protocol and implementation details}"
+    start = text.find(marker)
+    if start < 0:
+        return ""
+    end = text.find("\\section{Main Results}", start)
+    return text[start:end] if end >= 0 else text[start:]
+
+
+def audit_implementation_details(text: str) -> AuditRow:
+    block = implementation_detail_block(text)
+    if not block:
+        return AuditRow("implementation detail coverage", "missing", "implementation details subsection not found")
+    missing: list[str] = []
+    for item, fragments in IMPLEMENTATION_DETAIL_REQUIREMENTS.items():
+        absent = [fragment for fragment in fragments if fragment not in block]
+        if absent:
+            missing.append(f"{item}: " + ", ".join(absent))
+    return AuditRow(
+        "implementation detail coverage",
+        status(not missing),
+        f"{len(IMPLEMENTATION_DETAIL_REQUIREMENTS)} reproducibility detail groups present" if not missing else "; ".join(missing[:6]),
+    )
+
+
 def bib_keys(paths: list[Path]) -> tuple[set[str], list[Path]]:
     keys: set[str] = set()
     missing_paths: list[Path] = []
@@ -354,6 +391,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
 
     missing_required = sorted(set(REQUIRED_LABELS) - set(labels))
     rows.append(AuditRow("required publication labels", status(not missing_required), "all present" if not missing_required else ", ".join(missing_required)))
+    rows.append(audit_implementation_details(text))
 
     cite_keys = citation_keys(text)
     bib_paths = bibliography_paths(tex_path, text)

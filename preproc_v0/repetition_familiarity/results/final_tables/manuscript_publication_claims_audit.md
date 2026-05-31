@@ -2,7 +2,7 @@
 
 This audit checks manuscript/result consistency for the publication-facing ReGraph-VLM story.
 
-Status counts: {'ready': 50}
+Status counts: {'ready': 51}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -13,6 +13,7 @@ Status counts: {'ready': 50}
 | duplicate labels | ready | none |
 | unresolved refs | ready | none |
 | required publication labels | ready | all present |
+| implementation detail coverage | ready | 9 reproducibility detail groups present |
 | citation bibliography coverage | ready | 18 citation keys covered by 1 bibliography file(s) |
 | manuscript support files tracked by Git | ready | 2 checked, all tracked |
 | figure file availability | ready | 5 checked, all present |
