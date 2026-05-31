@@ -80,8 +80,9 @@ estimated listed public data size:
   sub-07: 78.060 GB listed, 37.955 GB singletrial beta maps
 
 current status:
-  metadata/listing feasibility confirmed only
-  full validation still requires ROI projection/extraction and stimulus alignment
+  metadata/listing feasibility confirmed
+  trial-wise visual-ROI scalar4 export pipeline implemented
+  download-only stage must run on the Shanghai login node because Slurm compute nodes currently cannot resolve the public S3 host
 ```
 
 Public trial-metadata analysis from Shanghai:
@@ -107,23 +108,46 @@ cross-subject repeated-label candidates:
 
 interpretation:
   LAION-fMRI is a strong future strict-repeat external-validation candidate.
-  The remaining work is ROI extraction/projection from the public single-trial beta maps.
+  The remaining work is completing the trial-wise beta download/export/training chain and reporting results.
 ```
 
 ## Immediate Implementation Target
 
-Use CNeuroMod-THINGS first. The first concrete milestone should be a smoke validation fold:
+Use LAION-fMRI first for the next paper-level external validation because it has public trial-wise single-trial beta maps, public visual ROI masks, five subjects, and repeated shared images. The current executable milestone is:
 
 ```text
-one or two subjects
-one small session subset
-trial metadata/events
-preprocessed derivative or GLM beta subset
-ROI-cache construction
-same-image repeat retrieval sanity check
+subjects: sub-01, sub-03, sub-05, sub-06, sub-07
+sessions: ses-01 through ses-10
+shared labels: first 200 labels with at least 3 repeats in every subject within the selected sessions
+ROI source: public T1w 1.8mm LAION/visual category masks
+feature format: scalar4, padded to the 180-token interface
+models: ROI-MLP and gated ROI Transformer
+training: all 10 subject pairs, seeds 11/22/33
 ```
 
-Only after the smoke fold works should the download expand to all four subjects.
+Prepared code:
+
+```text
+scripts/export_laion_fmri_visual_roi_scalar4.py
+scripts/run_laion_fmri_download_login.sh
+scripts/shanghai_laion_fmri_visual_roi_export.sbatch
+scripts/shanghai_laion_fmri_external_array.sbatch
+scripts/shanghai_laion_fmri_external_summary.sbatch
+scripts/submit_shanghai_laion_fmri_external.sh
+scripts/summarize_laion_fmri_external_results.py
+```
+
+Current execution plan:
+
+```text
+1. Run scripts/run_laion_fmri_download_login.sh on the Shanghai login node.
+2. This writes external_validation/laion_fmri/visual_roi_scalar4_laion/laion_download_manifest.json.
+3. Submit scripts/submit_shanghai_laion_fmri_external.sh after the manifest exists.
+4. Compute-node export runs in local-only mode from the downloaded files.
+5. Training array runs ROI-MLP versus gated ROI Transformer over all LAION subject pairs and seeds.
+```
+
+This LAION run is still an external visual-ROI validation, not a full HCP-MMP replication, but it is stronger than the earlier compact public visual-ROI smoke checks because it uses public trial-wise beta maps and repeated shared images directly.
 
 ## CNeuroMod-THINGS Progress On Shanghai HPC
 
