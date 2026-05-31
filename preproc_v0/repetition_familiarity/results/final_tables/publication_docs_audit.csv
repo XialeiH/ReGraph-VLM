@@ -14,5 +14,5 @@ CI verifies generated artifacts,ready,workflow fails on tracked or untracked gen
 CI catches untracked artifacts,ready,workflow uses full working-tree cleanliness instead of tracked-file diff only
 CI covers main and pull requests,ready,workflow triggers on main pushes and pull requests
 stale may23 references,ready,none found
-documentation deanonymizing strings,ready,none found
+publication-facing docs deanonymizing strings,ready,none found
 README main-result table values,ready,all values match table_allfold_final.csv

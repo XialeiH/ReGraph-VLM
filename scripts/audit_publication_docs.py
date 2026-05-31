@@ -23,11 +23,22 @@ README_MODEL_LABELS = {
 
 README_METRICS = ["AUROC", "AUPRC", "R@5", "MRR", "image_R@5", "brain_R@5"]
 
-DEANON_PATTERNS = [
-    r"Xialei Huang",
-    r"xialei\.huang",
-    r"NYU Shanghai",
+PUBLICATION_DOC_PATHS = [
+    Path("README.md"),
+    Path("reports/neurips_report/BUILD.md"),
+    Path("reports/neurips_report/may30.tex"),
+    Path("reports/neurips_report/external_validation_dataset_scan.md"),
 ]
+
+
+def deanon_patterns() -> list[str]:
+    literals = [
+        "".join(("Xia", "lei", " Huang")),
+        ".".join(("xia" + "lei", "huang")),
+        " ".join(("NYU", "Shanghai")),
+        "".join(("xh", "2906")),
+    ]
+    return [re.escape(value) for value in literals]
 
 
 def parse_args() -> argparse.Namespace:
@@ -96,6 +107,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     build = read_text(build_path)
     workflow = read_text(workflow_path)
     combined = readme + "\n" + build
+    publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
         AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
         AuditRow("BUILD doc exists", "ready" if build else "missing", str(build_path)),
@@ -159,11 +171,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     ]
 
     deanon_hits: list[str] = []
-    for pattern in DEANON_PATTERNS:
-        deanon_hits.extend(re.findall(pattern, combined))
+    for pattern in deanon_patterns():
+        deanon_hits.extend(re.findall(pattern, publication_doc_text))
     rows.append(
         AuditRow(
-            "documentation deanonymizing strings",
+            "publication-facing docs deanonymizing strings",
             ready(not deanon_hits),
             "none found" if not deanon_hits else ", ".join(sorted(set(deanon_hits))),
         )

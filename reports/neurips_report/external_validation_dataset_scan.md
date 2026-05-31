@@ -1,9 +1,9 @@
 # External Validation Dataset Scan
 
-This note tracks external fMRI datasets for reviewer-facing validation. Large datasets should be downloaded directly to Shanghai HPC scratch under:
+This note tracks external fMRI datasets for reviewer-facing validation. Large datasets should be downloaded directly to Shanghai HPC scratch. In this note, `$REGRAPH_VLM_HPC_ROOT` denotes the project scratch root on Shanghai HPC:
 
 ```text
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation
+$REGRAPH_VLM_HPC_ROOT/external_validation
 ```
 
 ## Priority Order
@@ -54,7 +54,7 @@ Shanghai HPC access probe:
 
 ```text
 probe date: 2026-05-30
-probe path: /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/laion_fmri_probe
+probe path: $REGRAPH_VLM_HPC_ROOT/external_validation/laion_fmri_probe
 root listing: https://laion-fmri.s3.amazonaws.com/?list-type=2&max-keys=50
 GLMsingle listing: https://laion-fmri.s3.amazonaws.com/?list-type=2&prefix=derivatives/glmsingle-tedana/sub-01/&max-keys=50
 status: public S3 HTTPS listing works from Shanghai HPC; `aws` CLI was not installed on the login shell.
@@ -88,7 +88,7 @@ current status:
 Public trial-metadata analysis from Shanghai:
 
 ```text
-probe path: /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/laion_fmri_probe/trial_metadata
+probe path: $REGRAPH_VLM_HPC_ROOT/external_validation/laion_fmri_probe/trial_metadata
 downloaded/read public trial TSVs: 150
 subjects: sub-01, sub-03, sub-05, sub-06, sub-07
 HTTP-accessible sessions per subject: ses-01 through ses-30
@@ -154,7 +154,7 @@ This LAION run is still an external visual-ROI validation, not a full HCP-MMP re
 All CNeuroMod files below were accessed directly on Shanghai HPC scratch under:
 
 ```text
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/cneuromod_things
+$REGRAPH_VLM_HPC_ROOT/external_validation/cneuromod_things
 ```
 
 Metadata/event status:
@@ -186,7 +186,7 @@ Because the full MNI trial HDF5 files are only available on private or unavailab
 Current external smoke output:
 
 ```text
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/cneuromod_things/visual_roi_scalar4_smoke
+$REGRAPH_VLM_HPC_ROOT/external_validation/cneuromod_things/visual_roi_scalar4_smoke
 ```
 
 Smoke setup:
@@ -229,7 +229,7 @@ This is a metadata and data-pipeline feasibility result, not a final external Re
 All BOLD5000 files below were accessed directly on Shanghai HPC scratch under:
 
 ```text
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/bold5000
+$REGRAPH_VLM_HPC_ROOT/external_validation/bold5000
 ```
 
 Downloaded public smoke files:
@@ -286,10 +286,10 @@ The initial external smoke checks were expanded to all available public visual-R
 Summary outputs are stored on Shanghai HPC:
 
 ```text
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/summary/external_visual_roi_all4_all_runs.csv
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/summary/external_visual_roi_all4_mean_std_by_pair_model.csv
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/summary/external_visual_roi_all4_mean_std_by_dataset_model.csv
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/summary/external_visual_roi_all4_summary.md
+$REGRAPH_VLM_HPC_ROOT/external_validation/summary/external_visual_roi_all4_all_runs.csv
+$REGRAPH_VLM_HPC_ROOT/external_validation/summary/external_visual_roi_all4_mean_std_by_pair_model.csv
+$REGRAPH_VLM_HPC_ROOT/external_validation/summary/external_visual_roi_all4_mean_std_by_dataset_model.csv
+$REGRAPH_VLM_HPC_ROOT/external_validation/summary/external_visual_roi_all4_summary.md
 ```
 
 Four-subject CNeuroMod setup:
@@ -391,7 +391,7 @@ Metadata/code status:
 
 ```text
 Code repository cloned on Shanghai HPC:
-  /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/things_fmri/metadata_repo
+  $REGRAPH_VLM_HPC_ROOT/external_validation/things_fmri/metadata_repo
 
 Repository remote:
   https://github.com/ViCCo-Group/THINGS-data.git
@@ -406,7 +406,7 @@ Download/conversion status:
 
 ```text
 Target directory:
-  /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/things_fmri/figshare_table
+  $REGRAPH_VLM_HPC_ROOT/external_validation/things_fmri/figshare_table
 
 Target archive:
   betas_csv.zip
@@ -415,7 +415,7 @@ Archive size:
   42,955,087,212 bytes
 
 Exported scalar4 cache:
-  /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/things_fmri/visual_roi_scalar4_smoke
+  $REGRAPH_VLM_HPC_ROOT/external_validation/things_fmri/visual_roi_scalar4_smoke
 
 Subjects:
   sub-01, sub-02, sub-03
@@ -456,10 +456,10 @@ Seeds:
   11, 22, 33
 
 Summary files:
-  /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/summary/things_fmri_visual_roi_all_runs.csv
-  /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/summary/things_fmri_visual_roi_mean_std_by_pair_model.csv
-  /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/summary/things_fmri_visual_roi_mean_std_by_dataset_model.csv
-  /gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/summary/things_fmri_visual_roi_summary.md
+  $REGRAPH_VLM_HPC_ROOT/external_validation/summary/things_fmri_visual_roi_all_runs.csv
+  $REGRAPH_VLM_HPC_ROOT/external_validation/summary/things_fmri_visual_roi_mean_std_by_pair_model.csv
+  $REGRAPH_VLM_HPC_ROOT/external_validation/summary/things_fmri_visual_roi_mean_std_by_dataset_model.csv
+  $REGRAPH_VLM_HPC_ROOT/external_validation/summary/things_fmri_visual_roi_summary.md
 ```
 
 Prepared scripts:
@@ -502,7 +502,7 @@ THINGS-fMRI confirms that the public compact visual-ROI pipeline recovers above-
 NOD metadata and support code were cloned directly on Shanghai HPC:
 
 ```text
-/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/nod
+$REGRAPH_VLM_HPC_ROOT/external_validation/nod
 ```
 
 Useful properties:
@@ -536,7 +536,7 @@ Current Shanghai environment has `nibabel` and `nilearn`, but does not have `dat
 Use:
 
 ```bash
-cd /gpfsnyu/scratch/xh2906/ReGraph-VLM
+cd $REGRAPH_VLM_HPC_ROOT
 source scripts/shanghai_env.sh
 python -m pip install h5py datalad datalad-installer
 ```
