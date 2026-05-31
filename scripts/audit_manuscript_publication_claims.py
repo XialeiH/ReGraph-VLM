@@ -113,6 +113,20 @@ IMPLEMENTATION_DETAIL_REQUIREMENTS = {
     "evaluation protocol": ("8 held-out-subject folds", "seeds 11, 22, and 33"),
 }
 
+COMPONENT_BASELINE_REQUIRED_FRAGMENTS = (
+    "Task-matched component baseline comparison",
+    "task-matched brain-decoding component baselines",
+    "not intended to reproduce full image-reconstruction pipelines",
+    "These are not full image-reconstruction system comparisons",
+)
+
+COMPONENT_BASELINE_FORBIDDEN_PATTERNS = (
+    r"\bSOTA-style\b",
+    r"\bstate-of-the-art\b",
+    r"outperforms\s+SOTA",
+    r"outperforms\s+full\s+image-reconstruction",
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit manuscript/result consistency for the AAAI-style ReGraph-VLM submission.")
@@ -350,6 +364,20 @@ def audit_implementation_details(text: str) -> AuditRow:
     )
 
 
+def audit_component_baseline_framing(text: str) -> AuditRow:
+    missing = [fragment for fragment in COMPONENT_BASELINE_REQUIRED_FRAGMENTS if fragment not in text]
+    forbidden = [
+        pattern
+        for pattern in COMPONENT_BASELINE_FORBIDDEN_PATTERNS
+        if re.search(pattern, text, flags=re.IGNORECASE)
+    ]
+    ok = not missing and not forbidden
+    evidence = "task-matched component framing present; full-system/SOTA overclaims absent"
+    if not ok:
+        evidence = f"missing={missing or 'none'}; forbidden={forbidden or 'none'}"
+    return AuditRow("component-baseline framing", status(ok), evidence)
+
+
 def bib_keys(paths: list[Path]) -> tuple[set[str], list[Path]]:
     keys: set[str] = set()
     missing_paths: list[Path] = []
@@ -392,6 +420,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
     missing_required = sorted(set(REQUIRED_LABELS) - set(labels))
     rows.append(AuditRow("required publication labels", status(not missing_required), "all present" if not missing_required else ", ".join(missing_required)))
     rows.append(audit_implementation_details(text))
+    rows.append(audit_component_baseline_framing(text))
 
     cite_keys = citation_keys(text)
     bib_paths = bibliography_paths(tex_path, text)
