@@ -175,6 +175,22 @@ def main() -> int:
     )
     rows.append(audit_status(root / final / "manuscript_publication_claims_audit.csv", 35))
 
+    rows.append(
+        require_ok(
+            "publication docs audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_publication_docs.py",
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 8))
+
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(
         require_ok(

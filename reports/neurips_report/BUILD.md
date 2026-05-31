@@ -14,8 +14,8 @@ python3 scripts/run_publication_preflight.py
 ```
 
 This regenerates lightweight publication tables, runs the AAAI artifact audit,
-runs the full manuscript/result audit, runs the manuscript-only audit, and reports
-whether a local TeX compiler is available.
+runs the full manuscript/result audit, checks README/BUILD consistency, runs the
+manuscript-only audit, and reports whether a local TeX compiler is available.
 
 If a TeX distribution is installed, compile through the same preflight:
 

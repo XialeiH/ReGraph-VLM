@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import csv
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+
+@dataclass(frozen=True)
+class AuditRow:
+    item: str
+    status: str
+    evidence: str
+
+
+README_MODEL_LABELS = {
+    "ROI-MLP+CLIP": "ROI-MLP+CLIP",
+    "Flat ReGraph+CLIP": "Flat ReGraph+CLIP",
+    "Gated ReGraph/BNT+CLIP": "Gated ReGraph+CLIP",
+}
+
+README_METRICS = ["AUROC", "AUPRC", "R@5", "MRR", "image_R@5", "brain_R@5"]
+
+DEANON_PATTERNS = [
+    r"Xialei Huang",
+    r"xialei\.huang",
+    r"NYU Shanghai",
+]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Audit README/BUILD publication documentation consistency.")
+    parser.add_argument("--readme", type=Path, default=Path("README.md"))
+    parser.add_argument("--build-doc", type=Path, default=Path("reports/neurips_report/BUILD.md"))
+    parser.add_argument(
+        "--allfold-table",
+        type=Path,
+        default=Path("preproc_v0/repetition_familiarity/results/final_tables/table_allfold_final.csv"),
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=Path("preproc_v0/repetition_familiarity/results/final_tables"),
+    )
+    parser.add_argument("--output-prefix", default="publication_docs_audit")
+    return parser.parse_args()
+
+
+def ready(ok: bool) -> str:
+    return "ready" if ok else "incomplete"
+
+
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8", errors="replace") if path.exists() else ""
+
+
+def read_csv(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def format_value(mean: str, std: str) -> str:
+    return f"{float(mean):.4f} +/- {float(std):.4f}"
+
+
+def audit_readme_values(readme: str, table_rows: list[dict[str, str]]) -> AuditRow:
+    if not table_rows:
+        return AuditRow("README main-result table values", "missing", "table_allfold_final.csv missing or empty")
+    missing: list[str] = []
+    for row in table_rows:
+        source_model = row["model"]
+        readme_model = README_MODEL_LABELS.get(source_model)
+        if not readme_model:
+            continue
+        if readme_model not in readme:
+            missing.append(f"{readme_model}: model row")
+            continue
+        for metric in README_METRICS:
+            expected = format_value(row[f"{metric}_mean"], row[f"{metric}_std"])
+            if expected not in readme:
+                missing.append(f"{readme_model} {metric}={expected}")
+    return AuditRow(
+        "README main-result table values",
+        ready(not missing),
+        "all values match table_allfold_final.csv" if not missing else "; ".join(missing[:8]),
+    )
+
+
+def audit_docs(readme_path: Path, build_path: Path, allfold_path: Path) -> list[AuditRow]:
+    readme = read_text(readme_path)
+    build = read_text(build_path)
+    combined = readme + "\n" + build
+    rows = [
+        AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
+        AuditRow("BUILD doc exists", "ready" if build else "missing", str(build_path)),
+        AuditRow(
+            "active report documented",
+            ready("reports/neurips_report/may30.tex" in readme and "may30.tex" in build),
+            "README and BUILD point to may30.tex",
+        ),
+        AuditRow(
+            "one-command preflight documented",
+            ready("python3 scripts/run_publication_preflight.py" in readme and "python3 scripts/run_publication_preflight.py" in build),
+            "preflight command present in README and BUILD",
+        ),
+        AuditRow(
+            "compile path documented",
+            ready("python3 scripts/run_publication_preflight.py --compile" in readme and "python3 scripts/run_publication_preflight.py --compile" in build),
+            "--compile command present in README and BUILD",
+        ),
+        AuditRow("stale may23 references", ready("may23" not in combined), "none found" if "may23" not in combined else "may23 found"),
+    ]
+
+    deanon_hits: list[str] = []
+    for pattern in DEANON_PATTERNS:
+        deanon_hits.extend(re.findall(pattern, combined))
+    rows.append(
+        AuditRow(
+            "documentation deanonymizing strings",
+            ready(not deanon_hits),
+            "none found" if not deanon_hits else ", ".join(sorted(set(deanon_hits))),
+        )
+    )
+    rows.append(audit_readme_values(readme, read_csv(allfold_path)))
+    return rows
+
+
+def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = output_dir / f"{output_prefix}.csv"
+    md_path = output_dir / f"{output_prefix}.md"
+    with csv_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["item", "status", "evidence"], lineterminator="\n")
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({"item": row.item, "status": row.status, "evidence": row.evidence})
+    counts = {status: sum(1 for row in rows if row.status == status) for status in sorted({row.status for row in rows})}
+    lines = [
+        "# Publication Documentation Audit",
+        "",
+        f"Status counts: {counts}",
+        "",
+        "| Item | Status | Evidence |",
+        "| --- | --- | --- |",
+    ]
+    for row in rows:
+        lines.append(f"| {row.item} | {row.status} | {row.evidence} |")
+    md_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(md_path.read_text(encoding="utf-8"), end="")
+
+
+def main() -> int:
+    args = parse_args()
+    rows = audit_docs(args.readme, args.build_doc, args.allfold_table)
+    write_outputs(args.output_dir, args.output_prefix, rows)
+    return 0 if all(row.status == "ready" for row in rows) else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
