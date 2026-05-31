@@ -137,8 +137,13 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
         ),
         AuditRow(
             "CI verifies generated artifacts",
-            ready("git diff --exit-code" in workflow),
-            "workflow fails on generated artifact drift",
+            ready("git status --porcelain" in workflow),
+            "workflow fails on tracked or untracked generated artifact drift",
+        ),
+        AuditRow(
+            "CI catches untracked artifacts",
+            ready("git diff --exit-code" not in workflow and "git status --porcelain" in workflow),
+            "workflow uses full working-tree cleanliness instead of tracked-file diff only",
         ),
         AuditRow(
             "CI covers main and pull requests",
