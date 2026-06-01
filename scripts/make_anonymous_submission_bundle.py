@@ -9,6 +9,69 @@ from io import BytesIO
 from pathlib import Path
 
 
+PUBLICATION_ARTIFACT_PATHS = {
+    "external_validation/summary/external_visual_roi_all4_summary.md",
+    "external_validation/summary/laion_fmri_visual_roi_all_runs.csv",
+    "external_validation/summary/laion_fmri_visual_roi_latex.txt",
+    "external_validation/summary/laion_fmri_visual_roi_pairwise_tests.csv",
+    "external_validation/summary/laion_fmri_visual_roi_summary.csv",
+    "external_validation/summary/laion_fmri_visual_roi_summary.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/aaai_roi_token_story_summary.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/final_adjacency_ablation_tests.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/final_adjacency_ablation_tests.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/fold_difficulty_qc.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/manuscript_publication_claims_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/manuscript_publication_claims_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/manuscript_stat_claims_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/manuscript_stat_claims_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_manifest.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/publication_paired_stats.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/session_order_pair_qc.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/single_ref_matched_allseed_latex.txt",
+    "preproc_v0/repetition_familiarity/results/final_tables/single_ref_matched_allseed_pairwise_tests.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/single_ref_matched_allseed_summary.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/single_ref_matched_latex.txt",
+    "preproc_v0/repetition_familiarity/results/final_tables/single_ref_matched_summary.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/split_accounting.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_adjacency_ablation.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_adjacency_ablation_latex.txt",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_adjacency_perturbation.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_allfold_final.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_edge_bias_followup.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_external_visual_roi_smoke.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_gate_confound.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_graph_only.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_hard_negative_allfold.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_heldout_image.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_lowshot_calibration.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_matched_deletion.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_phase2_sota_graph_baselines.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_roi_token_controls.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_within_subject.csv",
+}
+
+FIGURE_PATHS = {
+    "reports/neurips_report/figures/gate_interpretability.pdf",
+    "reports/neurips_report/figures/model_overview.pdf",
+    "reports/neurips_report/figures/model_overview.png",
+    "reports/neurips_report/figures/natural_scene_two_stimuli_repeat_maps_left_lateral_large.png",
+    "reports/neurips_report/figures/neuroscience_summary.pdf",
+    "reports/neurips_report/figures/neuroscience_summary.png",
+    "reports/neurips_report/figures/per_subject_performance.pdf",
+    "reports/neurips_report/figures/results_tradeoff.pdf",
+    "reports/neurips_report/figures/results_tradeoff.png",
+}
+
 EXACT_PATHS = {
     ".gitignore",
     "ANONYMIZATION.md",
@@ -34,13 +97,9 @@ EXACT_PATHS = {
     "scripts/run_publication_preflight.py",
     "scripts/run_regraph_vlm_fold.py",
     "scripts/update_may30_publication_tables.py",
+    *FIGURE_PATHS,
+    *PUBLICATION_ARTIFACT_PATHS,
 }
-
-PREFIXES = (
-    "external_validation/summary/",
-    "preproc_v0/repetition_familiarity/results/final_tables/",
-    "reports/neurips_report/figures/",
-)
 
 FORBIDDEN_TEXT = (
     "".join(("Xia", "lei")),
@@ -118,9 +177,7 @@ def tracked_paths(root: Path) -> list[str]:
 
 
 def include_path(path: str) -> bool:
-    if path in EXACT_PATHS:
-        return True
-    return any(path.startswith(prefix) for prefix in PREFIXES)
+    return path in EXACT_PATHS
 
 
 def load_blob(root: Path, path: str) -> bytes:
