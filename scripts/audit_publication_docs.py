@@ -112,6 +112,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     build = read_text(build_path)
     workflow = read_text(workflow_path)
     makefile = read_text(Path("Makefile"))
+    anonymization = read_text(Path("ANONYMIZATION.md"))
     reproducibility = read_text(Path("REPRODUCIBILITY.md"))
     pyproject = read_text(Path("pyproject.toml"))
     combined = readme + "\n" + build
@@ -253,15 +254,19 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 "anonymous_bundle_manifest.csv" in readme
                 and "anonymous_bundle_manifest.csv" in build
                 and "anonymous_bundle_manifest.csv" in reproducibility
-                and "anonymous_bundle_manifest.csv" in read_text(Path("ANONYMIZATION.md"))
+                and "anonymous_bundle_manifest.csv" in anonymization
                 and "verify_anonymous_bundle_manifest.py" in readme
                 and "verify_anonymous_bundle_manifest.py" in build
                 and "verify_anonymous_bundle_manifest.py" in reproducibility
-                and "verify_anonymous_bundle_manifest.py" in read_text(Path("ANONYMIZATION.md"))
+                and "verify_anonymous_bundle_manifest.py" in anonymization
                 and "smoke_test_anonymous_bundle_archive.py" in readme
                 and "smoke_test_anonymous_bundle_archive.py" in build
                 and "smoke_test_anonymous_bundle_archive.py" in reproducibility
-                and "smoke_test_anonymous_bundle_archive.py" in read_text(Path("ANONYMIZATION.md"))
+                and "smoke_test_anonymous_bundle_archive.py" in anonymization
+                and "symlink/hardlink" in readme
+                and "symlink/hardlink" in build
+                and "symlink/hardlink" in reproducibility
+                and "symlink/hardlink" in anonymization
             ),
             "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier and archive smoke test",
         ),

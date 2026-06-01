@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import subprocess
 import sys
 import tarfile
 import tempfile
 from pathlib import Path
+
+
+MANIFEST_RELATIVE_PATH = "preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv"
 
 
 def parse_args() -> argparse.Namespace:
@@ -33,6 +37,10 @@ def safe_members(archive: tarfile.TarFile) -> list[tarfile.TarInfo]:
             raise RuntimeError(f"unsafe archive path: {member.name}")
         if member.name == ".git" or "/.git/" in member.name:
             raise RuntimeError(f"archive contains Git metadata: {member.name}")
+        if member.issym() or member.islnk():
+            raise RuntimeError(f"archive contains link entry: {member.name}")
+        if not member.isfile():
+            raise RuntimeError(f"archive contains non-regular file entry: {member.name}")
     return members
 
 
@@ -41,6 +49,46 @@ def detect_prefix(members: list[tarfile.TarInfo]) -> str:
     if len(prefixes) != 1:
         raise RuntimeError(f"expected one archive top-level directory, found {sorted(prefixes)}")
     return next(iter(prefixes))
+
+
+def archive_relative_paths(members: list[tarfile.TarInfo], prefix: str) -> set[str]:
+    relative_paths: set[str] = set()
+    for member in members:
+        parts = Path(member.name).parts
+        if not parts or parts[0] != prefix:
+            raise RuntimeError(f"archive member outside expected prefix {prefix}: {member.name}")
+        relative_paths.add(Path(*parts[1:]).as_posix())
+    return relative_paths
+
+
+def read_manifest_paths(extracted_root: Path) -> set[str]:
+    manifest_path = extracted_root / MANIFEST_RELATIVE_PATH
+    if not manifest_path.exists():
+        raise RuntimeError(f"extracted archive is missing {MANIFEST_RELATIVE_PATH}")
+    with manifest_path.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    paths = {row["path"] for row in rows}
+    if MANIFEST_RELATIVE_PATH in paths:
+        raise RuntimeError("manifest should exclude its own row")
+    return paths
+
+
+def validate_archive_manifest_coverage(extracted_root: Path, members: list[tarfile.TarInfo], prefix: str) -> str:
+    archive_paths = archive_relative_paths(members, prefix)
+    manifest_paths = read_manifest_paths(extracted_root)
+    expected_archive_paths = set(manifest_paths)
+    expected_archive_paths.add(MANIFEST_RELATIVE_PATH)
+
+    extra_paths = sorted(archive_paths - expected_archive_paths)
+    missing_paths = sorted(expected_archive_paths - archive_paths)
+    if extra_paths or missing_paths:
+        evidence = []
+        if extra_paths:
+            evidence.append(f"extra archive paths: {extra_paths[:5]}")
+        if missing_paths:
+            evidence.append(f"missing archive paths: {missing_paths[:5]}")
+        raise RuntimeError("; ".join(evidence))
+    return f"{len(manifest_paths)} manifest rows plus manifest file match {len(archive_paths)} archive files"
 
 
 def main() -> int:
@@ -63,7 +111,7 @@ def main() -> int:
                     "--output",
                     str(archive_path),
                     "--manifest-output",
-                    "preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv",
+                    MANIFEST_RELATIVE_PATH,
                 ],
             ),
         )
@@ -74,6 +122,7 @@ def main() -> int:
             archive.extractall(extract_dir)
 
         extracted_root = extract_dir / prefix
+        coverage_evidence = validate_archive_manifest_coverage(extracted_root, members, prefix)
         verify_output = require_ok(
             "extracted anonymous bundle manifest verification",
             run_command(
@@ -89,7 +138,7 @@ def main() -> int:
 
         print(
             f"Anonymous bundle archive smoke test OK: {len(members)} archive members, "
-            f"prefix={prefix}, archive={archive_path.name}"
+            f"prefix={prefix}, archive={archive_path.name}, {coverage_evidence}"
         )
         print(build_output.strip())
         print(verify_output.strip())

@@ -53,3 +53,7 @@ To smoke-test the full bundle workflow before submission:
 ```bash
 python3 scripts/smoke_test_anonymous_bundle_archive.py
 ```
+
+The smoke test rejects path traversal, Git metadata, symlink/hardlink entries,
+non-regular archive members, and archive files that are not accounted for by
+the manifest.

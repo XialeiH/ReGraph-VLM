@@ -130,6 +130,10 @@ python3 scripts/smoke_test_anonymous_bundle_archive.py
 make bundle-smoke
 ```
 
+The smoke test rejects path traversal, Git metadata, symlink/hardlink entries,
+non-regular archive members, and archive files that are not accounted for by
+the manifest.
+
 ## Result Provenance
 
 The main reviewer-facing result index is:
