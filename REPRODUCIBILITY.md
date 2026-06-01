@@ -69,6 +69,9 @@ under `external_validation/summary/`. These are smoke checks on public
 visual-ROI summaries or derivatives, not full HCP-MMP 180-ROI external
 replications.
 
+For fold-level split counts, session/order QC, fold difficulty, external
+validation scope, and large-data handling, see `DATASET_CARD.md`.
+
 ## Verification Commands
 
 Run the full publication preflight from the repository root:
@@ -146,3 +149,9 @@ It maps the manuscript claims to committed CSV/Markdown artifacts, including
 main all-fold results, adjacency ablations, session/order controls, external
 smoke validation, fold-level diagnostics, paired statistics, and anonymous
 bundle readiness.
+
+The dataset-specific reviewer index is:
+
+```text
+DATASET_CARD.md
+```

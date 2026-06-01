@@ -9,6 +9,7 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | Claim or concern | Primary manuscript location | Committed evidence artifact | Evidence summary |
 | --- | --- | --- | --- |
 | Main cross-subject result | Table `tab:cross_subject_main` | `table_allfold_final.csv` | 8 held-out-subject folds x 3 seeds; 3 rows; n sum=72 |
+| Dataset accounting and split construction | Tables `tab:split_accounting`, `tab:session_order_pair_qc`, `tab:fold_difficulty` | `DATASET_CARD.md`, `split_accounting.csv`, `session_order_pair_qc.csv`, `fold_difficulty_qc.csv` | fold-level sequence/pair counts, session/order pair QC, and unresolved fold_07 difficulty are summarized for reviewers |
 | Explicit adjacency is not the source of the gain | Tables `tab:adjacency_ablation`, `tab:roi_token_controls`, `tab:adjacency_perturbation`, `tab:edge_bias_followup` | `table_adjacency_ablation.csv`, `table_roi_token_controls.csv`, `final_adjacency_ablation_tests.csv` | no-adj and adjacency variants are statistically tied; ROI-order/gate controls drive the interpretation |
 | Session/order confound control | Tables `tab:session_order_pair_qc`, `tab:single_ref_matched`, `tab:single_ref_retrained` | `session_order_pair_qc.csv`, `single_ref_matched_summary.csv`, `single_ref_matched_allseed_summary.csv` | exact anchor-side QC plus eval-only and retrained single-reference controls |
 | Implementation reproducibility | Table `tab:implementation_details` | `model_parameter_counts.csv`, `manuscript_publication_claims_audit.csv` | loss, normalization, adjacency construction, architecture, parameter counts, optimizer, folds, and seeds are audited |
@@ -25,10 +26,11 @@ Active manuscript: `reports/neurips_report/may30.tex`
 
 | Artifact | Status | Purpose |
 | --- | --- | --- |
+| `DATASET_CARD.md` | present | reviewer-facing dataset accounting, external-validation scope, and large-data policy |
 | `preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv` | present | ready=33 |
 | `preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv` | present | ready=20 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_publication_claims_audit.csv` | present | ready=55 |
-| `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=32 |
+| `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=34 |
 | `preproc_v0/repetition_familiarity/results/final_tables/package_metadata_audit.csv` | present | ready=11 |
 | `preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv` | present | per-file source byte counts and SHA-256 checksums for verifier-backed anonymous bundle contents |
 | `preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.csv` | present | ready=11 |

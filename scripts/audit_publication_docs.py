@@ -25,6 +25,7 @@ README_METRICS = ["AUROC", "AUPRC", "R@5", "MRR", "image_R@5", "brain_R@5"]
 
 PUBLICATION_DOC_PATHS = [
     Path("ANONYMIZATION.md"),
+    Path("DATASET_CARD.md"),
     Path("Makefile"),
     Path("README.md"),
     Path("REPRODUCIBILITY.md"),
@@ -113,12 +114,14 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     workflow = read_text(workflow_path)
     makefile = read_text(Path("Makefile"))
     anonymization = read_text(Path("ANONYMIZATION.md"))
+    dataset_card = read_text(Path("DATASET_CARD.md"))
     reproducibility = read_text(Path("REPRODUCIBILITY.md"))
     pyproject = read_text(Path("pyproject.toml"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
         AuditRow("Makefile exists", "ready" if makefile else "missing", "Makefile"),
+        AuditRow("DATASET_CARD exists", "ready" if dataset_card else "missing", "DATASET_CARD.md"),
         AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
         AuditRow("REPRODUCIBILITY doc exists", "ready" if reproducibility else "missing", "REPRODUCIBILITY.md"),
         AuditRow("pyproject exists", "ready" if pyproject else "missing", "pyproject.toml"),
@@ -179,8 +182,24 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "scratch" in reproducibility
                 and "not full HCP-MMP 180-ROI" in reproducibility
                 and "python3 -m pip install -e '.[dev]'" in reproducibility
+                and "DATASET_CARD.md" in reproducibility
             ),
-            "REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, and external-validation limits",
+            "REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, external-validation limits, and the dataset card",
+        ),
+        AuditRow(
+            "dataset card documents data accounting",
+            ready(
+                "split_accounting.csv" in dataset_card
+                and "session_order_pair_qc.csv" in dataset_card
+                and "fold_difficulty_qc.csv" in dataset_card
+                and "table_external_visual_roi_smoke.csv" in dataset_card
+                and "not full HCP-MMP 180-ROI external replications" in dataset_card
+                and "remote HPC scratch storage" in dataset_card
+                and "DATASET_CARD.md" in readme
+                and "DATASET_CARD.md" in build
+                and "DATASET_CARD.md" in reproducibility
+            ),
+            "DATASET_CARD.md documents split counts, session/order QC, fold difficulty, external-validation limits, and large-data policy",
         ),
         AuditRow(
             "pyproject metadata aligned",

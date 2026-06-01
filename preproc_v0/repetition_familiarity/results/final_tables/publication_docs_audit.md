@@ -1,10 +1,11 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 32}
+Status counts: {'ready': 34}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
 | Makefile exists | ready | Makefile |
+| DATASET_CARD exists | ready | DATASET_CARD.md |
 | README exists | ready | README.md |
 | REPRODUCIBILITY doc exists | ready | REPRODUCIBILITY.md |
 | pyproject exists | ready | pyproject.toml |
@@ -15,7 +16,8 @@ Status counts: {'ready': 32}
 | Makefile reviewer targets documented | ready | README, BUILD, and REPRODUCIBILITY document reviewer-facing make targets |
 | Makefile reviewer targets implemented | ready | Makefile implements preflight, compile, bundle, bundle-verify, bundle-smoke, manuscript-audit, and parameter-count targets |
 | reproducibility guide linked | ready | README and BUILD link the reproducibility guide |
-| dependency and large-data policy documented | ready | REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, and external-validation limits |
+| dependency and large-data policy documented | ready | REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, external-validation limits, and the dataset card |
+| dataset card documents data accounting | ready | DATASET_CARD.md documents split counts, session/order QC, fold difficulty, external-validation limits, and large-data policy |
 | pyproject metadata aligned | ready | pyproject names ReGraph-VLM, exposes dependency extras, and packages current models code |
 | package metadata audit documented | ready | README, BUILD, and REPRODUCIBILITY mention structural package metadata auditing |
 | compile path documented | ready | --compile command present in README and BUILD |

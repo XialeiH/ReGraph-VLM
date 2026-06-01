@@ -82,6 +82,7 @@ FIGURE_PATHS = {
 EXACT_PATHS = {
     ".gitignore",
     "ANONYMIZATION.md",
+    "DATASET_CARD.md",
     "Makefile",
     "README.md",
     "REPRODUCIBILITY.md",

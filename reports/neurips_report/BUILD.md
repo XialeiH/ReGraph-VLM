@@ -9,6 +9,8 @@ This directory contains the NeurIPS-style report source:
 
 For environment details, dependency tiers, and the large-data policy, see the
 repository-level `REPRODUCIBILITY.md`.
+For fold-level split counts, session/order QC, external-validation scope, and
+large-data handling, see the repository-level `DATASET_CARD.md`.
 
 Run the full preflight from the project root before compiling or submitting:
 
@@ -51,6 +53,8 @@ preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_mani
 
 Use it as the reviewer-facing index from each major claim or caveat to the
 committed manuscript table and result artifact that supports it.
+For dataset accounting and external-validation scope, also see
+`DATASET_CARD.md`.
 
 For double-blind review, do not submit the public GitHub URL or a Git clone.
 Use the Anonymous Submission Bundle workflow instead; see `ANONYMIZATION.md`.
