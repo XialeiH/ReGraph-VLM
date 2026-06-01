@@ -48,6 +48,8 @@ The active NSD representation uses:
 - train-only adjacency construction for adjacency-aware controls
 
 Large NSD data, beta volumes, `.pt` datasets, checkpoints, and Slurm outputs are not stored in this GitHub repository.
+For environment details, dependency tiers, and the large-data policy, see
+`REPRODUCIBILITY.md`.
 
 ## Main Findings
 

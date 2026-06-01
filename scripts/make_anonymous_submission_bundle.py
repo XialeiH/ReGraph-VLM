@@ -79,6 +79,7 @@ EXACT_PATHS = {
     ".gitignore",
     "ANONYMIZATION.md",
     "README.md",
+    "REPRODUCIBILITY.md",
     "models/bnt_encoder.py",
     "models/regraph_vlm.py",
     "reports/neurips_report/BUILD.md",

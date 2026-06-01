@@ -26,6 +26,7 @@ README_METRICS = ["AUROC", "AUPRC", "R@5", "MRR", "image_R@5", "brain_R@5"]
 PUBLICATION_DOC_PATHS = [
     Path("ANONYMIZATION.md"),
     Path("README.md"),
+    Path("REPRODUCIBILITY.md"),
     Path("reports/neurips_report/BUILD.md"),
     Path("reports/neurips_report/may30.tex"),
     Path("reports/neurips_report/regraph_vlm_report.tex"),
@@ -108,10 +109,12 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     readme = read_text(readme_path)
     build = read_text(build_path)
     workflow = read_text(workflow_path)
+    reproducibility = read_text(Path("REPRODUCIBILITY.md"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
         AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
+        AuditRow("REPRODUCIBILITY doc exists", "ready" if reproducibility else "missing", "REPRODUCIBILITY.md"),
         AuditRow("BUILD doc exists", "ready" if build else "missing", str(build_path)),
         AuditRow("publication preflight workflow exists", "ready" if workflow else "missing", str(workflow_path)),
         AuditRow(
@@ -123,6 +126,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "one-command preflight documented",
             ready("python3 scripts/run_publication_preflight.py" in readme and "python3 scripts/run_publication_preflight.py" in build),
             "preflight command present in README and BUILD",
+        ),
+        AuditRow(
+            "reproducibility guide linked",
+            ready("REPRODUCIBILITY.md" in readme and "REPRODUCIBILITY.md" in build),
+            "README and BUILD link the reproducibility guide",
+        ),
+        AuditRow(
+            "dependency and large-data policy documented",
+            ready(
+                "torch" in reproducibility
+                and "nibabel" in reproducibility
+                and "HPC" in reproducibility
+                and "scratch" in reproducibility
+                and "not full HCP-MMP 180-ROI" in reproducibility
+            ),
+            "REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, HPC scratch storage, and external-validation limits",
         ),
         AuditRow(
             "compile path documented",

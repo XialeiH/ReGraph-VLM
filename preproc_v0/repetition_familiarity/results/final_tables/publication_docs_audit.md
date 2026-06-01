@@ -1,14 +1,17 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 21}
+Status counts: {'ready': 24}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
 | README exists | ready | README.md |
+| REPRODUCIBILITY doc exists | ready | REPRODUCIBILITY.md |
 | BUILD doc exists | ready | reports/neurips_report/BUILD.md |
 | publication preflight workflow exists | ready | .github/workflows/publication-preflight.yml |
 | active report documented | ready | README and BUILD point to may30.tex |
 | one-command preflight documented | ready | preflight command present in README and BUILD |
+| reproducibility guide linked | ready | README and BUILD link the reproducibility guide |
+| dependency and large-data policy documented | ready | REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, HPC scratch storage, and external-validation limits |
 | compile path documented | ready | --compile command present in README and BUILD |
 | statistical-claims audit documented | ready | README and BUILD mention statistical-claims verification |
 | artifact-provenance audit documented | ready | README and BUILD mention artifact-provenance verification |

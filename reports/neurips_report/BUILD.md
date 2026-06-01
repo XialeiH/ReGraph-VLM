@@ -7,6 +7,9 @@ This directory contains the NeurIPS-style report source:
 - `neurips_2025.sty`
 - `figures/*.pdf` and `figures/*.png`
 
+For environment details, dependency tiers, and the large-data policy, see the
+repository-level `REPRODUCIBILITY.md`.
+
 Run the full preflight from the project root before compiling or submitting:
 
 ```bash
