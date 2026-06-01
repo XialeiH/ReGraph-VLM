@@ -434,6 +434,39 @@ def main() -> int:
             ),
         )
     )
+    with tempfile.TemporaryDirectory(prefix="regraph_bundle_sidecar_") as tmp:
+        sidecar_manifest = Path(tmp) / "anonymous_bundle_manifest_sidecar.csv"
+        rows.append(
+            require_ok(
+                "anonymous sidecar manifest dry-run",
+                run_command(
+                    root,
+                    [
+                        sys.executable,
+                        "scripts/make_anonymous_submission_bundle.py",
+                        "--dry-run",
+                        "--manifest-output",
+                        str(sidecar_manifest),
+                    ],
+                ),
+            )
+        )
+        rows.append(
+            require_ok(
+                "anonymous sidecar manifest verification",
+                run_command(
+                    root,
+                    [
+                        sys.executable,
+                        "scripts/verify_anonymous_bundle_manifest.py",
+                        "--manifest",
+                        str(sidecar_manifest),
+                        "--source",
+                        "auto",
+                    ],
+                ),
+            )
+        )
     rows.append(
         require_ok(
             "anonymous bundle archive smoke test",

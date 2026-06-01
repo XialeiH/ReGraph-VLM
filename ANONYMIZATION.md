@@ -43,6 +43,9 @@ preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest
 The manifest lists each included source path, source byte count, and SHA-256
 checksum. It excludes its own row so that regenerating the manifest does not
 change its own expected checksum.
+`--manifest-output` also supports external sidecar paths outside the repository;
+the publication preflight tests both the in-bundle manifest path and a temporary
+sidecar manifest path.
 After extracting a submitted bundle, verify the files against the manifest:
 
 ```bash

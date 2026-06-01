@@ -92,6 +92,9 @@ preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest
 
 It records each included source path, source byte count, and SHA-256 checksum,
 and excludes its own row to avoid self-referential checksum drift.
+`--manifest-output` also supports external sidecar paths outside the repository;
+the publication preflight tests both the in-bundle manifest path and a temporary
+sidecar manifest path.
 To verify the manifest against the committed source tree or an extracted
 anonymous bundle, run:
 

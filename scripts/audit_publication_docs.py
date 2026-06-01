@@ -335,9 +335,14 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "compile-required" in build
                 and "compile-required" in reproducibility
                 and "compile-required" in anonymization
+                and "sidecar manifest" in readme
+                and "sidecar manifest" in build
+                and "sidecar manifest" in reproducibility
+                and "sidecar paths" in anonymization
+                and "anonymous sidecar manifest" in read_text(Path("scripts/run_publication_preflight.py"))
                 and ".github/workflows/publication-preflight.yml" in read_text(Path("scripts/make_anonymous_submission_bundle.py"))
             ),
-            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier, archive smoke test, and compile-capable extracted-bundle preflight",
+            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier, sidecar manifest support, archive smoke test, and compile-capable extracted-bundle preflight",
         ),
         AuditRow(
             "CI runs publication preflight",
