@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 17}
+Status counts: {'ready': 18}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -12,6 +12,7 @@ Status counts: {'ready': 17}
 | compile path documented | ready | --compile command present in README and BUILD |
 | statistical-claims audit documented | ready | README and BUILD mention statistical-claims verification |
 | artifact-provenance audit documented | ready | README and BUILD mention artifact-provenance verification |
+| manuscript framing guardrails documented | ready | README and BUILD mention adjacency/component/external/fold_07/implementation guardrails |
 | CI runs publication preflight | ready | workflow runs preflight command |
 | CI requires TeX compilation | ready | workflow installs TeX and runs compile-required preflight |
 | CI installs recommended TeX packages | ready | workflow includes recommended and extra LaTeX package bundles |

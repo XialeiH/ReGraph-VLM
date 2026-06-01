@@ -17,7 +17,10 @@ This regenerates lightweight publication tables, runs the AAAI artifact audit,
 verifies publication artifact provenance, runs the full manuscript/result audit,
 checks README/BUILD consistency, verifies key manuscript table values and
 statistical claims against committed CSV artifacts, runs the manuscript-only
-audit, and reports whether a local TeX compiler is available. GitHub Actions
+audit, and reports whether a local TeX compiler is available. The manuscript
+audit also enforces framing guardrails for adjacency, task-matched component
+baselines, external smoke validation, fold_07 robustness, and implementation
+details. GitHub Actions
 installs a TeX distribution with recommended/extra LaTeX packages and runs the
 compile-required preflight on pushes to `main` and pull requests. CI uses
 `--require-clean`, so tracked-file drift and newly generated untracked artifacts
@@ -38,8 +41,10 @@ python3 scripts/audit_manuscript_publication_claims.py \
   --output-dir /tmp/regraph_report_preflight
 ```
 
-The manuscript-only audit checks anonymity strings, fixed-adjacency overclaims, duplicate labels,
-unresolved refs, required labels, citation coverage in `references.bib`, figure
-file availability, and LaTeX environment balance.
+The manuscript-only audit checks anonymity strings, fixed-adjacency overclaims,
+framing guardrails for adjacency, component baselines, external validation,
+fold_07, and implementation details, duplicate labels, unresolved refs, required
+labels, citation coverage in `references.bib`, figure file availability, and
+LaTeX environment balance.
 
 Local note: this machine currently does not have `pdflatex`, `xelatex`, `lualatex`, `latexmk`, or `tectonic` installed, so the PDF was not compiled locally in this step.

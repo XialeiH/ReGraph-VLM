@@ -122,7 +122,7 @@ Run the full preflight from the project root before compiling or submitting:
 python3 scripts/run_publication_preflight.py
 ```
 
-This regenerates lightweight result artifacts, runs the AAAI artifact audit, verifies publication artifact provenance, runs the full manuscript/result audit, checks README/BUILD consistency, verifies key manuscript table values and statistical claims against committed CSV artifacts, runs the manuscript-only audit, and reports whether a local TeX compiler is available.
+This regenerates lightweight result artifacts, runs the AAAI artifact audit, verifies publication artifact provenance, runs the full manuscript/result audit, checks README/BUILD consistency, verifies key manuscript table values and statistical claims against committed CSV artifacts, runs the manuscript-only audit, and reports whether a local TeX compiler is available. The manuscript audit also enforces framing guardrails for adjacency, task-matched component baselines, external smoke validation, fold_07 robustness, and implementation details.
 GitHub Actions installs a TeX distribution with recommended/extra LaTeX packages and runs the compile-required preflight on pushes to `main` and pull requests. The workflow uses `--require-clean`, so both tracked-file changes and newly generated untracked artifacts fail CI.
 
 Run the manuscript-only audit directly when you only need a fast TeX-facing check:
@@ -138,6 +138,7 @@ This checks:
 
 - anonymity strings
 - fixed-adjacency overclaim phrases
+- framing guardrails for adjacency, component baselines, external validation, fold_07, and implementation details
 - duplicate labels and unresolved refs
 - required labels
 - citation coverage in `references.bib`

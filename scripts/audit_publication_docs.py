@@ -139,6 +139,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "README and BUILD mention artifact-provenance verification",
         ),
         AuditRow(
+            "manuscript framing guardrails documented",
+            ready("framing guardrails" in readme and "framing guardrails" in build and "fold_07" in readme and "fold_07" in build),
+            "README and BUILD mention adjacency/component/external/fold_07/implementation guardrails",
+        ),
+        AuditRow(
             "CI runs publication preflight",
             ready("python scripts/run_publication_preflight.py" in workflow),
             "workflow runs preflight command",
