@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 41}
+Status counts: {'ready': 42}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -19,6 +19,7 @@ Status counts: {'ready': 41}
 | Makefile reviewer targets implemented | ready | Makefile implements preflight, compile, bundle, bundle-verify, bundle-smoke, manuscript-audit, and parameter-count targets |
 | Makefile target audit documented | ready | README, BUILD, and REPRODUCIBILITY document the Makefile target audit and generated artifact |
 | CI workflow audit documented | ready | README, BUILD, and REPRODUCIBILITY document the CI workflow audit and generated artifact |
+| result artifact schema audit documented | ready | README, BUILD, and REPRODUCIBILITY document result artifact schema auditing |
 | reproducibility guide linked | ready | README and BUILD link the reproducibility guide |
 | dependency and large-data policy documented | ready | REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, external-validation limits, and the dataset card |
 | dataset card documents data accounting | ready | DATASET_CARD.md documents split counts, session/order QC, fold difficulty, external-validation limits, and large-data policy |

@@ -124,6 +124,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     bundle_smoke = read_text(Path("scripts/smoke_test_anonymous_bundle_archive.py"))
     makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
     ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
+    schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
@@ -208,6 +209,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "--compile --require-clean" in ci_audit
             ),
             "README, BUILD, and REPRODUCIBILITY document the CI workflow audit and generated artifact",
+        ),
+        AuditRow(
+            "result artifact schema audit documented",
+            ready(
+                "result artifact schema audit" in readme
+                and "result artifact schema audit" in build
+                and "result artifact schema audit" in reproducibility
+                and "scripts/audit_result_artifact_schemas.py" in readme
+                and "scripts/audit_result_artifact_schemas.py" in build
+                and "scripts/audit_result_artifact_schemas.py" in reproducibility
+                and "result_artifact_schema_audit.csv" in readme
+                and "result_artifact_schema_audit.csv" in build
+                and "result_artifact_schema_audit.csv" in reproducibility
+                and "publication_paired_stats.csv" in schema_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document result artifact schema auditing",
         ),
         AuditRow(
             "reproducibility guide linked",

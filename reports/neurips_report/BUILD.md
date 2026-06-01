@@ -149,6 +149,10 @@ The CI workflow audit is implemented in `scripts/audit_ci_workflow.py`; it
 verifies the compile-required, clean-worktree GitHub Actions preflight and
 writes
 `preproc_v0/repetition_familiarity/results/final_tables/ci_workflow_audit.csv`.
+The result artifact schema audit is implemented in
+`scripts/audit_result_artifact_schemas.py`; it verifies required CSV columns,
+numeric fields, minimum row counts, and source metadata, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/result_artifact_schema_audit.csv`.
 The manuscript-only audit checks anonymity strings,
 fixed-adjacency overclaims, framing guardrails for adjacency, component
 baselines, external validation, fold_07, and implementation details, duplicate

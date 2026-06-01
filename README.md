@@ -155,6 +155,11 @@ The CI workflow audit checks that the GitHub Actions publication workflow still
 uses the compile-required, clean-worktree preflight path. It is implemented in
 `scripts/audit_ci_workflow.py` and writes
 `preproc_v0/repetition_familiarity/results/final_tables/ci_workflow_audit.csv`.
+The result artifact schema audit checks that committed reviewer-facing CSVs keep
+the required columns, numeric fields, minimum row counts, and nonempty source
+metadata. It is implemented in `scripts/audit_result_artifact_schemas.py` and
+writes
+`preproc_v0/repetition_familiarity/results/final_tables/result_artifact_schema_audit.csv`.
 
 The preflight also writes a compact Publication Evidence Manifest:
 
@@ -271,6 +276,7 @@ scripts/
   audit_aaai_publication_readiness.py
   audit_ci_workflow.py
   audit_makefile_targets.py
+  audit_result_artifact_schemas.py
   audit_reviewer_response_readiness.py
   generate_publication_evidence_manifest.py
   make_anonymous_submission_bundle.py

@@ -102,6 +102,11 @@ The CI workflow audit is implemented in `scripts/audit_ci_workflow.py`. It
 verifies that the GitHub Actions publication workflow still runs the
 compile-required, clean-worktree preflight path and writes
 `preproc_v0/repetition_familiarity/results/final_tables/ci_workflow_audit.csv`.
+The result artifact schema audit is implemented in
+`scripts/audit_result_artifact_schemas.py`. It verifies required CSV columns,
+numeric fields, minimum row counts, and source metadata for reviewer-facing
+result artifacts, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/result_artifact_schema_audit.csv`.
 
 When PyTorch is installed, the preflight also checks that
 `model_parameter_counts.csv` matches instantiated `ReGraphVLM` modules. The
