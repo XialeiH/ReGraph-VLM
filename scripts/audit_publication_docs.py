@@ -121,6 +121,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     reproducibility = read_text(Path("REPRODUCIBILITY.md"))
     reviewer_response = read_text(Path("REVIEWER_RESPONSE.md"))
     pyproject = read_text(Path("pyproject.toml"))
+    bundle_smoke = read_text(Path("scripts/smoke_test_anonymous_bundle_archive.py"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
@@ -301,12 +302,16 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "SHA-256" in build
                 and "byte-stable" in readme
                 and "byte-stable" in build
+                and "byte-identical" in readme
+                and "byte-identical" in build
+                and "byte-identical" in reproducibility
+                and "byte-identical" in anonymization
                 and "byte level" in readme
                 and "byte level" in build
                 and "byte level" in reproducibility
                 and "byte level" in anonymization
             ),
-            "README and BUILD mention anonymous bundle instructions, checksum, byte-stable archive metadata, and byte-level deanonymization scan",
+            "README and BUILD mention anonymous bundle instructions, checksum, byte-stable archive metadata, byte-identical smoke testing, and byte-level deanonymization scan",
         ),
         AuditRow(
             "anonymous bundle manifest documented",
@@ -341,8 +346,10 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "sidecar paths" in anonymization
                 and "anonymous sidecar manifest" in read_text(Path("scripts/run_publication_preflight.py"))
                 and ".github/workflows/publication-preflight.yml" in read_text(Path("scripts/make_anonymous_submission_bundle.py"))
+                and "repeat anonymous bundle build" in bundle_smoke
+                and "byte-stable archive verified" in bundle_smoke
             ),
-            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier, sidecar manifest support, archive smoke test, and compile-capable extracted-bundle preflight",
+            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier, sidecar manifest support, byte-identical archive smoke test, and compile-capable extracted-bundle preflight",
         ),
         AuditRow(
             "CI runs publication preflight",

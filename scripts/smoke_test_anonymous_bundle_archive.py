@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import os
 import shutil
 import subprocess
@@ -35,6 +36,10 @@ def require_ok(description: str, completed: subprocess.CompletedProcess[str]) ->
 def first_lines(text: str, n: int = 3) -> str:
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     return " | ".join(lines[:n]) if lines else "ok"
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def safe_members(archive: tarfile.TarFile) -> list[tarfile.TarInfo]:
@@ -123,6 +128,7 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="regraph_bundle_smoke_") as tmp:
         tmp_path = Path(tmp)
         archive_path = tmp_path / "regraph_vlm_anonymous_submission.tar.gz"
+        repeat_archive_path = tmp_path / "regraph_vlm_anonymous_submission_repeat.tar.gz"
         extract_dir = tmp_path / "extract"
         extract_dir.mkdir()
 
@@ -139,6 +145,33 @@ def main() -> int:
                     MANIFEST_RELATIVE_PATH,
                 ],
             ),
+        )
+
+        require_ok(
+            "repeat anonymous bundle build",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/make_anonymous_submission_bundle.py",
+                    "--output",
+                    str(repeat_archive_path),
+                    "--manifest-output",
+                    MANIFEST_RELATIVE_PATH,
+                ],
+            ),
+        )
+        archive_bytes = archive_path.read_bytes()
+        repeat_archive_bytes = repeat_archive_path.read_bytes()
+        if archive_bytes != repeat_archive_bytes:
+            raise RuntimeError(
+                "anonymous bundle archive is not byte-stable: "
+                f"{archive_path.name} sha256={file_sha256(archive_path)}, "
+                f"{repeat_archive_path.name} sha256={file_sha256(repeat_archive_path)}"
+            )
+        byte_stability_evidence = (
+            f"byte-stable archive verified: sha256={file_sha256(archive_path)}, "
+            f"bytes={len(archive_bytes)}"
         )
 
         with tarfile.open(archive_path, "r:gz") as archive:
@@ -167,6 +200,7 @@ def main() -> int:
             f"prefix={prefix}, archive={archive_path.name}, {coverage_evidence}"
         )
         print(build_output.strip())
+        print(byte_stability_evidence)
         print(verify_output.strip())
         print(extracted_preflight_evidence)
     return 0

@@ -58,8 +58,9 @@ To smoke-test the full bundle workflow before submission:
 python3 scripts/smoke_test_anonymous_bundle_archive.py
 ```
 
-The smoke test rejects path traversal, Git metadata, symlink/hardlink entries,
-non-regular archive members, and archive files that are not accounted for by
-the manifest. It also runs an extracted anonymous bundle preflight once, using a
-recursion guard so the nested smoke test does not call itself indefinitely. When
-a TeX tool is available, the extracted-bundle preflight is compile-required.
+The smoke test rebuilds the archive twice and checks byte-identical output. It
+also rejects path traversal, Git metadata, symlink/hardlink entries, non-regular
+archive members, and archive files that are not accounted for by the manifest.
+It runs an extracted anonymous bundle preflight once, using a recursion guard so
+the nested smoke test does not call itself indefinitely. When a TeX tool is
+available, the extracted-bundle preflight is compile-required.
