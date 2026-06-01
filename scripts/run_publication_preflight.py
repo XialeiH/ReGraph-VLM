@@ -262,7 +262,27 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 44))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 45))
+
+    rows.append(
+        require_ok(
+            "citation integrity audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_citation_integrity.py",
+                    "--tex",
+                    str(tex),
+                    "--bib",
+                    "reports/neurips_report/references.bib",
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "citation_integrity_audit.csv", 11))
 
     rows.append(
         require_ok(
@@ -459,7 +479,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 33))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 34))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

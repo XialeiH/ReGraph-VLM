@@ -5,14 +5,14 @@ Status counts: {'ready': 13}
 | Item | Status | Evidence |
 | --- | --- | --- |
 | bundle module imports | ready | loaded make_anonymous_submission_bundle.py |
-| exact allowlist nonempty | ready | 116 exact paths |
-| publication artifact allowlist nonempty | ready | 64 publication artifact paths |
+| exact allowlist nonempty | ready | 119 exact paths |
+| publication artifact allowlist nonempty | ready | 66 publication artifact paths |
 | figure allowlist nonempty | ready | 9 figure paths |
 | manifest path allowlisted | ready | preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv |
 | required source paths allowlisted | ready | 14 required paths present |
-| required audit scripts allowlisted | ready | 14 required paths present |
-| required generated audits allowlisted | ready | 14 required paths present |
-| publication artifacts included by exact allowlist | ready | 64 publication artifacts included |
+| required audit scripts allowlisted | ready | 15 required paths present |
+| required generated audits allowlisted | ready | 15 required paths present |
+| publication artifacts included by exact allowlist | ready | 66 publication artifacts included |
 | figures included by exact allowlist | ready | 9 figure artifacts included |
 | allowlisted paths exist in working tree | ready | all exact paths exist |
 | allowlisted paths tracked or staged | ready | all exact paths are in the Git index |

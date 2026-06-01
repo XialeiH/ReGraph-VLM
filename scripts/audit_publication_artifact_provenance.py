@@ -42,11 +42,12 @@ EXPECTED_TABLE_SOURCES = {
 EXPECTED_AUDIT_ARTIFACTS = {
     "aaai_publication_readiness_audit.csv": 33,
     "bundle_allowlist_audit.csv": 13,
+    "citation_integrity_audit.csv": 11,
     "ci_workflow_audit.csv": 10,
     "external_data_policy_audit.csv": 6,
     "makefile_targets_audit.csv": 9,
     "manuscript_publication_claims_audit.csv": 55,
-    "publication_docs_audit.csv": 44,
+    "publication_docs_audit.csv": 45,
     "package_metadata_audit.csv": 11,
     "result_artifact_schema_audit.csv": 26,
     "result_value_range_audit.csv": 26,

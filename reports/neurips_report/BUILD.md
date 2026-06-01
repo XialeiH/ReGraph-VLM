@@ -162,6 +162,11 @@ The bundle allowlist audit is implemented in
 paths, figures, publication artifacts, generated audits, and reviewer-facing
 scripts are present and tracked or staged, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/bundle_allowlist_audit.csv`.
+The citation integrity audit is implemented in
+`scripts/audit_citation_integrity.py`; it verifies that manuscript citation keys
+are present, every cited key is defined in `references.bib`, and bibliography
+keys are not duplicated, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/citation_integrity_audit.csv`.
 The manuscript-only audit checks anonymity strings,
 fixed-adjacency overclaims, framing guardrails for adjacency, component
 baselines, external validation, fold_07, and implementation details, duplicate

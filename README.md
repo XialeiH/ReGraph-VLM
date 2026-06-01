@@ -170,6 +170,11 @@ publication artifacts, generated audits, and reviewer-facing scripts are present
 and tracked or staged before packaging. It is implemented in
 `scripts/audit_bundle_allowlist.py` and writes
 `preproc_v0/repetition_familiarity/results/final_tables/bundle_allowlist_audit.csv`.
+The citation integrity audit checks that manuscript citation keys are present,
+that every cited key is defined in `references.bib`, and that bibliography keys
+are not duplicated. It is implemented in `scripts/audit_citation_integrity.py`
+and writes
+`preproc_v0/repetition_familiarity/results/final_tables/citation_integrity_audit.csv`.
 
 The preflight also writes a compact Publication Evidence Manifest:
 

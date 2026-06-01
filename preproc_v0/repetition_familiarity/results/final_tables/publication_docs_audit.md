@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 44}
+Status counts: {'ready': 45}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -39,6 +39,7 @@ Status counts: {'ready': 44}
 | anonymous submission bundle documented | ready | README and BUILD mention anonymous bundle instructions, checksum, byte-stable archive metadata, byte-identical smoke testing, and byte-level deanonymization scan |
 | anonymous bundle manifest documented | ready | README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier, sidecar manifest support, byte-identical archive smoke test, and compile-capable extracted-bundle preflight |
 | bundle allowlist audit documented | ready | README, BUILD, and REPRODUCIBILITY document anonymous bundle allowlist freshness auditing |
+| citation integrity audit documented | ready | README, BUILD, and REPRODUCIBILITY document citation and bibliography integrity auditing |
 | CI runs publication preflight | ready | workflow runs preflight command |
 | CI requires TeX compilation | ready | workflow installs TeX and runs compile-required preflight |
 | CI installs recommended TeX packages | ready | workflow includes recommended and extra LaTeX package bundles |

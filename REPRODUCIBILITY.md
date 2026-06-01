@@ -116,6 +116,11 @@ The bundle allowlist audit is implemented in
 paths, figures, publication artifacts, generated audits, and reviewer-facing
 scripts are present and tracked or staged, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/bundle_allowlist_audit.csv`.
+The citation integrity audit is implemented in
+`scripts/audit_citation_integrity.py`. It verifies that manuscript citation keys
+are present, every cited key is defined in `references.bib`, and bibliography
+keys are not duplicated, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/citation_integrity_audit.csv`.
 
 When PyTorch is installed, the preflight also checks that
 `model_parameter_counts.csv` matches instantiated `ReGraphVLM` modules. The

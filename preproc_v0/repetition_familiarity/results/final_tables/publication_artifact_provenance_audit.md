@@ -1,6 +1,6 @@
 # Publication Artifact Provenance Audit
 
-Status counts: {'ready': 33}
+Status counts: {'ready': 34}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -26,11 +26,12 @@ Status counts: {'ready': 33}
 | model_parameter_counts.csv | ready | 5 rows cite existing reports/neurips_report/may30.tex: Table tab:implementation_details |
 | aaai_publication_readiness_audit.csv | ready | 33/33 minimum generated-audit rows ready |
 | bundle_allowlist_audit.csv | ready | 13/13 minimum generated-audit rows ready |
+| citation_integrity_audit.csv | ready | 11/11 minimum generated-audit rows ready |
 | ci_workflow_audit.csv | ready | 10/10 minimum generated-audit rows ready |
 | external_data_policy_audit.csv | ready | 6/6 minimum generated-audit rows ready |
 | makefile_targets_audit.csv | ready | 9/9 minimum generated-audit rows ready |
 | manuscript_publication_claims_audit.csv | ready | 55/55 minimum generated-audit rows ready |
-| publication_docs_audit.csv | ready | 44/44 minimum generated-audit rows ready |
+| publication_docs_audit.csv | ready | 45/45 minimum generated-audit rows ready |
 | package_metadata_audit.csv | ready | 11/11 minimum generated-audit rows ready |
 | result_artifact_schema_audit.csv | ready | 26/26 minimum generated-audit rows ready |
 | result_value_range_audit.csv | ready | 26/26 minimum generated-audit rows ready |

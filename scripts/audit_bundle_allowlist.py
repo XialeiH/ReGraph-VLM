@@ -37,6 +37,7 @@ REQUIRED_SOURCE_PATHS = {
 REQUIRED_AUDIT_SCRIPTS = {
     "scripts/audit_aaai_publication_readiness.py",
     "scripts/audit_bundle_allowlist.py",
+    "scripts/audit_citation_integrity.py",
     "scripts/audit_ci_workflow.py",
     "scripts/audit_external_data_policy.py",
     "scripts/audit_manuscript_publication_claims.py",
@@ -54,6 +55,7 @@ REQUIRED_AUDIT_SCRIPTS = {
 REQUIRED_GENERATED_AUDITS = {
     "preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/bundle_allowlist_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/citation_integrity_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/ci_workflow_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/external_data_policy_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/makefile_targets_audit.csv",

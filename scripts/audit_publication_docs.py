@@ -123,6 +123,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     pyproject = read_text(Path("pyproject.toml"))
     bundle_smoke = read_text(Path("scripts/smoke_test_anonymous_bundle_archive.py"))
     bundle_allowlist_audit = read_text(Path("scripts/audit_bundle_allowlist.py"))
+    citation_audit = read_text(Path("scripts/audit_citation_integrity.py"))
     makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
     ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
@@ -447,6 +448,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "allowlisted paths tracked or staged" in bundle_allowlist_audit
             ),
             "README, BUILD, and REPRODUCIBILITY document anonymous bundle allowlist freshness auditing",
+        ),
+        AuditRow(
+            "citation integrity audit documented",
+            ready(
+                "citation integrity audit" in readme
+                and "citation integrity audit" in build
+                and "citation integrity audit" in reproducibility
+                and "scripts/audit_citation_integrity.py" in readme
+                and "scripts/audit_citation_integrity.py" in build
+                and "scripts/audit_citation_integrity.py" in reproducibility
+                and "citation_integrity_audit.csv" in readme
+                and "citation_integrity_audit.csv" in build
+                and "citation_integrity_audit.csv" in reproducibility
+                and "all cited keys defined" in citation_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document citation and bibliography integrity auditing",
         ),
         AuditRow(
             "CI runs publication preflight",
