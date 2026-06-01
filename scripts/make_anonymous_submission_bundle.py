@@ -87,6 +87,7 @@ EXACT_PATHS = {
     "MODEL_CARD.md",
     "README.md",
     "REPRODUCIBILITY.md",
+    "REVIEWER_RESPONSE.md",
     "pyproject.toml",
     "models/__init__.py",
     "models/bnt_encoder.py",

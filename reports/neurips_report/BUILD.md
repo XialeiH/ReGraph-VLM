@@ -13,6 +13,8 @@ For fold-level split counts, session/order QC, external-validation scope, and
 large-data handling, see the repository-level `DATASET_CARD.md`.
 For model scope, intended use, supported claims, non-claims, and limitations,
 see the repository-level `MODEL_CARD.md`.
+For a concise map from likely reviewer concerns to committed evidence, see the
+repository-level `REVIEWER_RESPONSE.md`.
 
 Run the full preflight from the project root before compiling or submitting:
 
@@ -58,6 +60,7 @@ committed manuscript table and result artifact that supports it.
 For dataset accounting and external-validation scope, also see
 `DATASET_CARD.md`.
 For model scope and non-claims, also see `MODEL_CARD.md`.
+For a prose reviewer-response checklist, also see `REVIEWER_RESPONSE.md`.
 
 For double-blind review, do not submit the public GitHub URL or a Git clone.
 Use the Anonymous Submission Bundle workflow instead; see `ANONYMIZATION.md`.

@@ -54,6 +54,8 @@ For fold-level split counts, session/order QC, external-validation scope, and
 large-data handling, see `DATASET_CARD.md`.
 For model scope, intended use, supported claims, non-claims, and limitations,
 see `MODEL_CARD.md`.
+For a concise map from likely reviewer concerns to committed evidence, see
+`REVIEWER_RESPONSE.md`.
 
 ## Main Findings
 
@@ -149,6 +151,7 @@ preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_mani
 Use it as the reviewer-facing index from each major claim or caveat to the committed manuscript table and result artifact that supports it.
 For dataset accounting and external-validation scope, also see `DATASET_CARD.md`.
 For model scope and non-claims, also see `MODEL_CARD.md`.
+For a prose reviewer-response checklist, also see `REVIEWER_RESPONSE.md`.
 
 For double-blind review, do not submit the public GitHub URL or a Git clone.
 Use the Anonymous Submission Bundle workflow instead; see `ANONYMIZATION.md`.
@@ -264,6 +267,7 @@ reports/neurips_report/
 
 DATASET_CARD.md
 MODEL_CARD.md
+REVIEWER_RESPONSE.md
 
 external_validation/summary/
   laion_fmri_visual_roi_summary.csv

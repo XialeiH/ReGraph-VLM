@@ -30,6 +30,7 @@ PUBLICATION_DOC_PATHS = [
     Path("MODEL_CARD.md"),
     Path("README.md"),
     Path("REPRODUCIBILITY.md"),
+    Path("REVIEWER_RESPONSE.md"),
     Path("pyproject.toml"),
     Path("reports/neurips_report/BUILD.md"),
     Path("reports/neurips_report/may30.tex"),
@@ -118,6 +119,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     dataset_card = read_text(Path("DATASET_CARD.md"))
     model_card = read_text(Path("MODEL_CARD.md"))
     reproducibility = read_text(Path("REPRODUCIBILITY.md"))
+    reviewer_response = read_text(Path("REVIEWER_RESPONSE.md"))
     pyproject = read_text(Path("pyproject.toml"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
@@ -127,6 +129,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
         AuditRow("MODEL_CARD exists", "ready" if model_card else "missing", "MODEL_CARD.md"),
         AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
         AuditRow("REPRODUCIBILITY doc exists", "ready" if reproducibility else "missing", "REPRODUCIBILITY.md"),
+        AuditRow("REVIEWER_RESPONSE exists", "ready" if reviewer_response else "missing", "REVIEWER_RESPONSE.md"),
         AuditRow("pyproject exists", "ready" if pyproject else "missing", "pyproject.toml"),
         AuditRow("BUILD doc exists", "ready" if build else "missing", str(build_path)),
         AuditRow("publication preflight workflow exists", "ready" if workflow else "missing", str(workflow_path)),
@@ -218,6 +221,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "MODEL_CARD.md" in reproducibility
             ),
             "MODEL_CARD.md documents model scope, supported claims, non-claims, limitations, and reviewer-facing evidence",
+        ),
+        AuditRow(
+            "reviewer response memo documents concerns",
+            ready(
+                "Central Framing" in reviewer_response
+                and "Graph-Adjacency Novelty" in reviewer_response
+                and "Session/Order Confounds" in reviewer_response
+                and "Statistical Reporting" in reviewer_response
+                and "External Validation" in reviewer_response
+                and "MODEL_CARD.md" in reviewer_response
+                and "DATASET_CARD.md" in reviewer_response
+                and "REVIEWER_RESPONSE.md" in readme
+                and "REVIEWER_RESPONSE.md" in build
+                and "REVIEWER_RESPONSE.md" in reproducibility
+            ),
+            "REVIEWER_RESPONSE.md maps likely reviewer concerns to manuscript/result artifacts",
         ),
         AuditRow(
             "pyproject metadata aligned",

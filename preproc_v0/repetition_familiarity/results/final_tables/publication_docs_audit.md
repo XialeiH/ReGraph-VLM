@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 36}
+Status counts: {'ready': 38}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -9,6 +9,7 @@ Status counts: {'ready': 36}
 | MODEL_CARD exists | ready | MODEL_CARD.md |
 | README exists | ready | README.md |
 | REPRODUCIBILITY doc exists | ready | REPRODUCIBILITY.md |
+| REVIEWER_RESPONSE exists | ready | REVIEWER_RESPONSE.md |
 | pyproject exists | ready | pyproject.toml |
 | BUILD doc exists | ready | reports/neurips_report/BUILD.md |
 | publication preflight workflow exists | ready | .github/workflows/publication-preflight.yml |
@@ -20,6 +21,7 @@ Status counts: {'ready': 36}
 | dependency and large-data policy documented | ready | REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, external-validation limits, and the dataset card |
 | dataset card documents data accounting | ready | DATASET_CARD.md documents split counts, session/order QC, fold difficulty, external-validation limits, and large-data policy |
 | model card documents model scope | ready | MODEL_CARD.md documents model scope, supported claims, non-claims, limitations, and reviewer-facing evidence |
+| reviewer response memo documents concerns | ready | REVIEWER_RESPONSE.md maps likely reviewer concerns to manuscript/result artifacts |
 | pyproject metadata aligned | ready | pyproject names ReGraph-VLM, exposes dependency extras, and packages current models code |
 | package metadata audit documented | ready | README, BUILD, and REPRODUCIBILITY mention structural package metadata auditing |
 | compile path documented | ready | --compile command present in README and BUILD |
