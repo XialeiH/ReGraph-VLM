@@ -231,6 +231,7 @@ The default adjacency matrix for adjacency-aware variants is built from training
     Brain encoder & Fixed-order ROI-token transformer; hidden dimension 64; 2 layers; 4 heads; dropout 0.3 \\
     Readout & Flat or gated-flat ROI-preserving readout; final embedding dimension 128 \\
     Image branch & Frozen CLIP image embeddings with learned projection head to the shared 128-d space \\
+    Trainable parameters & Final gated BNT/ReGraph and no-adjacency gated ROI Transformer: 3,251,595 parameters each with 512-d CLIP inputs; graph-bias variant: 3,255,883; learned edge-bias variant: 3,283,995; ROI-MLP+CLIP: 369,706 \\
     Loss & BCE + repeat InfoNCE + $\lambda_{\mathrm{clip}}$ CLIP alignment; $\lambda_{\mathrm{clip}}=2.0$ for final CLIP runs \\
     Temperatures & $\tau_{\mathrm{brain}}=0.1$ for repeat InfoNCE; $\tau_{\mathrm{clip}}=0.07$ for brain-image alignment \\
     Optimization & AdamW, learning rate $10^{-3}$, weight decay $10^{-4}$, batch size 128, gradient clipping at 5.0 \\

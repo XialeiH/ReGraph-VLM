@@ -176,6 +176,10 @@ def audit_implementation_response(tex: str) -> AuditRow:
         "row-wise top-20 ROI relations ranked by absolute correlation magnitude",
         "symmetric degree normalization",
         "Validation and test responses are never used",
+        "3,251,595",
+        "3,255,883",
+        "3,283,995",
+        "369,706",
     )
     ok = has_all(tex, required)
     missing = [fragment for fragment in required if fragment not in tex]

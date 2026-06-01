@@ -121,6 +121,7 @@ IMPLEMENTATION_DETAIL_REQUIREMENTS = {
     ),
     "brain encoder": ("hidden dimension 64", "2 layers", "4 heads", "dropout 0.3"),
     "projection/readout": ("gated-flat ROI-preserving readout", "final embedding dimension 128", "shared 128-d space"),
+    "parameter counts": ("3,251,595", "3,255,883", "3,283,995", "369,706"),
     "optimization": ("AdamW", "learning rate $10^{-3}$", "weight decay $10^{-4}$", "batch size 128", "gradient clipping at 5.0"),
     "training selection": ("Up to 80 epochs", "patience 12", "validation AUROC"),
     "evaluation protocol": ("8 held-out-subject folds", "seeds 11, 22, and 33"),

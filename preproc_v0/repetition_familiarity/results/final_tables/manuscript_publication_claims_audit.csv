@@ -1,12 +1,12 @@
 item,status,evidence
-manuscript exists,ready,reports/neurips_report/may30.tex: 853 lines
+manuscript exists,ready,reports/neurips_report/may30.tex: 854 lines
 anonymous author block,ready,Anonymous Author(s) present
 deanonymizing strings,ready,none found
 fixed-adjacency overclaims,ready,none found
 duplicate labels,ready,none
 unresolved refs,ready,none
 required publication labels,ready,all present
-implementation detail coverage,ready,10 reproducibility detail groups present
+implementation detail coverage,ready,11 reproducibility detail groups present
 component-baseline framing,ready,task-matched component framing present; full-system/SOTA overclaims absent
 external-validation framing,ready,external checks framed as visual-ROI smoke/feasibility evidence with replication limits
 fold_07 robustness framing,ready,fold_07 remains framed as a diagnosed but unresolved robustness/calibration case
