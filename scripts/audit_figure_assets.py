@@ -145,7 +145,7 @@ def audit_figure_assets(root: Path, tex_relative: Path) -> list[AuditRow]:
             AuditRow(
                 f"figure asset {figure_path}",
                 ready(not problems),
-                f"{bundle_path}; {size} bytes; bundle-allowlisted"
+                f"{bundle_path}; present; nonempty; bundle-allowlisted"
                 if not problems
                 else f"{bundle_path}; {', '.join(problems)}",
             )
