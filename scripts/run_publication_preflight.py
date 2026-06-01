@@ -224,7 +224,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 19))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 20))
 
     rows.append(
         require_ok(
@@ -307,6 +307,27 @@ def main() -> int:
         )
     )
     rows.append(audit_status(manuscript_only_dir / "manuscript_publication_claims_audit.csv", 25))
+
+    rows.append(
+        require_ok(
+            "publication evidence manifest",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/generate_publication_evidence_manifest.py",
+                    "--tex",
+                    str(tex),
+                    "--final-tables-dir",
+                    str(final),
+                    "--external-summary-dir",
+                    str(external),
+                    "--output",
+                    str(final / "publication_evidence_manifest.md"),
+                ],
+            ),
+        )
+    )
 
     tex_tool = detect_tex_tool()
     if args.compile:

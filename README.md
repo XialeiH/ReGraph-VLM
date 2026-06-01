@@ -127,6 +127,14 @@ GitHub Actions installs a TeX distribution with recommended/extra LaTeX packages
 
 The reviewer-response readiness audit maps likely reviewer concerns to concrete manuscript/result evidence: dataset accounting, session/order controls, adjacency limitations, ROI-token/gate mechanism controls, implementation detail, paired statistics, component-baseline framing, semantic-alignment controls, external-validation caveats, and fold_07 robustness.
 
+The preflight also writes a compact Publication Evidence Manifest:
+
+```text
+preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_manifest.md
+```
+
+Use it as the reviewer-facing index from each major claim or caveat to the committed manuscript table and result artifact that supports it.
+
 Run the manuscript-only audit directly when you only need a fast TeX-facing check:
 
 ```bash
@@ -166,6 +174,7 @@ scripts/
   audit_manuscript_publication_claims.py
   audit_aaai_publication_readiness.py
   audit_reviewer_response_readiness.py
+  generate_publication_evidence_manifest.py
   materialize_publication_readiness_artifacts.py
   run_publication_preflight.py
   summarize_laion_fmri_external_results.py

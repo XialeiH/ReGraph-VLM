@@ -32,6 +32,15 @@ adjacency limitations, ROI-token/gate mechanism controls, implementation detail,
 paired statistics, component-baseline framing, semantic-alignment controls,
 external-validation caveats, and fold_07 robustness.
 
+The preflight also writes a compact Publication Evidence Manifest:
+
+```text
+preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_manifest.md
+```
+
+Use it as the reviewer-facing index from each major claim or caveat to the
+committed manuscript table and result artifact that supports it.
+
 If a TeX distribution is installed, compile through the same preflight:
 
 ```bash

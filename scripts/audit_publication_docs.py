@@ -149,6 +149,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "README and BUILD mention reviewer-response readiness audit",
         ),
         AuditRow(
+            "publication evidence manifest documented",
+            ready("Publication Evidence Manifest" in readme and "Publication Evidence Manifest" in build),
+            "README and BUILD mention the publication evidence manifest",
+        ),
+        AuditRow(
             "CI runs publication preflight",
             ready("python scripts/run_publication_preflight.py" in workflow),
             "workflow runs preflight command",
