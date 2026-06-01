@@ -143,6 +143,22 @@ EXTERNAL_VALIDATION_FORBIDDEN_PATTERNS = (
     r"full\s+HCP-MMP\s+external\s+replication\s+is\s+complete",
 )
 
+FOLD_DIFFICULTY_REQUIRED_FRAGMENTS = (
+    "fold\\_07 remains the hardest held-out subject across all models",
+    "not a simple sample-count artifact",
+    "low repeat reliability",
+    "weak raw same/different pair separability",
+    "does not fully explain the fold\\_07 failure mode",
+    "remaining subject-specific robustness or calibration challenge",
+    "fold\\_07 remains an unresolved robustness case",
+)
+
+FOLD_DIFFICULTY_FORBIDDEN_PATTERNS = (
+    r"fold\\_07\s+is\s+fully\s+explained",
+    r"fold\\_07\s+is\s+resolved",
+    r"fold\\_07\s+is\s+only\s+a\s+sample-size\s+artifact",
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit manuscript/result consistency for the AAAI-style ReGraph-VLM submission.")
@@ -408,6 +424,20 @@ def audit_external_validation_framing(text: str) -> AuditRow:
     return AuditRow("external-validation framing", status(ok), evidence)
 
 
+def audit_fold_difficulty_framing(text: str) -> AuditRow:
+    missing = [fragment for fragment in FOLD_DIFFICULTY_REQUIRED_FRAGMENTS if fragment not in text]
+    forbidden = [
+        pattern
+        for pattern in FOLD_DIFFICULTY_FORBIDDEN_PATTERNS
+        if re.search(pattern, text, flags=re.IGNORECASE)
+    ]
+    ok = not missing and not forbidden
+    evidence = "fold_07 remains framed as a diagnosed but unresolved robustness/calibration case"
+    if not ok:
+        evidence = f"missing={missing or 'none'}; forbidden={forbidden or 'none'}"
+    return AuditRow("fold_07 robustness framing", status(ok), evidence)
+
+
 def bib_keys(paths: list[Path]) -> tuple[set[str], list[Path]]:
     keys: set[str] = set()
     missing_paths: list[Path] = []
@@ -452,6 +482,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
     rows.append(audit_implementation_details(text))
     rows.append(audit_component_baseline_framing(text))
     rows.append(audit_external_validation_framing(text))
+    rows.append(audit_fold_difficulty_framing(text))
 
     cite_keys = citation_keys(text)
     bib_paths = bibliography_paths(tex_path, text)
