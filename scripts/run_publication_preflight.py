@@ -262,7 +262,23 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 43))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 44))
+
+    rows.append(
+        require_ok(
+            "bundle allowlist audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_bundle_allowlist.py",
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "bundle_allowlist_audit.csv", 13))
 
     rows.append(
         require_ok(
@@ -443,7 +459,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 32))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 33))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

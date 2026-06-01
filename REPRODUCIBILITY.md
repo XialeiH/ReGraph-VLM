@@ -111,6 +111,11 @@ The result value-range audit is implemented in
 `scripts/audit_result_value_ranges.py`. It verifies metric ranges, p-values,
 correlations, standard deviations, counts, and split/QC invariants, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/result_value_range_audit.csv`.
+The bundle allowlist audit is implemented in
+`scripts/audit_bundle_allowlist.py`. It verifies that anonymous-bundle source
+paths, figures, publication artifacts, generated audits, and reviewer-facing
+scripts are present and tracked or staged, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/bundle_allowlist_audit.csv`.
 
 When PyTorch is installed, the preflight also checks that
 `model_parameter_counts.csv` matches instantiated `ReGraphVLM` modules. The

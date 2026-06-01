@@ -157,6 +157,11 @@ The result value-range audit is implemented in
 `scripts/audit_result_value_ranges.py`; it verifies metric ranges, p-values,
 correlations, standard deviations, counts, and split/QC invariants, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/result_value_range_audit.csv`.
+The bundle allowlist audit is implemented in
+`scripts/audit_bundle_allowlist.py`; it verifies that anonymous-bundle source
+paths, figures, publication artifacts, generated audits, and reviewer-facing
+scripts are present and tracked or staged, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/bundle_allowlist_audit.csv`.
 The manuscript-only audit checks anonymity strings,
 fixed-adjacency overclaims, framing guardrails for adjacency, component
 baselines, external validation, fold_07, and implementation details, duplicate

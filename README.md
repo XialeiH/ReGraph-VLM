@@ -165,6 +165,11 @@ correlations, standard deviations, counts, and split/QC invariants stay in
 valid ranges. It is implemented in `scripts/audit_result_value_ranges.py` and
 writes
 `preproc_v0/repetition_familiarity/results/final_tables/result_value_range_audit.csv`.
+The bundle allowlist audit checks that anonymous-bundle source paths, figures,
+publication artifacts, generated audits, and reviewer-facing scripts are present
+and tracked or staged before packaging. It is implemented in
+`scripts/audit_bundle_allowlist.py` and writes
+`preproc_v0/repetition_familiarity/results/final_tables/bundle_allowlist_audit.csv`.
 
 The preflight also writes a compact Publication Evidence Manifest:
 

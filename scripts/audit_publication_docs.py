@@ -122,6 +122,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     reviewer_response = read_text(Path("REVIEWER_RESPONSE.md"))
     pyproject = read_text(Path("pyproject.toml"))
     bundle_smoke = read_text(Path("scripts/smoke_test_anonymous_bundle_archive.py"))
+    bundle_allowlist_audit = read_text(Path("scripts/audit_bundle_allowlist.py"))
     makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
     ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
@@ -430,6 +431,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "byte-stable archive verified" in bundle_smoke
             ),
             "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier, sidecar manifest support, byte-identical archive smoke test, and compile-capable extracted-bundle preflight",
+        ),
+        AuditRow(
+            "bundle allowlist audit documented",
+            ready(
+                "bundle allowlist audit" in readme
+                and "bundle allowlist audit" in build
+                and "bundle allowlist audit" in reproducibility
+                and "scripts/audit_bundle_allowlist.py" in readme
+                and "scripts/audit_bundle_allowlist.py" in build
+                and "scripts/audit_bundle_allowlist.py" in reproducibility
+                and "bundle_allowlist_audit.csv" in readme
+                and "bundle_allowlist_audit.csv" in build
+                and "bundle_allowlist_audit.csv" in reproducibility
+                and "allowlisted paths tracked or staged" in bundle_allowlist_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document anonymous bundle allowlist freshness auditing",
         ),
         AuditRow(
             "CI runs publication preflight",
