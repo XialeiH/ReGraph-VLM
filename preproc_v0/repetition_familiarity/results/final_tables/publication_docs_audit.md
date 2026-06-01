@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 38}
+Status counts: {'ready': 39}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -24,6 +24,7 @@ Status counts: {'ready': 38}
 | reviewer response memo documents concerns | ready | REVIEWER_RESPONSE.md maps likely reviewer concerns to manuscript/result artifacts |
 | pyproject metadata aligned | ready | pyproject names ReGraph-VLM, exposes dependency extras, and packages current models code |
 | package metadata audit documented | ready | README, BUILD, and REPRODUCIBILITY mention structural package metadata auditing |
+| external data policy audit documented | ready | README, BUILD, REPRODUCIBILITY, and DATASET_CARD mention HPC-only external-data policy auditing |
 | compile path documented | ready | --compile command present in README and BUILD |
 | portable TeX note documented | ready | BUILD uses a portable TeX availability note instead of local-machine state |
 | statistical-claims audit documented | ready | README and BUILD mention statistical-claims verification |

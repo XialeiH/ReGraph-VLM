@@ -8,6 +8,8 @@ import urllib.request
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from external_data_policy import enforce_hpc_external_path
+
 
 BASE_URL = "https://laion-fmri.s3.amazonaws.com"
 DEFAULT_SUBJECTS = ["sub-01", "sub-03", "sub-05", "sub-06", "sub-07"]
@@ -139,6 +141,7 @@ def write_markdown(path: Path, subject_rows: list[dict[str, object]], cross_rows
 
 def main() -> None:
     args = parse_args()
+    enforce_hpc_external_path(args.output_dir, "LAION-fMRI trial metadata output directory")
     tsv_dir = args.output_dir / "tsv"
     all_rows: list[dict[str, str]] = []
     n_files = 0

@@ -15,6 +15,8 @@ import nibabel as nib
 import numpy as np
 import torch
 
+from external_data_policy import enforce_hpc_external_path
+
 
 BASE_URL = "https://laion-fmri.s3.amazonaws.com"
 XML_NS = {"s3": "http://s3.amazonaws.com/doc/2006-03-01/"}
@@ -347,6 +349,8 @@ def download_selection_files(
 
 def main() -> None:
     args = parse_args()
+    enforce_hpc_external_path(args.root, "LAION-fMRI visual-ROI export root")
+    enforce_hpc_external_path(args.metadata_dir, "LAION-fMRI trial metadata directory")
     args.root.mkdir(parents=True, exist_ok=True)
     out_dir = args.root / "visual_roi_scalar4_laion"
     out_dir.mkdir(parents=True, exist_ok=True)

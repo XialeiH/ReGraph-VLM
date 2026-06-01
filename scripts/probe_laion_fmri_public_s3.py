@@ -10,6 +10,8 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
 
+from external_data_policy import enforce_hpc_external_path
+
 
 S3_LIST_URL = "https://laion-fmri.s3.amazonaws.com/"
 XML_NS = {"s3": "http://s3.amazonaws.com/doc/2006-03-01/"}
@@ -107,6 +109,7 @@ def write_md(path: Path, rows: list[dict[str, object]]) -> None:
 
 def main() -> None:
     args = parse_args()
+    enforce_hpc_external_path(args.output_dir, "LAION-fMRI S3 probe output directory")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     rows: list[dict[str, object]] = []
     for subject in args.subjects:

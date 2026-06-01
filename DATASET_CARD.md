@@ -103,6 +103,9 @@ scratch storage, not into a local laptop checkout. In short, raw data belongs on
 remote HPC scratch storage. The Git repository and
 anonymous bundle include source code, manuscript files, lightweight CSV/Markdown
 summaries, figures, and audit artifacts only.
+Protected external-validation download/probe scripts are guarded by
+`scripts/external_data_policy.py`, and the publication preflight runs
+`scripts/audit_external_data_policy.py` as an external data policy audit.
 
 Excluded from Git and from the anonymous bundle:
 

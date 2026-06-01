@@ -3,8 +3,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 from pathlib import Path
+
+from external_data_policy import enforce_hpc_external_path
 
 
 DATASETS = [
@@ -53,6 +56,11 @@ DATASETS = [
         "full_download": "Use THINGS-data documentation to pull only fMRI derivatives and stimulus metadata.",
     },
 ]
+
+
+def default_hpc_root() -> Path:
+    user = os.environ.get("USER", "$USER")
+    return Path("/gpfsnyu") / "scratch" / user / "ReGraph-VLM"
 
 
 def run(cmd: list[str], cwd: Path | None = None) -> dict[str, object]:
@@ -117,7 +125,7 @@ def write_markdown(out_dir: Path, probe_results: dict[str, object]) -> None:
             "Install missing tools in the project venv before any full CNeuroMod/NOD download:",
             "",
             "```bash",
-            "cd /gpfsnyu/scratch/xh2906/ReGraph-VLM",
+            "cd $REGRAPH_VLM_HPC_ROOT",
             "source scripts/shanghai_env.sh",
             "python -m pip install h5py datalad datalad-installer",
             "# git-annex is still required for DataLad `get`; install it with an HPC-supported package manager or datalad-installer.",
@@ -132,9 +140,10 @@ def write_markdown(out_dir: Path, probe_results: dict[str, object]) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Prepare external fMRI validation sources on Shanghai HPC.")
-    parser.add_argument("--root", type=Path, default=Path("/gpfsnyu/scratch/xh2906/ReGraph-VLM"))
+    parser.add_argument("--root", type=Path, default=default_hpc_root())
     parser.add_argument("--clone-metadata", action="store_true")
     args = parser.parse_args()
+    enforce_hpc_external_path(args.root, "external validation project root")
 
     out_dir = args.root / "external_validation"
     out_dir.mkdir(parents=True, exist_ok=True)

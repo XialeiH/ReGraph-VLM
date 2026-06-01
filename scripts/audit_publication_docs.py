@@ -257,6 +257,18 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "README, BUILD, and REPRODUCIBILITY mention structural package metadata auditing",
         ),
         AuditRow(
+            "external data policy audit documented",
+            ready(
+                "external data policy audit" in readme
+                and "external data policy audit" in build
+                and "external data policy audit" in reproducibility
+                and "external data policy audit" in dataset_card
+                and "scripts/external_data_policy.py" in reproducibility
+                and "scripts/audit_external_data_policy.py" in build
+            ),
+            "README, BUILD, REPRODUCIBILITY, and DATASET_CARD mention HPC-only external-data policy auditing",
+        ),
+        AuditRow(
             "compile path documented",
             ready("python3 scripts/run_publication_preflight.py --compile" in readme and "python3 scripts/run_publication_preflight.py --compile" in build),
             "--compile command present in README and BUILD",

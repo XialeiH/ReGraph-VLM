@@ -280,7 +280,23 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 38))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 39))
+
+    rows.append(
+        require_ok(
+            "external data policy audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_external_data_policy.py",
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "external_data_policy_audit.csv", 6))
 
     rows.append(
         require_ok(

@@ -63,6 +63,10 @@ Large fMRI datasets should be downloaded and processed directly on remote HPC
 scratch storage, not onto a local laptop checkout. The repository contains
 helper scripts for NSD preprocessing and public external-validation probes, but
 the raw datasets and generated tensors are intentionally excluded from Git.
+Protected public external-validation download and probe scripts call
+`scripts/external_data_policy.py` so their output roots must resolve to remote
+HPC scratch paths. The publication preflight runs
+`scripts/audit_external_data_policy.py` as an external data policy audit.
 
 Publication-facing external validation is limited to committed summary tables
 under `external_validation/summary/`. These are smoke checks on public

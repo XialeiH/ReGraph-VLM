@@ -137,7 +137,10 @@ python3 scripts/audit_manuscript_publication_claims.py \
   --output-dir /tmp/regraph_report_preflight
 ```
 
-The manuscript-only audit checks anonymity strings, fixed-adjacency overclaims,
+The full preflight also runs `scripts/audit_external_data_policy.py` as an
+external data policy audit, enforcing that protected external fMRI
+download/probe scripts stay guarded for remote HPC scratch storage. The
+manuscript-only audit checks anonymity strings, fixed-adjacency overclaims,
 framing guardrails for adjacency, component baselines, external validation,
 fold_07, and implementation details, duplicate labels, unresolved refs, required
 labels, citation coverage in `references.bib`, figure file availability, and
