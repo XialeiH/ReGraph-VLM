@@ -160,6 +160,11 @@ the required columns, numeric fields, minimum row counts, and nonempty source
 metadata. It is implemented in `scripts/audit_result_artifact_schemas.py` and
 writes
 `preproc_v0/repetition_familiarity/results/final_tables/result_artifact_schema_audit.csv`.
+The result value-range audit checks that reported metrics, p-values,
+correlations, standard deviations, counts, and split/QC invariants stay in
+valid ranges. It is implemented in `scripts/audit_result_value_ranges.py` and
+writes
+`preproc_v0/repetition_familiarity/results/final_tables/result_value_range_audit.csv`.
 
 The preflight also writes a compact Publication Evidence Manifest:
 
@@ -277,6 +282,7 @@ scripts/
   audit_ci_workflow.py
   audit_makefile_targets.py
   audit_result_artifact_schemas.py
+  audit_result_value_ranges.py
   audit_reviewer_response_readiness.py
   generate_publication_evidence_manifest.py
   make_anonymous_submission_bundle.py

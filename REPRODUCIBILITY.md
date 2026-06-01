@@ -107,6 +107,10 @@ The result artifact schema audit is implemented in
 numeric fields, minimum row counts, and source metadata for reviewer-facing
 result artifacts, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/result_artifact_schema_audit.csv`.
+The result value-range audit is implemented in
+`scripts/audit_result_value_ranges.py`. It verifies metric ranges, p-values,
+correlations, standard deviations, counts, and split/QC invariants, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/result_value_range_audit.csv`.
 
 When PyTorch is installed, the preflight also checks that
 `model_parameter_counts.csv` matches instantiated `ReGraphVLM` modules. The

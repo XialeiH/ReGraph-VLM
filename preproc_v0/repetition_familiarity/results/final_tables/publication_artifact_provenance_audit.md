@@ -1,6 +1,6 @@
 # Publication Artifact Provenance Audit
 
-Status counts: {'ready': 31}
+Status counts: {'ready': 32}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -29,9 +29,10 @@ Status counts: {'ready': 31}
 | external_data_policy_audit.csv | ready | 6/6 minimum generated-audit rows ready |
 | makefile_targets_audit.csv | ready | 9/9 minimum generated-audit rows ready |
 | manuscript_publication_claims_audit.csv | ready | 55/55 minimum generated-audit rows ready |
-| publication_docs_audit.csv | ready | 42/42 minimum generated-audit rows ready |
+| publication_docs_audit.csv | ready | 43/43 minimum generated-audit rows ready |
 | package_metadata_audit.csv | ready | 11/11 minimum generated-audit rows ready |
 | result_artifact_schema_audit.csv | ready | 26/26 minimum generated-audit rows ready |
+| result_value_range_audit.csv | ready | 26/26 minimum generated-audit rows ready |
 | reviewer_response_readiness_audit.csv | ready | 11/11 minimum generated-audit rows ready |
 | manuscript_table_values_audit.csv | ready | 24/24 minimum generated-audit rows ready |
 | manuscript_stat_claims_audit.csv | ready | 22/22 minimum generated-audit rows ready |

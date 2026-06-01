@@ -125,6 +125,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
     ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
+    value_range_audit = read_text(Path("scripts/audit_result_value_ranges.py"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
@@ -225,6 +226,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "publication_paired_stats.csv" in schema_audit
             ),
             "README, BUILD, and REPRODUCIBILITY document result artifact schema auditing",
+        ),
+        AuditRow(
+            "result value-range audit documented",
+            ready(
+                "result value-range audit" in readme
+                and "result value-range audit" in build
+                and "result value-range audit" in reproducibility
+                and "scripts/audit_result_value_ranges.py" in readme
+                and "scripts/audit_result_value_ranges.py" in build
+                and "scripts/audit_result_value_ranges.py" in reproducibility
+                and "result_value_range_audit.csv" in readme
+                and "result_value_range_audit.csv" in build
+                and "result_value_range_audit.csv" in reproducibility
+                and "paired_t_p" in value_range_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document result value-range auditing",
         ),
         AuditRow(
             "reproducibility guide linked",
