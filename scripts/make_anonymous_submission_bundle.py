@@ -96,8 +96,25 @@ def run_git(root: Path, args: list[str]) -> str:
     return completed.stdout
 
 
+def git_available(root: Path) -> bool:
+    completed = subprocess.run(
+        ["git", "-C", str(root), "rev-parse", "--is-inside-work-tree"],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    return completed.returncode == 0 and completed.stdout.strip() == "true"
+
+
 def tracked_paths(root: Path) -> list[str]:
-    return [line for line in run_git(root, ["ls-files"]).splitlines() if include_path(line)]
+    if git_available(root):
+        return [line for line in run_git(root, ["ls-files"]).splitlines() if include_path(line)]
+    return sorted(
+        path.relative_to(root).as_posix()
+        for path in root.rglob("*")
+        if path.is_file() and include_path(path.relative_to(root).as_posix())
+    )
 
 
 def include_path(path: str) -> bool:
