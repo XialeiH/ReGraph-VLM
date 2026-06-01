@@ -57,6 +57,11 @@ preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_mani
 
 Use it as the reviewer-facing index from each major claim or caveat to the
 committed manuscript table and result artifact that supports it.
+The publication evidence manifest audit verifies that this index covers the
+required reviewer claims, cites expected evidence artifacts, and points only to
+existing files. It is implemented in
+`scripts/audit_publication_evidence_manifest.py` and writes
+`preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_manifest_audit.csv`.
 For dataset accounting and external-validation scope, also see
 `DATASET_CARD.md`.
 For model scope and non-claims, also see `MODEL_CARD.md`.

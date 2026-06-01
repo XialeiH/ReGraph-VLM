@@ -262,7 +262,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 46))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 47))
 
     rows.append(
         require_ok(
@@ -539,6 +539,27 @@ def main() -> int:
             ),
         )
     )
+    rows.append(
+        require_ok(
+            "publication evidence manifest audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_publication_evidence_manifest.py",
+                    "--manifest",
+                    str(final / "publication_evidence_manifest.md"),
+                    "--final-tables-dir",
+                    str(final),
+                    "--external-summary-dir",
+                    str(external),
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "publication_evidence_manifest_audit.csv", 10))
 
     rows.append(
         require_ok(

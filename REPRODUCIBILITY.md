@@ -197,6 +197,11 @@ It maps the manuscript claims to committed CSV/Markdown artifacts, including
 main all-fold results, adjacency ablations, session/order controls, external
 smoke validation, fold-level diagnostics, paired statistics, and anonymous
 bundle readiness.
+The publication evidence manifest audit verifies that this reviewer-facing
+index covers required claims, cites expected artifacts, and points only to
+existing files. It is implemented in
+`scripts/audit_publication_evidence_manifest.py` and writes
+`preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_manifest_audit.csv`.
 
 The dataset-specific reviewer index is:
 

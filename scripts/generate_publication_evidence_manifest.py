@@ -101,6 +101,7 @@ def main() -> int:
         artifact(final / "publication_artifact_provenance_audit.csv", status_counts(final / "publication_artifact_provenance_audit.csv")),
         artifact(final / "manuscript_publication_claims_audit.csv", status_counts(final / "manuscript_publication_claims_audit.csv")),
         artifact(final / "publication_docs_audit.csv", status_counts(final / "publication_docs_audit.csv")),
+        artifact(final / "publication_evidence_manifest_audit.csv", status_counts(final / "publication_evidence_manifest_audit.csv")),
         artifact(final / "package_metadata_audit.csv", status_counts(final / "package_metadata_audit.csv")),
         artifact(final / "anonymous_bundle_manifest.csv", "per-file source byte counts and SHA-256 checksums for verifier-backed anonymous bundle contents"),
         artifact(final / "reviewer_response_readiness_audit.csv", status_counts(final / "reviewer_response_readiness_audit.csv")),

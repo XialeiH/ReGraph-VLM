@@ -129,6 +129,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
     value_range_audit = read_text(Path("scripts/audit_result_value_ranges.py"))
     table_uncertainty_audit = read_text(Path("scripts/audit_table_uncertainty_language.py"))
+    evidence_manifest_audit = read_text(Path("scripts/audit_publication_evidence_manifest.py"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
@@ -389,6 +390,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "publication evidence manifest documented",
             ready("Publication Evidence Manifest" in readme and "Publication Evidence Manifest" in build),
             "README and BUILD mention the publication evidence manifest",
+        ),
+        AuditRow(
+            "publication evidence manifest audit documented",
+            ready(
+                "publication evidence manifest audit" in readme
+                and "publication evidence manifest audit" in build
+                and "publication evidence manifest audit" in reproducibility
+                and "scripts/audit_publication_evidence_manifest.py" in readme
+                and "scripts/audit_publication_evidence_manifest.py" in build
+                and "scripts/audit_publication_evidence_manifest.py" in reproducibility
+                and "publication_evidence_manifest_audit.csv" in readme
+                and "publication_evidence_manifest_audit.csv" in build
+                and "publication_evidence_manifest_audit.csv" in reproducibility
+                and "required reviewer claims covered" in evidence_manifest_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document reviewer evidence-manifest auditing",
         ),
         AuditRow(
             "anonymous submission bundle documented",

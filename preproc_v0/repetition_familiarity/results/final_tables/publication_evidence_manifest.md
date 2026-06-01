@@ -34,7 +34,8 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | `preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv` | present | ready=33 |
 | `preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv` | present | ready=35 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_publication_claims_audit.csv` | present | ready=55 |
-| `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=46 |
+| `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=47 |
+| `preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_manifest_audit.csv` | present | ready=10 |
 | `preproc_v0/repetition_familiarity/results/final_tables/package_metadata_audit.csv` | present | ready=11 |
 | `preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv` | present | per-file source byte counts and SHA-256 checksums for verifier-backed anonymous bundle contents |
 | `preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.csv` | present | ready=11 |
