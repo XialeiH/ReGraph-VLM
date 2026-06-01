@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 30}
+Status counts: {'ready': 31}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -17,6 +17,7 @@ Status counts: {'ready': 30}
 | reproducibility guide linked | ready | README and BUILD link the reproducibility guide |
 | dependency and large-data policy documented | ready | REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, and external-validation limits |
 | pyproject metadata aligned | ready | pyproject names ReGraph-VLM, exposes dependency extras, and packages current models code |
+| package metadata audit documented | ready | README, BUILD, and REPRODUCIBILITY mention structural package metadata auditing |
 | compile path documented | ready | --compile command present in README and BUILD |
 | portable TeX note documented | ready | BUILD uses a portable TeX availability note instead of local-machine state |
 | statistical-claims audit documented | ready | README and BUILD mention statistical-claims verification |

@@ -188,6 +188,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "pyproject names ReGraph-VLM, exposes dependency extras, and packages current models code",
         ),
         AuditRow(
+            "package metadata audit documented",
+            ready("package metadata" in readme and "package metadata" in build and "package metadata audit" in reproducibility),
+            "README, BUILD, and REPRODUCIBILITY mention structural package metadata auditing",
+        ),
+        AuditRow(
             "compile path documented",
             ready("python3 scripts/run_publication_preflight.py --compile" in readme and "python3 scripts/run_publication_preflight.py --compile" in build),
             "--compile command present in README and BUILD",

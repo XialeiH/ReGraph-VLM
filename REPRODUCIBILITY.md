@@ -79,6 +79,10 @@ python3 scripts/run_publication_preflight.py
 make preflight
 ```
 
+The preflight includes a structural package metadata audit for `pyproject.toml`
+so the project name, dependency extras, and packaged `models/` module stay
+aligned with the publication code.
+
 When PyTorch is installed, the preflight also checks that
 `model_parameter_counts.csv` matches instantiated `ReGraphVLM` modules. The
 same check can be run directly:

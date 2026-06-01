@@ -242,7 +242,23 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 30))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 31))
+
+    rows.append(
+        require_ok(
+            "package metadata audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_package_metadata.py",
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "package_metadata_audit.csv", 11))
 
     rows.append(
         require_ok(

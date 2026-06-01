@@ -20,7 +20,7 @@ make preflight
 
 This regenerates lightweight publication tables, runs the AAAI artifact audit,
 verifies publication artifact provenance, runs the full manuscript/result audit,
-checks README/BUILD consistency, verifies key manuscript table values and
+checks README/BUILD consistency, verifies package metadata, verifies key manuscript table values and
 statistical claims against committed CSV artifacts, verifies reviewer-response
 readiness, runs the manuscript-only audit, and reports whether a local TeX
 compiler is available. The manuscript audit also enforces framing guardrails for
