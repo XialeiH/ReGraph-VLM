@@ -55,6 +55,9 @@ To build the archive for submission:
 python3 scripts/make_anonymous_submission_bundle.py
 ```
 
+The archive writer normalizes tar/gzip metadata and reports a SHA-256 checksum,
+so repeated builds from the same committed inputs should be byte-stable.
+
 If a TeX distribution is installed, compile through the same preflight:
 
 ```bash

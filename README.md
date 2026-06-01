@@ -149,6 +149,9 @@ To build the archive for submission:
 python3 scripts/make_anonymous_submission_bundle.py
 ```
 
+The bundle writer normalizes archive metadata and reports a SHA-256 checksum,
+so repeated builds from the same committed inputs should be byte-stable.
+
 Run the manuscript-only audit directly when you only need a fast TeX-facing check:
 
 ```bash

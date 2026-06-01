@@ -156,8 +156,17 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
         ),
         AuditRow(
             "anonymous submission bundle documented",
-            ready("Anonymous Submission Bundle" in readme and "Anonymous Submission Bundle" in build and "ANONYMIZATION.md" in readme and "ANONYMIZATION.md" in build),
-            "README and BUILD mention anonymous bundle instructions",
+            ready(
+                "Anonymous Submission Bundle" in readme
+                and "Anonymous Submission Bundle" in build
+                and "ANONYMIZATION.md" in readme
+                and "ANONYMIZATION.md" in build
+                and "SHA-256" in readme
+                and "SHA-256" in build
+                and "byte-stable" in readme
+                and "byte-stable" in build
+            ),
+            "README and BUILD mention anonymous bundle instructions, checksum, and byte-stable archive metadata",
         ),
         AuditRow(
             "CI runs publication preflight",

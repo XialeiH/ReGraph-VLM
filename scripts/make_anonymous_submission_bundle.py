@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import gzip
+import hashlib
 import subprocess
 import tarfile
 from dataclasses import dataclass
@@ -214,15 +216,35 @@ def scan_deanonymizing_text(files: list[BundleFile]) -> list[str]:
     return hits
 
 
-def write_archive(output: Path, prefix: str, files: list[BundleFile]) -> None:
-    output.parent.mkdir(parents=True, exist_ok=True)
+def add_files_to_archive(archive: tarfile.TarFile, prefix: str, files: list[BundleFile]) -> None:
     normalized_prefix = prefix if prefix.endswith("/") else f"{prefix}/"
-    with tarfile.open(output, "w:gz") as archive:
-        for item in files:
-            info = tarfile.TarInfo(name=f"{normalized_prefix}{item.path}")
-            info.size = len(item.data)
-            info.mode = 0o644
-            archive.addfile(info, BytesIO(item.data))
+    for item in files:
+        info = tarfile.TarInfo(name=f"{normalized_prefix}{item.path}")
+        info.size = len(item.data)
+        info.mode = 0o644
+        info.mtime = 0
+        info.uid = 0
+        info.gid = 0
+        info.uname = ""
+        info.gname = ""
+        archive.addfile(info, BytesIO(item.data))
+
+
+def archive_bytes(prefix: str, files: list[BundleFile]) -> bytes:
+    buffer = BytesIO()
+    with gzip.GzipFile(filename="", mode="wb", fileobj=buffer, mtime=0) as gzip_file:
+        with tarfile.open(fileobj=gzip_file, mode="w") as archive:
+            add_files_to_archive(archive, prefix, files)
+    return buffer.getvalue()
+
+
+def archive_sha256(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def write_archive(output: Path, data: bytes) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_bytes(data)
 
 
 def main() -> int:
@@ -239,12 +261,20 @@ def main() -> int:
         return 1
 
     total_bytes = sum(len(item.data) for item in files)
+    archive_data = archive_bytes(args.prefix, files)
+    digest = archive_sha256(archive_data)
     if args.dry_run:
-        print(f"Anonymous bundle dry run OK: {len(files)} files, {total_bytes} bytes, no deanonymizing strings.")
+        print(
+            f"Anonymous bundle dry run OK: {len(files)} files, {total_bytes} source bytes, "
+            f"{len(archive_data)} archive bytes, sha256={digest}, no deanonymizing strings."
+        )
         return 0
 
-    write_archive(root / args.output, args.prefix, files)
-    print(f"Wrote anonymous submission bundle: {args.output} ({len(files)} files, {total_bytes} bytes)")
+    write_archive(root / args.output, archive_data)
+    print(
+        f"Wrote anonymous submission bundle: {args.output} "
+        f"({len(files)} files, {total_bytes} source bytes, {len(archive_data)} archive bytes, sha256={digest})"
+    )
     return 0
 
 
