@@ -139,7 +139,8 @@ make bundle-smoke
 
 The smoke test rejects path traversal, Git metadata, symlink/hardlink entries,
 non-regular archive members, and archive files that are not accounted for by
-the manifest.
+the manifest. It also runs an extracted anonymous bundle preflight once, using a
+recursion guard so the nested smoke test does not call itself indefinitely.
 
 ## Result Provenance
 

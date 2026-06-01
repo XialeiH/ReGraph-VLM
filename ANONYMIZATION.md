@@ -1,8 +1,8 @@
 # Anonymous Submission Bundle
 
 For double-blind review, do not submit the public GitHub URL or a Git clone.
-GitHub repository metadata, workflow metadata, and commit history can reveal
-author identity even when the manuscript source is anonymous.
+Public GitHub repository metadata, issue/PR metadata, and commit history can
+reveal author identity even when the manuscript source is anonymous.
 
 Instead, build a Git-history-free anonymous submission bundle:
 
@@ -56,4 +56,5 @@ python3 scripts/smoke_test_anonymous_bundle_archive.py
 
 The smoke test rejects path traversal, Git metadata, symlink/hardlink entries,
 non-regular archive members, and archive files that are not accounted for by
-the manifest.
+the manifest. It also runs an extracted anonymous bundle preflight once, using a
+recursion guard so the nested smoke test does not call itself indefinitely.

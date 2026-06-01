@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 import subprocess
 import sys
 import tarfile
@@ -11,6 +12,7 @@ from pathlib import Path
 
 
 MANIFEST_RELATIVE_PATH = "preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv"
+INNER_PREFLIGHT_ENV = "REGRAPH_BUNDLE_SMOKE_INNER"
 
 
 def parse_args() -> argparse.Namespace:
@@ -19,14 +21,19 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def run_command(cwd: Path, args: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(args, cwd=cwd, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False)
+def run_command(cwd: Path, args: list[str], env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, cwd=cwd, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False, env=env)
 
 
 def require_ok(description: str, completed: subprocess.CompletedProcess[str]) -> str:
     if completed.returncode != 0:
         raise RuntimeError(f"{description} failed with exit code {completed.returncode}\n{completed.stdout}")
     return completed.stdout
+
+
+def first_lines(text: str, n: int = 3) -> str:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    return " | ".join(lines[:n]) if lines else "ok"
 
 
 def safe_members(archive: tarfile.TarFile) -> list[tarfile.TarInfo]:
@@ -91,6 +98,18 @@ def validate_archive_manifest_coverage(extracted_root: Path, members: list[tarfi
     return f"{len(manifest_paths)} manifest rows plus manifest file match {len(archive_paths)} archive files"
 
 
+def run_extracted_preflight(extracted_root: Path) -> str:
+    if os.environ.get(INNER_PREFLIGHT_ENV) == "1":
+        return "skipped extracted preflight inside recursive smoke-test guard"
+    env = dict(os.environ)
+    env[INNER_PREFLIGHT_ENV] = "1"
+    output = require_ok(
+        "extracted anonymous bundle publication preflight",
+        run_command(extracted_root, [sys.executable, "scripts/run_publication_preflight.py"], env=env),
+    )
+    return f"extracted bundle preflight OK: {first_lines(output)}"
+
+
 def main() -> int:
     args = parse_args()
     root = args.root.resolve()
@@ -135,6 +154,7 @@ def main() -> int:
                 ],
             ),
         )
+        extracted_preflight_evidence = run_extracted_preflight(extracted_root)
 
         print(
             f"Anonymous bundle archive smoke test OK: {len(members)} archive members, "
@@ -142,6 +162,7 @@ def main() -> int:
         )
         print(build_output.strip())
         print(verify_output.strip())
+        print(extracted_preflight_evidence)
     return 0
 
 

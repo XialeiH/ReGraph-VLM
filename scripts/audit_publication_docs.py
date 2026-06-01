@@ -323,8 +323,13 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "symlink/hardlink" in build
                 and "symlink/hardlink" in reproducibility
                 and "symlink/hardlink" in anonymization
+                and "extracted anonymous bundle" in readme
+                and "extracted anonymous bundle" in build
+                and "extracted anonymous bundle" in reproducibility
+                and "extracted anonymous bundle" in anonymization
+                and ".github/workflows/publication-preflight.yml" in read_text(Path("scripts/make_anonymous_submission_bundle.py"))
             ),
-            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier and archive smoke test",
+            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier, archive smoke test, and extracted-bundle preflight",
         ),
         AuditRow(
             "CI runs publication preflight",

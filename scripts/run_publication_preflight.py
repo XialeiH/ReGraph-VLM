@@ -429,7 +429,7 @@ def main() -> int:
                     "--manifest",
                     str(bundle_manifest),
                     "--source",
-                    "git",
+                    "auto",
                 ],
             ),
         )

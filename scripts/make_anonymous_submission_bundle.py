@@ -80,6 +80,7 @@ FIGURE_PATHS = {
 }
 
 EXACT_PATHS = {
+    ".github/workflows/publication-preflight.yml",
     ".gitignore",
     "ANONYMIZATION.md",
     "DATASET_CARD.md",
