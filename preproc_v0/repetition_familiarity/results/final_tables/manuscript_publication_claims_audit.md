@@ -24,7 +24,7 @@ Status counts: {'ready': 55}
 | unresolved manuscript placeholders | ready | no \needupdate uses and all 5 figure dependencies resolve to files |
 | figure files tracked by Git | ready | 5 checked, all tracked |
 | TeX group brace balance | ready | all unescaped group braces balanced |
-| TeX math dollar balance | ready | single=774, double=0 |
+| TeX math dollar balance | ready | single=778, double=0 |
 | table environment balance | ready | begin=21, end=21 |
 | figure environment balance | ready | begin=5, end=5 |
 | equation environment balance | ready | begin=8, end=8 |

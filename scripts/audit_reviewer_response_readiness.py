@@ -172,6 +172,10 @@ def audit_implementation_response(tex: str) -> AuditRow:
         "\\mathrm{MRR}",
         "Image R@5 ranks candidate CLIP image embeddings",
         "Brain R@5 and brain MRR rank candidate brain embeddings",
+        "training single-trial ROI mean-beta feature",
+        "row-wise top-20 ROI relations ranked by absolute correlation magnitude",
+        "symmetric degree normalization",
+        "Validation and test responses are never used",
     )
     ok = has_all(tex, required)
     missing = [fragment for fragment in required if fragment not in tex]

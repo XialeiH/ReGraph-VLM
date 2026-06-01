@@ -214,7 +214,7 @@ The CLIP alignment loss uses the same symmetric contrastive form between brain e
 \end{equation}
 The final objective uses $\lambda_{\mathrm{clip}}=2.0$ unless otherwise stated.
 
-The adjacency matrix is built from training data only for each fold. We use absolute ROI-response correlations, add diagonal self-connections, and apply symmetric degree normalization. Validation and test responses are never used to construct adjacency. Adjacency ablations replace this matrix with no-adjacency, identity, shuffled, random, top-$k$, or edge-dropped variants; these controls are used only to diagnose whether explicit fixed adjacency contributes beyond fixed ROI-token layout.
+The default adjacency matrix for adjacency-aware variants is built from training data only for each fold. We stack the training single-trial ROI mean-beta feature into $Z\in\mathbb{R}^{N_{\mathrm{train}}\times180}$, compute the Pearson correlation matrix across ROI columns, zero the diagonal before sparsification, and keep the row-wise top-20 ROI relations ranked by absolute correlation magnitude. The sparse matrix is symmetrized, then model loading converts weights to absolute values, adds diagonal self-connections, and applies symmetric degree normalization $D^{-1/2}AD^{-1/2}$. Validation and test responses are never used to construct adjacency. Adjacency ablations replace this matrix with no-adjacency, identity, shuffled, random, dense-correlation, top-$k$, or edge-dropped variants; these controls are used only to diagnose whether explicit fixed adjacency contributes beyond fixed ROI-token layout.
 
 \begin{table}[!htbp]
   \centering
