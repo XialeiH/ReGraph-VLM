@@ -104,7 +104,14 @@ LATEX_ENVIRONMENTS = ["table", "figure", "equation", "tabular", "tabularx"]
 IMPLEMENTATION_DETAIL_REQUIREMENTS = {
     "BCE loss": ("\\mathcal{L}_{\\mathrm{BCE}}", "pair matching"),
     "repeat InfoNCE": ("\\mathcal{L}_{\\mathrm{repeat\\ InfoNCE}}", "other positive pairs in the minibatch as negatives", "L2-normalize"),
-    "CLIP alignment": ("frozen CLIP image embeddings", "\\tau_{\\mathrm{clip}}", "\\lambda_{\\mathrm{clip}}=2.0"),
+    "CLIP alignment": (
+        "frozen CLIP image embeddings",
+        "L2-normalized projected CLIP image embeddings",
+        "all other images in the minibatch are negatives",
+        "BC^\\top",
+        "\\tau_{\\mathrm{clip}}",
+        "\\lambda_{\\mathrm{clip}}=2.0",
+    ),
     "train-only adjacency": ("training data only", "absolute ROI-response correlations", "Validation and test responses are never used"),
     "brain encoder": ("hidden dimension 64", "2 layers", "4 heads", "dropout 0.3"),
     "projection/readout": ("gated-flat ROI-preserving readout", "final embedding dimension 128", "shared 128-d space"),

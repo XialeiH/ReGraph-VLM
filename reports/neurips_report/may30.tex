@@ -203,7 +203,16 @@ For repeat InfoNCE, we keep only positive same-image pairs in the minibatch, enc
   \mathrm{CE}\left(\frac{VU^\top}{\tau_{\mathrm{brain}}}, I\right)
   \right].
 \end{equation}
-The CLIP alignment loss uses the same symmetric contrastive form between brain embeddings and frozen CLIP image embeddings from both sides of each pair, with temperature $\tau_{\mathrm{clip}}$. The final objective uses $\lambda_{\mathrm{clip}}=2.0$ unless otherwise stated.
+The CLIP alignment loss uses the same symmetric contrastive form between brain embeddings and frozen CLIP image embeddings from both sides of each pair. Let $B\in\mathbb{R}^{B\times d}$ be the L2-normalized projected brain embeddings in a minibatch and let $C\in\mathbb{R}^{B\times d}$ be the corresponding L2-normalized projected CLIP image embeddings. The positive index for each brain anchor is its paired image in the same minibatch, and all other images in the minibatch are negatives:
+\begin{equation}
+  \mathcal{L}_{\mathrm{CLIP}}
+  = \frac{1}{2}\left[
+  \mathrm{CE}\left(\frac{BC^\top}{\tau_{\mathrm{clip}}}, I\right)
+  +
+  \mathrm{CE}\left(\frac{CB^\top}{\tau_{\mathrm{clip}}}, I\right)
+  \right].
+\end{equation}
+The final objective uses $\lambda_{\mathrm{clip}}=2.0$ unless otherwise stated.
 
 The adjacency matrix is built from training data only for each fold. We use absolute ROI-response correlations, add diagonal self-connections, and apply symmetric degree normalization. Validation and test responses are never used to construct adjacency. Adjacency ablations replace this matrix with no-adjacency, identity, shuffled, random, top-$k$, or edge-dropped variants; these controls are used only to diagnose whether explicit fixed adjacency contributes beyond fixed ROI-token layout.
 
