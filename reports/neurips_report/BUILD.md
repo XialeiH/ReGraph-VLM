@@ -111,7 +111,8 @@ make bundle-smoke
 The smoke test rejects path traversal, Git metadata, symlink/hardlink entries,
 non-regular archive members, and archive files that are not accounted for by
 the manifest. It also runs an extracted anonymous bundle preflight once, using a
-recursion guard so the nested smoke test does not call itself indefinitely.
+recursion guard so the nested smoke test does not call itself indefinitely. When
+a TeX tool is available, the extracted-bundle preflight is compile-required.
 
 If a TeX distribution is installed, compile through the same preflight:
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import os
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -103,11 +104,16 @@ def run_extracted_preflight(extracted_root: Path) -> str:
         return "skipped extracted preflight inside recursive smoke-test guard"
     env = dict(os.environ)
     env[INNER_PREFLIGHT_ENV] = "1"
+    command = [sys.executable, "scripts/run_publication_preflight.py"]
+    tex_tool = next((tool for tool in ("latexmk", "pdflatex", "tectonic") if shutil.which(tool)), None)
+    if tex_tool is not None:
+        command.append("--compile")
     output = require_ok(
         "extracted anonymous bundle publication preflight",
-        run_command(extracted_root, [sys.executable, "scripts/run_publication_preflight.py"], env=env),
+        run_command(extracted_root, command, env=env),
     )
-    return f"extracted bundle preflight OK: {first_lines(output)}"
+    mode = f"compile-required via {tex_tool}" if tex_tool is not None else "non-compiling; no TeX tool found"
+    return f"extracted bundle preflight OK ({mode}): {first_lines(output)}"
 
 
 def main() -> int:
