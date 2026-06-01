@@ -242,7 +242,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 24))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 26))
 
     rows.append(
         require_ok(

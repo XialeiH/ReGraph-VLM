@@ -80,6 +80,8 @@ EXACT_PATHS = {
     "ANONYMIZATION.md",
     "README.md",
     "REPRODUCIBILITY.md",
+    "pyproject.toml",
+    "models/__init__.py",
     "models/bnt_encoder.py",
     "models/regraph_vlm.py",
     "reports/neurips_report/BUILD.md",

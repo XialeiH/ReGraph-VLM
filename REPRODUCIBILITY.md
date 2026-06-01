@@ -19,7 +19,7 @@ The full CI path also needs a TeX distribution with `latexmk`,
 `texlive-fonts-recommended`.
 
 For model execution, parameter-count verification, and training/evaluation
-scripts, use Python 3.10 or newer with:
+scripts, use Python 3.9 or newer with:
 
 ```text
 numpy
@@ -34,6 +34,15 @@ nibabel
 nilearn
 requests
 Pillow
+```
+
+The repository metadata exposes the same dependency tiers:
+
+```bash
+python3 -m pip install -e .
+python3 -m pip install -e '.[publication]'
+python3 -m pip install -e '.[neuro]'
+python3 -m pip install -e '.[dev]'
 ```
 
 CLIP feature export additionally requires either OpenAI CLIP or OpenCLIP:

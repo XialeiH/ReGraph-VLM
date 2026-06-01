@@ -27,6 +27,7 @@ PUBLICATION_DOC_PATHS = [
     Path("ANONYMIZATION.md"),
     Path("README.md"),
     Path("REPRODUCIBILITY.md"),
+    Path("pyproject.toml"),
     Path("reports/neurips_report/BUILD.md"),
     Path("reports/neurips_report/may30.tex"),
     Path("reports/neurips_report/regraph_vlm_report.tex"),
@@ -110,11 +111,13 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     build = read_text(build_path)
     workflow = read_text(workflow_path)
     reproducibility = read_text(Path("REPRODUCIBILITY.md"))
+    pyproject = read_text(Path("pyproject.toml"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
         AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
         AuditRow("REPRODUCIBILITY doc exists", "ready" if reproducibility else "missing", "REPRODUCIBILITY.md"),
+        AuditRow("pyproject exists", "ready" if pyproject else "missing", "pyproject.toml"),
         AuditRow("BUILD doc exists", "ready" if build else "missing", str(build_path)),
         AuditRow("publication preflight workflow exists", "ready" if workflow else "missing", str(workflow_path)),
         AuditRow(
@@ -140,8 +143,21 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "HPC" in reproducibility
                 and "scratch" in reproducibility
                 and "not full HCP-MMP 180-ROI" in reproducibility
+                and "python3 -m pip install -e '.[dev]'" in reproducibility
             ),
-            "REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, HPC scratch storage, and external-validation limits",
+            "REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, and external-validation limits",
+        ),
+        AuditRow(
+            "pyproject metadata aligned",
+            ready(
+                'name = "regraph-vlm"' in pyproject
+                and "Fixed-order ROI-token brain graph" in pyproject
+                and 'requires-python = ">=3.9"' in pyproject
+                and "publication =" in pyproject
+                and "legacy-graph =" in pyproject
+                and '"models*"' in pyproject
+            ),
+            "pyproject names ReGraph-VLM, exposes dependency extras, and packages current models code",
         ),
         AuditRow(
             "compile path documented",
