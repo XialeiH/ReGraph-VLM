@@ -75,6 +75,8 @@ Run the full publication preflight from the repository root:
 
 ```bash
 python3 scripts/run_publication_preflight.py
+# or
+make preflight
 ```
 
 When PyTorch is installed, the preflight also checks that
@@ -83,6 +85,8 @@ same check can be run directly:
 
 ```bash
 python3 scripts/verify_model_parameter_counts.py
+# or
+make parameter-counts
 ```
 
 For double-blind submission packaging:
@@ -90,6 +94,9 @@ For double-blind submission packaging:
 ```bash
 python3 scripts/make_anonymous_submission_bundle.py --dry-run
 python3 scripts/make_anonymous_submission_bundle.py
+# or
+make bundle-check
+make bundle
 ```
 
 The dry-run checks the exact bundle contents, scans text files for

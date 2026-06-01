@@ -25,6 +25,7 @@ README_METRICS = ["AUROC", "AUPRC", "R@5", "MRR", "image_R@5", "brain_R@5"]
 
 PUBLICATION_DOC_PATHS = [
     Path("ANONYMIZATION.md"),
+    Path("Makefile"),
     Path("README.md"),
     Path("REPRODUCIBILITY.md"),
     Path("pyproject.toml"),
@@ -110,11 +111,13 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     readme = read_text(readme_path)
     build = read_text(build_path)
     workflow = read_text(workflow_path)
+    makefile = read_text(Path("Makefile"))
     reproducibility = read_text(Path("REPRODUCIBILITY.md"))
     pyproject = read_text(Path("pyproject.toml"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
+        AuditRow("Makefile exists", "ready" if makefile else "missing", "Makefile"),
         AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
         AuditRow("REPRODUCIBILITY doc exists", "ready" if reproducibility else "missing", "REPRODUCIBILITY.md"),
         AuditRow("pyproject exists", "ready" if pyproject else "missing", "pyproject.toml"),
@@ -129,6 +132,31 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "one-command preflight documented",
             ready("python3 scripts/run_publication_preflight.py" in readme and "python3 scripts/run_publication_preflight.py" in build),
             "preflight command present in README and BUILD",
+        ),
+        AuditRow(
+            "Makefile reviewer targets documented",
+            ready(
+                "make preflight" in readme
+                and "make compile" in readme
+                and "make bundle-check" in readme
+                and "make preflight" in build
+                and "make compile" in build
+                and "make bundle-check" in build
+                and "make parameter-counts" in reproducibility
+            ),
+            "README, BUILD, and REPRODUCIBILITY document reviewer-facing make targets",
+        ),
+        AuditRow(
+            "Makefile reviewer targets implemented",
+            ready(
+                "preflight:" in makefile
+                and "compile:" in makefile
+                and "bundle-check:" in makefile
+                and "bundle:" in makefile
+                and "manuscript-audit:" in makefile
+                and "parameter-counts:" in makefile
+            ),
+            "Makefile implements preflight, compile, bundle, manuscript-audit, and parameter-count targets",
         ),
         AuditRow(
             "reproducibility guide linked",
@@ -163,6 +191,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "compile path documented",
             ready("python3 scripts/run_publication_preflight.py --compile" in readme and "python3 scripts/run_publication_preflight.py --compile" in build),
             "--compile command present in README and BUILD",
+        ),
+        AuditRow(
+            "portable TeX note documented",
+            ready("this machine currently" not in build and "If no local TeX compiler is available" in build),
+            "BUILD uses a portable TeX availability note instead of local-machine state",
         ),
         AuditRow(
             "statistical-claims audit documented",

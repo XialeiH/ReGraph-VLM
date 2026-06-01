@@ -14,6 +14,8 @@ Run the full preflight from the project root before compiling or submitting:
 
 ```bash
 python3 scripts/run_publication_preflight.py
+# or
+make preflight
 ```
 
 This regenerates lightweight publication tables, runs the AAAI artifact audit,
@@ -56,12 +58,16 @@ The non-mutating bundle check is included in the publication preflight:
 
 ```bash
 python3 scripts/make_anonymous_submission_bundle.py --dry-run
+# or
+make bundle-check
 ```
 
 To build the archive for submission:
 
 ```bash
 python3 scripts/make_anonymous_submission_bundle.py
+# or
+make bundle
 ```
 
 The archive writer normalizes tar/gzip metadata and reports a SHA-256 checksum,
@@ -71,6 +77,8 @@ If a TeX distribution is installed, compile through the same preflight:
 
 ```bash
 python3 scripts/run_publication_preflight.py --compile
+# or
+make compile
 ```
 
 For a manuscript-only audit without regenerating result artifacts:
@@ -88,4 +96,6 @@ fold_07, and implementation details, duplicate labels, unresolved refs, required
 labels, citation coverage in `references.bib`, figure file availability, and
 LaTeX environment balance.
 
-Local note: this machine currently does not have `pdflatex`, `xelatex`, `lualatex`, `latexmk`, or `tectonic` installed, so the PDF was not compiled locally in this step.
+If no local TeX compiler is available, use the non-compiling preflight locally
+and rely on the TeX-enabled CI workflow or another TeX-enabled machine for the
+final PDF build.
