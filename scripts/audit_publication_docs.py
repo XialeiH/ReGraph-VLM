@@ -129,6 +129,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
     value_range_audit = read_text(Path("scripts/audit_result_value_ranges.py"))
     table_uncertainty_audit = read_text(Path("scripts/audit_table_uncertainty_language.py"))
+    figure_asset_audit = read_text(Path("scripts/audit_figure_assets.py"))
     evidence_manifest_audit = read_text(Path("scripts/audit_publication_evidence_manifest.py"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
@@ -262,6 +263,23 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "primary result captions disclose uncertainty scope" in table_uncertainty_audit
             ),
             "README, BUILD, and REPRODUCIBILITY document table caption uncertainty-scope auditing",
+        ),
+        AuditRow(
+            "figure asset audit documented",
+            ready(
+                "figure asset audit" in readme
+                and "figure asset audit" in build
+                and "figure asset audit" in reproducibility
+                and "scripts/audit_figure_assets.py" in readme
+                and "scripts/audit_figure_assets.py" in build
+                and "scripts/audit_figure_assets.py" in reproducibility
+                and "figure_asset_audit.csv" in readme
+                and "figure_asset_audit.csv" in build
+                and "figure_asset_audit.csv" in reproducibility
+                and "IfFileExists" in figure_asset_audit
+                and "bundle-allowlisted" in figure_asset_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document manuscript figure asset auditing",
         ),
         AuditRow(
             "reproducibility guide linked",

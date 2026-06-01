@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 47}
+Status counts: {'ready': 48}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -22,6 +22,7 @@ Status counts: {'ready': 47}
 | result artifact schema audit documented | ready | README, BUILD, and REPRODUCIBILITY document result artifact schema auditing |
 | result value-range audit documented | ready | README, BUILD, and REPRODUCIBILITY document result value-range auditing |
 | table uncertainty-language audit documented | ready | README, BUILD, and REPRODUCIBILITY document table caption uncertainty-scope auditing |
+| figure asset audit documented | ready | README, BUILD, and REPRODUCIBILITY document manuscript figure asset auditing |
 | reproducibility guide linked | ready | README and BUILD link the reproducibility guide |
 | dependency and large-data policy documented | ready | REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, external-validation limits, and the dataset card |
 | dataset card documents data accounting | ready | DATASET_CARD.md documents split counts, session/order QC, fold difficulty, external-validation limits, and large-data policy |

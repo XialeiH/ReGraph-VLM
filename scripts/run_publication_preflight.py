@@ -262,7 +262,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 47))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 48))
 
     rows.append(
         require_ok(
@@ -283,6 +283,24 @@ def main() -> int:
         )
     )
     rows.append(audit_status(root / final / "citation_integrity_audit.csv", 11))
+
+    rows.append(
+        require_ok(
+            "figure asset audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_figure_assets.py",
+                    "--tex",
+                    str(tex),
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "figure_asset_audit.csv", 9))
 
     rows.append(
         require_ok(
@@ -497,7 +515,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 36))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 37))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

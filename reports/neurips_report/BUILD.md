@@ -167,6 +167,11 @@ The table uncertainty-language audit is implemented in
 captions disclose mean/std, $n$, diagnostic scope, or point-summary status where
 appropriate, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/table_uncertainty_language_audit.csv`.
+The figure asset audit is implemented in `scripts/audit_figure_assets.py`; it
+verifies that every manuscript `\IfFileExists` / `\includegraphics` dependency
+is present, nonempty, portable, tracked or staged, and bundle-allowlisted, then
+writes
+`preproc_v0/repetition_familiarity/results/final_tables/figure_asset_audit.csv`.
 The bundle allowlist audit is implemented in
 `scripts/audit_bundle_allowlist.py`; it verifies that anonymous-bundle source
 paths, figures, publication artifacts, generated audits, and reviewer-facing
