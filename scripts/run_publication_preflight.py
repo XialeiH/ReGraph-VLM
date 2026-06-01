@@ -230,24 +230,6 @@ def main() -> int:
 
     rows.append(
         require_ok(
-            "publication artifact provenance audit",
-            run_command(
-                root,
-                [
-                    sys.executable,
-                    "scripts/audit_publication_artifact_provenance.py",
-                    "--final-tables-dir",
-                    str(final),
-                    "--source-tex",
-                    str(tex),
-                ],
-            ),
-        )
-    )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 20))
-
-    rows.append(
-        require_ok(
             "full manuscript/result audit",
             run_command(
                 root,
@@ -376,6 +358,24 @@ def main() -> int:
         )
     )
     rows.append(audit_status(root / final / "manuscript_stat_claims_audit.csv", 22))
+
+    rows.append(
+        require_ok(
+            "publication artifact provenance audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_publication_artifact_provenance.py",
+                    "--final-tables-dir",
+                    str(final),
+                    "--source-tex",
+                    str(tex),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 28))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

@@ -39,8 +39,20 @@ EXPECTED_TABLE_SOURCES = {
 }
 
 
+EXPECTED_AUDIT_ARTIFACTS = {
+    "aaai_publication_readiness_audit.csv": 33,
+    "external_data_policy_audit.csv": 6,
+    "manuscript_publication_claims_audit.csv": 55,
+    "publication_docs_audit.csv": 39,
+    "package_metadata_audit.csv": 11,
+    "reviewer_response_readiness_audit.csv": 11,
+    "manuscript_table_values_audit.csv": 24,
+    "manuscript_stat_claims_audit.csv": 22,
+}
+
+
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Audit source/provenance metadata for publication-facing table artifacts.")
+    parser = argparse.ArgumentParser(description="Audit source/provenance metadata for publication-facing artifacts.")
     parser.add_argument(
         "--final-tables-dir",
         type=Path,
@@ -93,6 +105,24 @@ def audit_table(final_tables_dir: Path, source_tex: str, labels: set[str], csv_n
     )
 
 
+def audit_generated_audit(final_tables_dir: Path, csv_name: str, min_rows: int) -> AuditRow:
+    path = final_tables_dir / csv_name
+    if not path.exists():
+        return AuditRow(csv_name, "missing", f"{path} not found")
+    rows = read_csv(path)
+    if not rows:
+        return AuditRow(csv_name, "incomplete", "empty artifact")
+    if "status" not in rows[0]:
+        return AuditRow(csv_name, "incomplete", "missing status column")
+    non_ready = [row for row in rows if row.get("status") != "ready"]
+    if non_ready:
+        evidence = "; ".join(f"{row.get('item', 'row')}: {row.get('status')}" for row in non_ready[:5])
+        return AuditRow(csv_name, "incomplete", evidence)
+    status_value = ready(len(rows) >= min_rows)
+    evidence = f"{len(rows)}/{min_rows} minimum generated-audit rows ready"
+    return AuditRow(csv_name, status_value, evidence)
+
+
 def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = output_dir / f"{output_prefix}.csv"
@@ -124,6 +154,10 @@ def main() -> int:
         audit_table(args.final_tables_dir, args.source_tex, labels, csv_name, label)
         for csv_name, label in EXPECTED_TABLE_SOURCES.items()
     ]
+    rows.extend(
+        audit_generated_audit(args.final_tables_dir, csv_name, min_rows)
+        for csv_name, min_rows in EXPECTED_AUDIT_ARTIFACTS.items()
+    )
     write_outputs(args.final_tables_dir, args.output_prefix, rows)
     return 0 if all(row.status == "ready" for row in rows) else 1
 
