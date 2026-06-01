@@ -84,6 +84,7 @@ EXACT_PATHS = {
     "ANONYMIZATION.md",
     "DATASET_CARD.md",
     "Makefile",
+    "MODEL_CARD.md",
     "README.md",
     "REPRODUCIBILITY.md",
     "pyproject.toml",

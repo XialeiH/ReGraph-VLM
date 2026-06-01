@@ -71,6 +71,8 @@ replications.
 
 For fold-level split counts, session/order QC, fold difficulty, external
 validation scope, and large-data handling, see `DATASET_CARD.md`.
+For model scope, intended use, supported claims, non-claims, and limitations,
+see `MODEL_CARD.md`.
 
 ## Verification Commands
 
@@ -154,4 +156,10 @@ The dataset-specific reviewer index is:
 
 ```text
 DATASET_CARD.md
+```
+
+The model-specific reviewer index is:
+
+```text
+MODEL_CARD.md
 ```

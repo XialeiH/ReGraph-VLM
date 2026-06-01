@@ -27,6 +27,7 @@ PUBLICATION_DOC_PATHS = [
     Path("ANONYMIZATION.md"),
     Path("DATASET_CARD.md"),
     Path("Makefile"),
+    Path("MODEL_CARD.md"),
     Path("README.md"),
     Path("REPRODUCIBILITY.md"),
     Path("pyproject.toml"),
@@ -115,6 +116,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     makefile = read_text(Path("Makefile"))
     anonymization = read_text(Path("ANONYMIZATION.md"))
     dataset_card = read_text(Path("DATASET_CARD.md"))
+    model_card = read_text(Path("MODEL_CARD.md"))
     reproducibility = read_text(Path("REPRODUCIBILITY.md"))
     pyproject = read_text(Path("pyproject.toml"))
     combined = readme + "\n" + build
@@ -122,6 +124,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     rows = [
         AuditRow("Makefile exists", "ready" if makefile else "missing", "Makefile"),
         AuditRow("DATASET_CARD exists", "ready" if dataset_card else "missing", "DATASET_CARD.md"),
+        AuditRow("MODEL_CARD exists", "ready" if model_card else "missing", "MODEL_CARD.md"),
         AuditRow("README exists", "ready" if readme else "missing", str(readme_path)),
         AuditRow("REPRODUCIBILITY doc exists", "ready" if reproducibility else "missing", "REPRODUCIBILITY.md"),
         AuditRow("pyproject exists", "ready" if pyproject else "missing", "pyproject.toml"),
@@ -200,6 +203,21 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "DATASET_CARD.md" in reproducibility
             ),
             "DATASET_CARD.md documents split counts, session/order QC, fold difficulty, external-validation limits, and large-data policy",
+        ),
+        AuditRow(
+            "model card documents model scope",
+            ready(
+                "fixed-order anatomical ROI-token" in model_card
+                and "gated ROI-preserving readout" in model_card
+                and "CLIP" in model_card
+                and "Explicit fixed adjacency is not the source" in model_card
+                and "not a clinical" in model_card
+                and "task-matched component" in model_card
+                and "MODEL_CARD.md" in readme
+                and "MODEL_CARD.md" in build
+                and "MODEL_CARD.md" in reproducibility
+            ),
+            "MODEL_CARD.md documents model scope, supported claims, non-claims, limitations, and reviewer-facing evidence",
         ),
         AuditRow(
             "pyproject metadata aligned",
