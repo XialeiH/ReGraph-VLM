@@ -350,6 +350,44 @@ def audit_session_order_qc_invariants(final_tables_dir: Path) -> AuditRow:
     )
 
 
+def audit_parameter_count_artifact(tex: str, final_tables_dir: Path) -> AuditRow:
+    rows = read_csv(final_tables_dir / "model_parameter_counts.csv")
+    if not rows:
+        return AuditRow("tab:implementation_details parameter counts", "missing", "model_parameter_counts.csv missing or empty")
+    block = find_table_block(tex, "tab:implementation_details")
+    if not block:
+        return AuditRow("tab:implementation_details parameter counts", "missing", "implementation-details table not found")
+    checked = 0
+    missing: list[str] = []
+    expected_models = {
+        "Final gated BNT/ReGraph+CLIP",
+        "No-adj gated ROI Transformer+CLIP",
+        "Graph-bias BNT/ReGraph+CLIP",
+        "Learned edge-bias BNT+CLIP",
+        "ROI-MLP+CLIP",
+    }
+    seen_models = {row.get("model", "") for row in rows}
+    for model in sorted(expected_models - seen_models):
+        missing.append(f"missing artifact row: {model}")
+    for row in rows:
+        raw = row.get("trainable_parameters", "")
+        if not raw:
+            missing.append(f"{row.get('model', '<missing model>')}: empty trainable_parameters")
+            continue
+        fragment = f"{int(float(raw)):,}"
+        checked += 1
+        if fragment not in block:
+            missing.append(f"{row.get('model', '<missing model>')}: {fragment}")
+        source = row.get("source", "")
+        if "tab:implementation_details" not in source:
+            missing.append(f"{row.get('model', '<missing model>')}: source missing implementation table label")
+    return AuditRow(
+        "tab:implementation_details parameter counts",
+        ready(not missing and checked > 0),
+        f"{checked} parameter-count fragments match model_parameter_counts.csv" if not missing and checked > 0 else "; ".join(missing[:8]),
+    )
+
+
 def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = output_dir / f"{output_prefix}.csv"
@@ -382,6 +420,7 @@ def main() -> int:
         audit_caption_reporting(tex),
         audit_split_accounting_invariants(args.final_tables_dir),
         audit_session_order_qc_invariants(args.final_tables_dir),
+        audit_parameter_count_artifact(tex, args.final_tables_dir),
         *[audit_spec(tex, args.final_tables_dir, spec) for spec in TABLE_SPECS],
     ]
     write_outputs(args.final_tables_dir, args.output_prefix, rows)

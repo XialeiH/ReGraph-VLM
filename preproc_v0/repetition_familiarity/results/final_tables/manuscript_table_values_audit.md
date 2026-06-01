@@ -1,6 +1,6 @@
 # Manuscript Table Values Audit
 
-Status counts: {'ready': 23}
+Status counts: {'ready': 24}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -8,6 +8,7 @@ Status counts: {'ready': 23}
 | table caption reporting | ready | 21 table captions declare reporting basis |
 | split accounting invariants | ready | 8 folds; unique held-out subjects; pair counts equal strict T=3 sequences x 6 |
 | session/order QC invariants | ready | positive/negative counts are balanced, anchor matches are 100%, and All totals match splits |
+| tab:implementation_details parameter counts | ready | 5 parameter-count fragments match model_parameter_counts.csv |
 | tab:split_accounting | ready | 56 numeric fragments match rows in split_accounting.csv |
 | tab:session_order_pair_qc | ready | 24 numeric fragments match rows in session_order_pair_qc.csv |
 | tab:within_subject | ready | 17 numeric fragments match rows in table_within_subject.csv |

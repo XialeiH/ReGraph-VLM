@@ -2,7 +2,7 @@
 
 This audit checks whether the current publication-facing result artifacts exist and contain the expected evidence. It does not replace manuscript review.
 
-Status counts: {'ready': 32}
+Status counts: {'ready': 33}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -12,6 +12,7 @@ Status counts: {'ready': 32}
 | main all-fold final table | ready | table_allfold_final.csv: 3 rows, support n=72, expected at least 24 |
 | hard-negative all-fold table | ready | table_hard_negative_allfold.csv: 3 rows, support n=72, expected at least 24 |
 | held-out-image table | ready | table_heldout_image.csv: 4 rows, support n=96, expected at least 24 |
+| model parameter counts | ready | model_parameter_counts.csv: 5 expected model counts verified |
 | component baseline table | ready | table_phase2_sota_graph_baselines.csv: 5 rows, support n=104, expected at least 100 |
 | graph-only CLIP ablation table | ready | table_graph_only.csv: 2 rows, support n=48, expected at least 48 |
 | adjacency ablation table | ready | table_adjacency_ablation.csv: 3 rows |

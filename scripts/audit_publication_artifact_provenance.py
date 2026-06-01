@@ -35,6 +35,7 @@ EXPECTED_TABLE_SOURCES = {
     "table_gate_confound.csv": "tab:gate_confound",
     "table_matched_deletion.csv": "tab:matched_deletion",
     "fold_difficulty_qc.csv": "tab:fold_difficulty",
+    "model_parameter_counts.csv": "tab:implementation_details",
 }
 
 

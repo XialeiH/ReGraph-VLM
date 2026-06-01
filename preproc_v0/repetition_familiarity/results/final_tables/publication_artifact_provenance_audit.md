@@ -1,6 +1,6 @@
 # Publication Artifact Provenance Audit
 
-Status counts: {'ready': 19}
+Status counts: {'ready': 20}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -23,3 +23,4 @@ Status counts: {'ready': 19}
 | table_gate_confound.csv | ready | 3 rows cite existing reports/neurips_report/may30.tex: Table tab:gate_confound |
 | table_matched_deletion.csv | ready | 6 rows cite existing reports/neurips_report/may30.tex: Table tab:matched_deletion |
 | fold_difficulty_qc.csv | ready | 8 rows cite existing reports/neurips_report/may30.tex: Table tab:fold_difficulty |
+| model_parameter_counts.csv | ready | 5 rows cite existing reports/neurips_report/may30.tex: Table tab:implementation_details |

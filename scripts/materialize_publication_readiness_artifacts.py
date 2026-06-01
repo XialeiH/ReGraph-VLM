@@ -48,6 +48,176 @@ def row(source: str, model: str, n: int, values: dict[str, tuple[float, float | 
     return out
 
 
+def linear_params(in_dim: int, out_dim: int, bias: bool = True) -> int:
+    return in_dim * out_dim + (out_dim if bias else 0)
+
+
+def layer_norm_params(dim: int) -> int:
+    return 2 * dim
+
+
+def transformer_encoder_layer_params(hidden_dim: int) -> int:
+    feedforward_dim = hidden_dim * 4
+    self_attention = 3 * hidden_dim * hidden_dim + 3 * hidden_dim + linear_params(hidden_dim, hidden_dim)
+    feedforward = linear_params(hidden_dim, feedforward_dim) + linear_params(feedforward_dim, hidden_dim)
+    norms = 2 * layer_norm_params(hidden_dim)
+    return self_attention + feedforward + norms
+
+
+def projection_head_params(in_dim: int, out_dim: int) -> int:
+    return layer_norm_params(in_dim) + linear_params(in_dim, out_dim) + linear_params(out_dim, out_dim)
+
+
+def bnt_token_encoder_params(
+    n_nodes: int,
+    node_feature_dim: int,
+    hidden_dim: int,
+    embedding_dim: int,
+    num_layers: int,
+    use_graph_bias: bool = False,
+    use_attention_bias: bool = False,
+) -> int:
+    head_hidden = max(embedding_dim * 2, hidden_dim)
+    params = 0
+    params += linear_params(node_feature_dim, hidden_dim)
+    params += n_nodes * hidden_dim
+    params += layer_norm_params(hidden_dim) + linear_params(hidden_dim, 1)
+    params += num_layers * transformer_encoder_layer_params(hidden_dim)
+    params += layer_norm_params(n_nodes * hidden_dim)
+    params += linear_params(n_nodes * hidden_dim, head_hidden)
+    params += linear_params(head_hidden, embedding_dim)
+    if use_graph_bias:
+        params += linear_params(hidden_dim, hidden_dim)
+        params += layer_norm_params(hidden_dim)
+    if use_attention_bias:
+        params += n_nodes * n_nodes
+    return params
+
+
+def roi_mlp_encoder_params(n_nodes: int, node_feature_dim: int, hidden_dim: int, embedding_dim: int) -> int:
+    in_dim = n_nodes * node_feature_dim
+    hidden1 = max(hidden_dim * 4, embedding_dim * 2)
+    hidden2 = max(hidden_dim * 2, embedding_dim)
+    return (
+        layer_norm_params(in_dim)
+        + linear_params(in_dim, hidden1)
+        + linear_params(hidden1, hidden2)
+        + linear_params(hidden2, embedding_dim)
+    )
+
+
+def regraph_vlm_total_params(graph_encoder_params: int, clip_dim: int, hidden_dim: int, embedding_dim: int, num_subjects: int) -> int:
+    return (
+        graph_encoder_params
+        + projection_head_params(embedding_dim, embedding_dim)
+        + projection_head_params(clip_dim, embedding_dim)
+        + layer_norm_params(embedding_dim)
+        + linear_params(embedding_dim, max(embedding_dim, hidden_dim))
+        + linear_params(max(embedding_dim, hidden_dim), num_subjects)
+        + 2
+    )
+
+
+def write_model_parameter_counts(final: Path, tex: str) -> None:
+    cfg = {
+        "n_nodes": 180,
+        "node_feature_dim": 4,
+        "clip_dim": 512,
+        "hidden_dim": 64,
+        "embedding_dim": 128,
+        "num_layers": 2,
+        "num_heads": 4,
+        "num_subjects": 8,
+    }
+    source = f"{tex}: Table tab:implementation_details; computed from architecture formulas in scripts/materialize_publication_readiness_artifacts.py"
+
+    bnt_base = bnt_token_encoder_params(
+        cfg["n_nodes"],
+        cfg["node_feature_dim"],
+        cfg["hidden_dim"],
+        cfg["embedding_dim"],
+        cfg["num_layers"],
+    )
+    variants = [
+        {
+            "model": "Final gated BNT/ReGraph+CLIP",
+            "graph_encoder": "bnt_token_flat",
+            "readout": "gated_flat",
+            "encoder_params": bnt_base,
+        },
+        {
+            "model": "No-adj gated ROI Transformer+CLIP",
+            "graph_encoder": "roi_transformer_noadj",
+            "readout": "gated_flat",
+            "encoder_params": bnt_base,
+        },
+        {
+            "model": "Graph-bias BNT/ReGraph+CLIP",
+            "graph_encoder": "graph_bnt",
+            "readout": "gated_flat",
+            "encoder_params": bnt_token_encoder_params(
+                cfg["n_nodes"],
+                cfg["node_feature_dim"],
+                cfg["hidden_dim"],
+                cfg["embedding_dim"],
+                cfg["num_layers"],
+                use_graph_bias=True,
+            ),
+        },
+        {
+            "model": "Learned edge-bias BNT+CLIP",
+            "graph_encoder": "edge_bias_bnt",
+            "readout": "gated_flat",
+            "encoder_params": bnt_token_encoder_params(
+                cfg["n_nodes"],
+                cfg["node_feature_dim"],
+                cfg["hidden_dim"],
+                cfg["embedding_dim"],
+                cfg["num_layers"],
+                use_attention_bias=True,
+            ),
+        },
+        {
+            "model": "ROI-MLP+CLIP",
+            "graph_encoder": "roi_mlp",
+            "readout": "flat",
+            "encoder_params": roi_mlp_encoder_params(
+                cfg["n_nodes"],
+                cfg["node_feature_dim"],
+                cfg["hidden_dim"],
+                cfg["embedding_dim"],
+            ),
+        },
+    ]
+
+    rows: list[dict[str, object]] = []
+    for variant in variants:
+        is_transformer = variant["graph_encoder"] != "roi_mlp"
+        rows.append(
+            {
+                "model": variant["model"],
+                "graph_encoder": variant["graph_encoder"],
+                "readout": variant["readout"],
+                "trainable_parameters": regraph_vlm_total_params(
+                    int(variant["encoder_params"]),
+                    cfg["clip_dim"],
+                    cfg["hidden_dim"],
+                    cfg["embedding_dim"],
+                    cfg["num_subjects"],
+                ),
+                "n_nodes": cfg["n_nodes"],
+                "node_feature_dim": cfg["node_feature_dim"],
+                "clip_dim": cfg["clip_dim"],
+                "hidden_dim": cfg["hidden_dim"],
+                "embedding_dim": cfg["embedding_dim"],
+                "num_layers": cfg["num_layers"] if is_transformer else "",
+                "num_heads": cfg["num_heads"] if is_transformer else "",
+                "source": source,
+            }
+        )
+    write_csv(final / "model_parameter_counts.csv", rows)
+
+
 def write_main_tables(final: Path, tex: str) -> None:
     allfold_source = f"{tex}: Table tab:cross_subject_main; canonical summary table_allfold_final_summary.csv"
     write_csv(
@@ -344,6 +514,7 @@ Interpretation: these datasets support above-chance cross-subject same-image sig
 
 def main() -> None:
     args = parse_args()
+    write_model_parameter_counts(args.final_tables_dir, args.source_tex)
     write_main_tables(args.final_tables_dir, args.source_tex)
     write_component_and_ablation_tables(args.final_tables_dir, args.source_tex)
     write_qc_and_single_ref(args.final_tables_dir, args.source_tex)

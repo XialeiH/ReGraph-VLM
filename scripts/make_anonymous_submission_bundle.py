@@ -30,6 +30,7 @@ PUBLICATION_ARTIFACT_PATHS = {
     "preproc_v0/repetition_familiarity/results/final_tables/manuscript_stat_claims_audit.md",
     "preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/model_parameter_counts.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.md",
     "preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv",

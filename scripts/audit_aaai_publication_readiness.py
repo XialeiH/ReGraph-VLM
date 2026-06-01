@@ -210,6 +210,40 @@ def check_publication_stats(path: Path, setting: str, comparison_substr: str, mi
     )
 
 
+def check_model_parameter_counts(path: Path) -> CheckResult:
+    item = "model parameter counts"
+    if not path.exists():
+        return CheckResult(item, "missing", f"{path} not found")
+    df = read_csv(path)
+    required = {"model", "graph_encoder", "readout", "trainable_parameters", "source"}
+    if df.empty or not required.issubset(df.columns):
+        return CheckResult(item, "incomplete", f"{path.name}: missing expected columns")
+    expected = {
+        "Final gated BNT/ReGraph+CLIP": 3251595,
+        "No-adj gated ROI Transformer+CLIP": 3251595,
+        "Graph-bias BNT/ReGraph+CLIP": 3255883,
+        "Learned edge-bias BNT+CLIP": 3283995,
+        "ROI-MLP+CLIP": 369706,
+    }
+    rows = {str(row.get("model")): row for row in df.to_dict("records")}
+    problems: list[str] = []
+    for model, expected_count in expected.items():
+        if model not in rows:
+            problems.append(f"missing {model}")
+            continue
+        observed = int(float(rows[model]["trainable_parameters"]))
+        if observed != expected_count:
+            problems.append(f"{model}: {observed} != {expected_count}")
+        source = str(rows[model].get("source", ""))
+        if "tab:implementation_details" not in source:
+            problems.append(f"{model}: source does not cite implementation table")
+    return CheckResult(
+        item,
+        "ready" if not problems else "incomplete",
+        f"{path.name}: {len(expected)} expected model counts verified" if not problems else "; ".join(problems[:6]),
+    )
+
+
 
 
 def check_text_file(item: str, path: Path, required_text: str | None = None) -> CheckResult:
@@ -259,6 +293,7 @@ def main() -> None:
         check_table("main all-fold final table", final / "table_allfold_final.csv", min_n=24),
         check_table("hard-negative all-fold table", final / "table_hard_negative_allfold.csv", min_n=24),
         check_table("held-out-image table", final / "table_heldout_image.csv", min_n=24),
+        check_model_parameter_counts(final / "model_parameter_counts.csv"),
         check_table("component baseline table", final / "table_phase2_sota_graph_baselines.csv", min_n=100),
         check_table("graph-only CLIP ablation table", final / "table_graph_only.csv", min_n=48),
         check_table("adjacency ablation table", final / "table_adjacency_ablation.csv"),
