@@ -2,7 +2,7 @@
 
 This audit checks manuscript/result consistency for the publication-facing ReGraph-VLM story.
 
-Status counts: {'ready': 54}
+Status counts: {'ready': 55}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -17,6 +17,7 @@ Status counts: {'ready': 54}
 | component-baseline framing | ready | task-matched component framing present; full-system/SOTA overclaims absent |
 | external-validation framing | ready | external checks framed as visual-ROI smoke/feasibility evidence with replication limits |
 | fold_07 robustness framing | ready | fold_07 remains framed as a diagnosed but unresolved robustness/calibration case |
+| adjacency contribution framing | ready | adjacency contribution framed as non-primary; fixed ROI-token/gated-readout claim present |
 | citation bibliography coverage | ready | 18 citation keys covered by 1 bibliography file(s) |
 | manuscript support files tracked by Git | ready | 2 checked, all tracked |
 | figure file availability | ready | 5 checked, all present |

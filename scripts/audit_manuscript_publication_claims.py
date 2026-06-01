@@ -159,6 +159,23 @@ FOLD_DIFFICULTY_FORBIDDEN_PATTERNS = (
     r"fold\\_07\s+is\s+only\s+a\s+sample-size\s+artifact",
 )
 
+ADJACENCY_FRAMING_REQUIRED_FRAGMENTS = (
+    "A no-adjacency gated ROI Transformer is statistically indistinguishable",
+    "key inductive bias is not explicit fixed Pearson adjacency",
+    "fixed anatomical ROI-token layout, learned transformer interactions, gated ROI-preserving readout, and image alignment",
+    "explicit fixed adjacency matrix is not the main driver of the improvement",
+    "it does not come from explicit fixed adjacency",
+    "A learned edge-bias variant is competitive but does not improve over the no-adjacency gated ROI Transformer",
+    "should not be claimed as evidence that fixed Pearson adjacency is responsible for the gain",
+    "future graph-specific work should test stronger learned edge mechanisms or biologically grounded module priors",
+)
+
+ADJACENCY_FRAMING_FORBIDDEN_PATTERNS = (
+    r"(show|shows|demonstrate|demonstrates|prove|proves)\s+that\s+fixed\s+Pearson\s+adjacency\s+is\s+responsible\s+for\s+the\s+gain",
+    r"(show|shows|demonstrate|demonstrates|prove|proves)\s+that\s+explicit\s+fixed\s+adjacency\s+is\s+necessary",
+    r"(show|shows|demonstrate|demonstrates|prove|proves)\s+that\s+explicit\s+fixed\s+adjacency\s+drives\s+the\s+gain",
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit manuscript/result consistency for the AAAI-style ReGraph-VLM submission.")
@@ -438,6 +455,20 @@ def audit_fold_difficulty_framing(text: str) -> AuditRow:
     return AuditRow("fold_07 robustness framing", status(ok), evidence)
 
 
+def audit_adjacency_framing(text: str) -> AuditRow:
+    missing = [fragment for fragment in ADJACENCY_FRAMING_REQUIRED_FRAGMENTS if fragment not in text]
+    forbidden = [
+        pattern
+        for pattern in ADJACENCY_FRAMING_FORBIDDEN_PATTERNS
+        if re.search(pattern, text, flags=re.IGNORECASE)
+    ]
+    ok = not missing and not forbidden
+    evidence = "adjacency contribution framed as non-primary; fixed ROI-token/gated-readout claim present"
+    if not ok:
+        evidence = f"missing={missing or 'none'}; forbidden={forbidden or 'none'}"
+    return AuditRow("adjacency contribution framing", status(ok), evidence)
+
+
 def bib_keys(paths: list[Path]) -> tuple[set[str], list[Path]]:
     keys: set[str] = set()
     missing_paths: list[Path] = []
@@ -483,6 +514,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
     rows.append(audit_component_baseline_framing(text))
     rows.append(audit_external_validation_framing(text))
     rows.append(audit_fold_difficulty_framing(text))
+    rows.append(audit_adjacency_framing(text))
 
     cite_keys = citation_keys(text)
     bib_paths = bibliography_paths(tex_path, text)
