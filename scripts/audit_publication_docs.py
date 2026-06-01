@@ -144,6 +144,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "README and BUILD mention adjacency/component/external/fold_07/implementation guardrails",
         ),
         AuditRow(
+            "reviewer-response audit documented",
+            ready("reviewer-response readiness audit" in readme and "reviewer-response readiness audit" in build),
+            "README and BUILD mention reviewer-response readiness audit",
+        ),
+        AuditRow(
             "CI runs publication preflight",
             ready("python scripts/run_publication_preflight.py" in workflow),
             "workflow runs preflight command",

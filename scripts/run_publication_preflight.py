@@ -224,7 +224,29 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 18))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 19))
+
+    rows.append(
+        require_ok(
+            "reviewer-response readiness audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_reviewer_response_readiness.py",
+                    "--tex",
+                    str(tex),
+                    "--final-tables-dir",
+                    str(final),
+                    "--external-summary-dir",
+                    str(external),
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "reviewer_response_readiness_audit.csv", 11))
 
     rows.append(
         require_ok(

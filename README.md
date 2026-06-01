@@ -122,8 +122,10 @@ Run the full preflight from the project root before compiling or submitting:
 python3 scripts/run_publication_preflight.py
 ```
 
-This regenerates lightweight result artifacts, runs the AAAI artifact audit, verifies publication artifact provenance, runs the full manuscript/result audit, checks README/BUILD consistency, verifies key manuscript table values and statistical claims against committed CSV artifacts, runs the manuscript-only audit, and reports whether a local TeX compiler is available. The manuscript audit also enforces framing guardrails for adjacency, task-matched component baselines, external smoke validation, fold_07 robustness, and implementation details.
+This regenerates lightweight result artifacts, runs the AAAI artifact audit, verifies publication artifact provenance, runs the full manuscript/result audit, checks README/BUILD consistency, verifies reviewer-response readiness, verifies key manuscript table values and statistical claims against committed CSV artifacts, runs the manuscript-only audit, and reports whether a local TeX compiler is available. The manuscript audit also enforces framing guardrails for adjacency, task-matched component baselines, external smoke validation, fold_07 robustness, and implementation details.
 GitHub Actions installs a TeX distribution with recommended/extra LaTeX packages and runs the compile-required preflight on pushes to `main` and pull requests. The workflow uses `--require-clean`, so both tracked-file changes and newly generated untracked artifacts fail CI.
+
+The reviewer-response readiness audit maps likely reviewer concerns to concrete manuscript/result evidence: dataset accounting, session/order controls, adjacency limitations, ROI-token/gate mechanism controls, implementation detail, paired statistics, component-baseline framing, semantic-alignment controls, external-validation caveats, and fold_07 robustness.
 
 Run the manuscript-only audit directly when you only need a fast TeX-facing check:
 
@@ -163,6 +165,7 @@ scripts/
   run_regraph_vlm_fold.py
   audit_manuscript_publication_claims.py
   audit_aaai_publication_readiness.py
+  audit_reviewer_response_readiness.py
   materialize_publication_readiness_artifacts.py
   run_publication_preflight.py
   summarize_laion_fmri_external_results.py
