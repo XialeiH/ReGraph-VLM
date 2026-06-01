@@ -141,7 +141,11 @@ The full preflight also runs `scripts/audit_external_data_policy.py` as an
 external data policy audit, enforcing that protected external fMRI
 download/probe scripts stay guarded for remote HPC scratch storage. The
 artifact-provenance audit covers both manuscript-backed result tables and
-generated audit CSVs. The manuscript-only audit checks anonymity strings,
+generated audit CSVs. The Makefile target audit is implemented in
+`scripts/audit_makefile_targets.py`; it verifies reviewer-facing `make` targets
+and writes
+`preproc_v0/repetition_familiarity/results/final_tables/makefile_targets_audit.csv`.
+The manuscript-only audit checks anonymity strings,
 fixed-adjacency overclaims, framing guardrails for adjacency, component
 baselines, external validation, fold_07, and implementation details, duplicate
 labels, unresolved refs, required labels, citation coverage in `references.bib`,

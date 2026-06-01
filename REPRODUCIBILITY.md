@@ -94,6 +94,11 @@ The preflight includes a structural package metadata audit for `pyproject.toml`
 so the project name, dependency extras, and packaged `models/` module stay
 aligned with the publication code.
 
+The Makefile target audit is implemented in
+`scripts/audit_makefile_targets.py`. It verifies that reviewer-facing `make`
+targets still call the canonical publication scripts for `may30.tex` and writes
+`preproc_v0/repetition_familiarity/results/final_tables/makefile_targets_audit.csv`.
+
 When PyTorch is installed, the preflight also checks that
 `model_parameter_counts.csv` matches instantiated `ReGraphVLM` modules. The
 same check can be run directly:

@@ -1,0 +1,15 @@
+# Makefile Targets Audit
+
+Status counts: {'ready': 9}
+
+| Item | Status | Evidence |
+| --- | --- | --- |
+| .PHONY reviewer targets | ready | all reviewer-facing targets are declared phony |
+| make preflight | ready | canonical command present |
+| make compile | ready | canonical command present |
+| make bundle-check | ready | canonical command present |
+| make bundle | ready | canonical command present |
+| make bundle-verify | ready | canonical command present |
+| make bundle-smoke | ready | canonical command present |
+| make manuscript-audit | ready | canonical command present |
+| make parameter-counts | ready | canonical command present |

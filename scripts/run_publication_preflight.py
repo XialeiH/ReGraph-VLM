@@ -262,7 +262,23 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 39))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 40))
+
+    rows.append(
+        require_ok(
+            "Makefile target audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_makefile_targets.py",
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "makefile_targets_audit.csv", 9))
 
     rows.append(
         require_ok(
@@ -375,7 +391,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 28))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 29))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

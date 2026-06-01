@@ -122,6 +122,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     reviewer_response = read_text(Path("REVIEWER_RESPONSE.md"))
     pyproject = read_text(Path("pyproject.toml"))
     bundle_smoke = read_text(Path("scripts/smoke_test_anonymous_bundle_archive.py"))
+    makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
@@ -174,6 +175,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "parameter-counts:" in makefile
             ),
             "Makefile implements preflight, compile, bundle, bundle-verify, bundle-smoke, manuscript-audit, and parameter-count targets",
+        ),
+        AuditRow(
+            "Makefile target audit documented",
+            ready(
+                "Makefile target audit" in readme
+                and "Makefile target audit" in build
+                and "Makefile target audit" in reproducibility
+                and "scripts/audit_makefile_targets.py" in readme
+                and "scripts/audit_makefile_targets.py" in build
+                and "scripts/audit_makefile_targets.py" in reproducibility
+                and "makefile_targets_audit.csv" in readme
+                and "makefile_targets_audit.csv" in build
+                and "makefile_targets_audit.csv" in reproducibility
+                and "reports/neurips_report/may30.tex" in makefile_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document the Makefile target audit and generated artifact",
         ),
         AuditRow(
             "reproducibility guide linked",
