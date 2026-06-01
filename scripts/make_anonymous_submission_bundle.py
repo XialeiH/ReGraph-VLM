@@ -80,6 +80,8 @@ PUBLICATION_ARTIFACT_PATHS = {
     "preproc_v0/repetition_familiarity/results/final_tables/table_matched_deletion.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/table_phase2_sota_graph_baselines.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/table_roi_token_controls.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_uncertainty_language_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_uncertainty_language_audit.md",
     "preproc_v0/repetition_familiarity/results/final_tables/table_within_subject.csv",
 }
 
@@ -129,6 +131,7 @@ EXACT_PATHS = {
     "scripts/audit_reviewer_response_readiness.py",
     "scripts/audit_result_artifact_schemas.py",
     "scripts/audit_result_value_ranges.py",
+    "scripts/audit_table_uncertainty_language.py",
     "scripts/external_data_policy.py",
     "scripts/generate_publication_evidence_manifest.py",
     "scripts/make_anonymous_submission_bundle.py",

@@ -165,6 +165,10 @@ correlations, standard deviations, counts, and split/QC invariants stay in
 valid ranges. It is implemented in `scripts/audit_result_value_ranges.py` and
 writes
 `preproc_v0/repetition_familiarity/results/final_tables/result_value_range_audit.csv`.
+The table uncertainty-language audit checks that result-table captions disclose
+mean/std, $n$, diagnostic scope, or point-summary status where appropriate. It
+is implemented in `scripts/audit_table_uncertainty_language.py` and writes
+`preproc_v0/repetition_familiarity/results/final_tables/table_uncertainty_language_audit.csv`.
 The bundle allowlist audit checks that anonymous-bundle source paths, figures,
 publication artifacts, generated audits, and reviewer-facing scripts are present
 and tracked or staged before packaging. It is implemented in

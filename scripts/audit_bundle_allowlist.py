@@ -50,6 +50,7 @@ REQUIRED_AUDIT_SCRIPTS = {
     "scripts/audit_result_artifact_schemas.py",
     "scripts/audit_result_value_ranges.py",
     "scripts/audit_reviewer_response_readiness.py",
+    "scripts/audit_table_uncertainty_language.py",
 }
 
 REQUIRED_GENERATED_AUDITS = {
@@ -68,6 +69,7 @@ REQUIRED_GENERATED_AUDITS = {
     "preproc_v0/repetition_familiarity/results/final_tables/result_artifact_schema_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/result_value_range_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.csv",
+    "preproc_v0/repetition_familiarity/results/final_tables/table_uncertainty_language_audit.csv",
 }
 
 FORBIDDEN_PREFIXES = (

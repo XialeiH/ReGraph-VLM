@@ -47,11 +47,12 @@ EXPECTED_AUDIT_ARTIFACTS = {
     "external_data_policy_audit.csv": 6,
     "makefile_targets_audit.csv": 9,
     "manuscript_publication_claims_audit.csv": 55,
-    "publication_docs_audit.csv": 45,
+    "publication_docs_audit.csv": 46,
     "package_metadata_audit.csv": 11,
     "result_artifact_schema_audit.csv": 26,
     "result_value_range_audit.csv": 26,
     "reviewer_response_readiness_audit.csv": 11,
+    "table_uncertainty_language_audit.csv": 25,
     "manuscript_table_values_audit.csv": 24,
     "manuscript_stat_claims_audit.csv": 22,
 }

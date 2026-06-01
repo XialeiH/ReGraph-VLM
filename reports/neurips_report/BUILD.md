@@ -157,6 +157,11 @@ The result value-range audit is implemented in
 `scripts/audit_result_value_ranges.py`; it verifies metric ranges, p-values,
 correlations, standard deviations, counts, and split/QC invariants, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/result_value_range_audit.csv`.
+The table uncertainty-language audit is implemented in
+`scripts/audit_table_uncertainty_language.py`; it verifies that result-table
+captions disclose mean/std, $n$, diagnostic scope, or point-summary status where
+appropriate, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/table_uncertainty_language_audit.csv`.
 The bundle allowlist audit is implemented in
 `scripts/audit_bundle_allowlist.py`; it verifies that anonymous-bundle source
 paths, figures, publication artifacts, generated audits, and reviewer-facing

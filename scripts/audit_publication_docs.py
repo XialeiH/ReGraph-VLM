@@ -128,6 +128,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
     value_range_audit = read_text(Path("scripts/audit_result_value_ranges.py"))
+    table_uncertainty_audit = read_text(Path("scripts/audit_table_uncertainty_language.py"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
@@ -244,6 +245,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "paired_t_p" in value_range_audit
             ),
             "README, BUILD, and REPRODUCIBILITY document result value-range auditing",
+        ),
+        AuditRow(
+            "table uncertainty-language audit documented",
+            ready(
+                "table uncertainty-language audit" in readme
+                and "table uncertainty-language audit" in build
+                and "table uncertainty-language audit" in reproducibility
+                and "scripts/audit_table_uncertainty_language.py" in readme
+                and "scripts/audit_table_uncertainty_language.py" in build
+                and "scripts/audit_table_uncertainty_language.py" in reproducibility
+                and "table_uncertainty_language_audit.csv" in readme
+                and "table_uncertainty_language_audit.csv" in build
+                and "table_uncertainty_language_audit.csv" in reproducibility
+                and "primary result captions disclose uncertainty scope" in table_uncertainty_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document table caption uncertainty-scope auditing",
         ),
         AuditRow(
             "reproducibility guide linked",
