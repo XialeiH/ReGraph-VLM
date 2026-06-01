@@ -26,6 +26,12 @@ compile-required preflight on pushes to `main` and pull requests. CI uses
 `--require-clean`, so tracked-file drift and newly generated untracked artifacts
 both fail the build.
 
+When PyTorch is installed, the preflight also verifies
+`model_parameter_counts.csv` against instantiated `ReGraphVLM` modules.
+Environments without PyTorch skip only that optional code-level check; the
+formula-generated parameter-count artifact is still audited against the
+manuscript table.
+
 The reviewer-response readiness audit maps likely reviewer concerns to concrete
 manuscript/result evidence: dataset accounting, session/order controls,
 adjacency limitations, ROI-token/gate mechanism controls, implementation detail,

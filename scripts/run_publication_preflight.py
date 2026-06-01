@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import importlib.util
 import shutil
 import subprocess
 import sys
@@ -113,6 +114,23 @@ def audit_clean_worktree(root: Path) -> Step:
     if completed.stdout.strip():
         return Step("Git working tree clean", "incomplete", first_lines(completed.stdout, n=8))
     return Step("Git working tree clean", "ready", "no tracked or untracked artifact drift")
+
+
+def verify_model_parameter_counts(root: Path, final: Path) -> Step:
+    if importlib.util.find_spec("torch") is None:
+        return Step("model parameter-count code verification", "skipped", "torch not installed in this environment")
+    return require_ok(
+        "model parameter-count code verification",
+        run_command(
+            root,
+            [
+                sys.executable,
+                "scripts/verify_model_parameter_counts.py",
+                "--parameter-counts",
+                str(final / "model_parameter_counts.csv"),
+            ],
+        ),
+    )
 
 
 def write_summary(rows: list[Step]) -> str:
@@ -265,6 +283,7 @@ def main() -> int:
         )
     )
     rows.append(audit_status(root / final / "manuscript_table_values_audit.csv", 24))
+    rows.append(verify_model_parameter_counts(root, final))
 
     rows.append(
         require_ok(
