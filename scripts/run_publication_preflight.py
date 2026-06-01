@@ -497,7 +497,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 35))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 36))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

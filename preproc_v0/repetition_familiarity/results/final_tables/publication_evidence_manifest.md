@@ -32,7 +32,7 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | `MODEL_CARD.md` | present | reviewer-facing model scope, intended use, supported claims, non-claims, and limitations |
 | `REVIEWER_RESPONSE.md` | present | human-readable map from likely reviewer concerns to committed manuscript/result evidence |
 | `preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv` | present | ready=33 |
-| `preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv` | present | ready=35 |
+| `preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv` | present | ready=36 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_publication_claims_audit.csv` | present | ready=55 |
 | `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=47 |
 | `preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_manifest_audit.csv` | present | ready=10 |
