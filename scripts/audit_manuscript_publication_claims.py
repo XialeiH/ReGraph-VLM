@@ -127,6 +127,22 @@ COMPONENT_BASELINE_FORBIDDEN_PATTERNS = (
     r"outperforms\s+full\s+image-reconstruction",
 )
 
+EXTERNAL_VALIDATION_REQUIRED_FRAGMENTS = (
+    "External visual-ROI smoke validation",
+    "not full HCP-MMP external replications",
+    "not whether the full ReGraph-VLM result transfers unchanged",
+    "do not replicate the main NSD ordering",
+    "external feasibility evidence",
+    "not a full external replication",
+    "broader validation on independent trial-wise atlas-ROI beta maps remains needed",
+)
+
+EXTERNAL_VALIDATION_FORBIDDEN_PATTERNS = (
+    r"external\s+validation\s+confirms\s+the\s+full",
+    r"full\s+external\s+validation\s+is\s+complete",
+    r"full\s+HCP-MMP\s+external\s+replication\s+is\s+complete",
+)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Audit manuscript/result consistency for the AAAI-style ReGraph-VLM submission.")
@@ -378,6 +394,20 @@ def audit_component_baseline_framing(text: str) -> AuditRow:
     return AuditRow("component-baseline framing", status(ok), evidence)
 
 
+def audit_external_validation_framing(text: str) -> AuditRow:
+    missing = [fragment for fragment in EXTERNAL_VALIDATION_REQUIRED_FRAGMENTS if fragment not in text]
+    forbidden = [
+        pattern
+        for pattern in EXTERNAL_VALIDATION_FORBIDDEN_PATTERNS
+        if re.search(pattern, text, flags=re.IGNORECASE)
+    ]
+    ok = not missing and not forbidden
+    evidence = "external checks framed as visual-ROI smoke/feasibility evidence with replication limits"
+    if not ok:
+        evidence = f"missing={missing or 'none'}; forbidden={forbidden or 'none'}"
+    return AuditRow("external-validation framing", status(ok), evidence)
+
+
 def bib_keys(paths: list[Path]) -> tuple[set[str], list[Path]]:
     keys: set[str] = set()
     missing_paths: list[Path] = []
@@ -421,6 +451,7 @@ def audit_text(tex_path: Path) -> list[AuditRow]:
     rows.append(AuditRow("required publication labels", status(not missing_required), "all present" if not missing_required else ", ".join(missing_required)))
     rows.append(audit_implementation_details(text))
     rows.append(audit_component_baseline_framing(text))
+    rows.append(audit_external_validation_framing(text))
 
     cite_keys = citation_keys(text)
     bib_paths = bibliography_paths(tex_path, text)
