@@ -84,6 +84,7 @@ def main() -> int:
         "| External validation limits | Table `tab:external_visual_roi_smoke` | `table_external_visual_roi_smoke.csv`, `external_visual_roi_all4_summary.md` | four public visual-ROI smoke checks; explicitly not full HCP-MMP external replications |",
         "| Fold_07 robustness | Table `tab:fold_difficulty` | `fold_difficulty_qc.csv` | fold_07 is diagnosed as difficult but left as an unresolved robustness case |",
         "| Reviewer-response coverage | Preflight artifact | `reviewer_response_readiness_audit.csv` | " + status_counts(final / "reviewer_response_readiness_audit.csv") + " |",
+        "| Double-blind code sharing | `ANONYMIZATION.md` | `scripts/make_anonymous_submission_bundle.py` | Git-history-free anonymous archive workflow; do not submit public GitHub metadata |",
         "",
         "## Audit Artifacts",
         "",

@@ -22,6 +22,7 @@ results/*
 wandb/
 output/
 tmp/
+dist/
 
 # Large/generated ML artifacts should not be committed to GitHub.
 *.pt

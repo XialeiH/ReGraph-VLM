@@ -18,6 +18,7 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | External validation limits | Table `tab:external_visual_roi_smoke` | `table_external_visual_roi_smoke.csv`, `external_visual_roi_all4_summary.md` | four public visual-ROI smoke checks; explicitly not full HCP-MMP external replications |
 | Fold_07 robustness | Table `tab:fold_difficulty` | `fold_difficulty_qc.csv` | fold_07 is diagnosed as difficult but left as an unresolved robustness case |
 | Reviewer-response coverage | Preflight artifact | `reviewer_response_readiness_audit.csv` | ready=11 |
+| Double-blind code sharing | `ANONYMIZATION.md` | `scripts/make_anonymous_submission_bundle.py` | Git-history-free anonymous archive workflow; do not submit public GitHub metadata |
 
 ## Audit Artifacts
 
@@ -26,7 +27,7 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | `preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv` | present | ready=32 |
 | `preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv` | present | ready=19 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_publication_claims_audit.csv` | present | ready=55 |
-| `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=20 |
+| `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=21 |
 | `preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.csv` | present | ready=11 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.csv` | present | ready=23 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_stat_claims_audit.csv` | present | ready=22 |

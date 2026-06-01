@@ -41,6 +41,20 @@ preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_mani
 Use it as the reviewer-facing index from each major claim or caveat to the
 committed manuscript table and result artifact that supports it.
 
+For double-blind review, do not submit the public GitHub URL or a Git clone.
+Use the Anonymous Submission Bundle workflow instead; see `ANONYMIZATION.md`.
+The non-mutating bundle check is included in the publication preflight:
+
+```bash
+python3 scripts/make_anonymous_submission_bundle.py --dry-run
+```
+
+To build the archive for submission:
+
+```bash
+python3 scripts/make_anonymous_submission_bundle.py
+```
+
 If a TeX distribution is installed, compile through the same preflight:
 
 ```bash

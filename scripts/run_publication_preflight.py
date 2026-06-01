@@ -224,7 +224,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 20))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 21))
 
     rows.append(
         require_ok(
@@ -326,6 +326,13 @@ def main() -> int:
                     str(final / "publication_evidence_manifest.md"),
                 ],
             ),
+        )
+    )
+
+    rows.append(
+        require_ok(
+            "anonymous submission bundle dry-run",
+            run_command(root, [sys.executable, "scripts/make_anonymous_submission_bundle.py", "--dry-run"]),
         )
     )
 

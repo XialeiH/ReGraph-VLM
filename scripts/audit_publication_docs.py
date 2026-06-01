@@ -24,6 +24,7 @@ README_MODEL_LABELS = {
 README_METRICS = ["AUROC", "AUPRC", "R@5", "MRR", "image_R@5", "brain_R@5"]
 
 PUBLICATION_DOC_PATHS = [
+    Path("ANONYMIZATION.md"),
     Path("README.md"),
     Path("reports/neurips_report/BUILD.md"),
     Path("reports/neurips_report/may30.tex"),
@@ -152,6 +153,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "publication evidence manifest documented",
             ready("Publication Evidence Manifest" in readme and "Publication Evidence Manifest" in build),
             "README and BUILD mention the publication evidence manifest",
+        ),
+        AuditRow(
+            "anonymous submission bundle documented",
+            ready("Anonymous Submission Bundle" in readme and "Anonymous Submission Bundle" in build and "ANONYMIZATION.md" in readme and "ANONYMIZATION.md" in build),
+            "README and BUILD mention anonymous bundle instructions",
         ),
         AuditRow(
             "CI runs publication preflight",
