@@ -80,6 +80,14 @@ preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest
 
 It records each included source path, source byte count, and SHA-256 checksum,
 and excludes its own row to avoid self-referential checksum drift.
+To verify the manifest against the committed source tree or an extracted
+anonymous bundle, run:
+
+```bash
+python3 scripts/verify_anonymous_bundle_manifest.py
+# or
+make bundle-verify
+```
 
 If a TeX distribution is installed, compile through the same preflight:
 

@@ -174,6 +174,14 @@ preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest
 The manifest lists each included source path, source byte count, and SHA-256
 checksum. It intentionally excludes its own row to avoid self-referential
 checksum drift.
+To verify the manifest against either the committed source tree or an extracted
+anonymous bundle, run:
+
+```bash
+python3 scripts/verify_anonymous_bundle_manifest.py
+# or
+make bundle-verify
+```
 
 Run the manuscript-only audit directly when you only need a fast TeX-facing check:
 
@@ -224,6 +232,7 @@ scripts/
   run_publication_preflight.py
   summarize_laion_fmri_external_results.py
   export_laion_fmri_visual_roi_scalar4.py
+  verify_anonymous_bundle_manifest.py
   shanghai_*.sbatch
 
 reports/neurips_report/

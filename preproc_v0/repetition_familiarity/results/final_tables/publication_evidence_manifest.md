@@ -19,7 +19,7 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | External validation limits | Table `tab:external_visual_roi_smoke` | `table_external_visual_roi_smoke.csv`, `external_visual_roi_all4_summary.md` | four public visual-ROI smoke checks; explicitly not full HCP-MMP external replications |
 | Fold_07 robustness | Table `tab:fold_difficulty` | `fold_difficulty_qc.csv` | fold_07 is diagnosed as difficult but left as an unresolved robustness case |
 | Reviewer-response coverage | Preflight artifact | `reviewer_response_readiness_audit.csv` | ready=11 |
-| Double-blind code sharing | `ANONYMIZATION.md` | `scripts/make_anonymous_submission_bundle.py`, `anonymous_bundle_manifest.csv` | Git-history-free anonymous archive workflow plus per-file source checksums; do not submit public GitHub metadata |
+| Double-blind code sharing | `ANONYMIZATION.md` | `scripts/make_anonymous_submission_bundle.py`, `scripts/verify_anonymous_bundle_manifest.py`, `anonymous_bundle_manifest.csv` | Git-history-free anonymous archive workflow plus verifiable per-file source checksums; do not submit public GitHub metadata |
 
 ## Audit Artifacts
 
@@ -30,7 +30,7 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_publication_claims_audit.csv` | present | ready=55 |
 | `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=32 |
 | `preproc_v0/repetition_familiarity/results/final_tables/package_metadata_audit.csv` | present | ready=11 |
-| `preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv` | present | per-file source byte counts and SHA-256 checksums for anonymous bundle contents |
+| `preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv` | present | per-file source byte counts and SHA-256 checksums for verifier-backed anonymous bundle contents |
 | `preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.csv` | present | ready=11 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.csv` | present | ready=24 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_stat_claims_audit.csv` | present | ready=22 |

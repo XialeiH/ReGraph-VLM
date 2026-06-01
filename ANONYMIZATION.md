@@ -42,3 +42,8 @@ preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest
 The manifest lists each included source path, source byte count, and SHA-256
 checksum. It excludes its own row so that regenerating the manifest does not
 change its own expected checksum.
+After extracting a submitted bundle, verify the files against the manifest:
+
+```bash
+python3 scripts/verify_anonymous_bundle_manifest.py
+```

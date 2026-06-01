@@ -13,7 +13,7 @@ Status counts: {'ready': 32}
 | active report documented | ready | README and BUILD point to may30.tex |
 | one-command preflight documented | ready | preflight command present in README and BUILD |
 | Makefile reviewer targets documented | ready | README, BUILD, and REPRODUCIBILITY document reviewer-facing make targets |
-| Makefile reviewer targets implemented | ready | Makefile implements preflight, compile, bundle, manuscript-audit, and parameter-count targets |
+| Makefile reviewer targets implemented | ready | Makefile implements preflight, compile, bundle, bundle-verify, manuscript-audit, and parameter-count targets |
 | reproducibility guide linked | ready | README and BUILD link the reproducibility guide |
 | dependency and large-data policy documented | ready | REPRODUCIBILITY.md covers model dependencies, neuroimaging dependencies, install extras, HPC scratch storage, and external-validation limits |
 | pyproject metadata aligned | ready | pyproject names ReGraph-VLM, exposes dependency extras, and packages current models code |
@@ -26,7 +26,7 @@ Status counts: {'ready': 32}
 | reviewer-response audit documented | ready | README and BUILD mention reviewer-response readiness audit |
 | publication evidence manifest documented | ready | README and BUILD mention the publication evidence manifest |
 | anonymous submission bundle documented | ready | README and BUILD mention anonymous bundle instructions, checksum, and byte-stable archive metadata |
-| anonymous bundle manifest documented | ready | README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest |
+| anonymous bundle manifest documented | ready | README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier |
 | CI runs publication preflight | ready | workflow runs preflight command |
 | CI requires TeX compilation | ready | workflow installs TeX and runs compile-required preflight |
 | CI installs recommended TeX packages | ready | workflow includes recommended and extra LaTeX package bundles |

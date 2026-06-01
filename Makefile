@@ -1,4 +1,4 @@
-.PHONY: preflight compile bundle-check bundle manuscript-audit parameter-counts
+.PHONY: preflight compile bundle-check bundle bundle-verify manuscript-audit parameter-counts
 
 preflight:
 	python3 scripts/run_publication_preflight.py
@@ -11,6 +11,9 @@ bundle-check:
 
 bundle:
 	python3 scripts/make_anonymous_submission_bundle.py
+
+bundle-verify:
+	python3 scripts/verify_anonymous_bundle_manifest.py
 
 manuscript-audit:
 	python3 scripts/audit_manuscript_publication_claims.py \

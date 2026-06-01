@@ -114,6 +114,13 @@ preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest
 This manifest records each included source path, source byte count, and SHA-256
 checksum for reviewer-side artifact checking. The manifest excludes its own row
 to avoid self-referential checksum drift.
+Verify the committed source tree or an extracted anonymous bundle with:
+
+```bash
+python3 scripts/verify_anonymous_bundle_manifest.py
+# or
+make bundle-verify
+```
 
 ## Result Provenance
 

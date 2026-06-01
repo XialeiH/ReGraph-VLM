@@ -397,6 +397,22 @@ def main() -> int:
         )
     )
     rows.append(audit_bundle_manifest(root / bundle_manifest))
+    rows.append(
+        require_ok(
+            "anonymous bundle manifest verification",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/verify_anonymous_bundle_manifest.py",
+                    "--manifest",
+                    str(bundle_manifest),
+                    "--source",
+                    "git",
+                ],
+            ),
+        )
+    )
 
     rows.append(
         require_ok(

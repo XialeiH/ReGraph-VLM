@@ -109,6 +109,7 @@ EXACT_PATHS = {
     "scripts/run_publication_preflight.py",
     "scripts/run_regraph_vlm_fold.py",
     "scripts/update_may30_publication_tables.py",
+    "scripts/verify_anonymous_bundle_manifest.py",
     "scripts/verify_model_parameter_counts.py",
     *FIGURE_PATHS,
     *PUBLICATION_ARTIFACT_PATHS,
