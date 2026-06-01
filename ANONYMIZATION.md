@@ -31,3 +31,14 @@ python3 scripts/make_anonymous_submission_bundle.py --dry-run
 
 The dry run does not write the archive, but it computes the deterministic
 archive checksum that the full build should report.
+
+The publication preflight also writes a reviewer-facing per-file source
+manifest:
+
+```text
+preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv
+```
+
+The manifest lists each included source path, source byte count, and SHA-256
+checksum. It excludes its own row so that regenerating the manifest does not
+change its own expected checksum.

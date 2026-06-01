@@ -242,6 +242,16 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "README and BUILD mention anonymous bundle instructions, checksum, and byte-stable archive metadata",
         ),
         AuditRow(
+            "anonymous bundle manifest documented",
+            ready(
+                "anonymous_bundle_manifest.csv" in readme
+                and "anonymous_bundle_manifest.csv" in build
+                and "anonymous_bundle_manifest.csv" in reproducibility
+                and "anonymous_bundle_manifest.csv" in read_text(Path("ANONYMIZATION.md"))
+            ),
+            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest",
+        ),
+        AuditRow(
             "CI runs publication preflight",
             ready("python scripts/run_publication_preflight.py" in workflow),
             "workflow runs preflight command",

@@ -133,6 +133,43 @@ def verify_model_parameter_counts(root: Path, final: Path) -> Step:
     )
 
 
+def audit_bundle_manifest(path: Path) -> Step:
+    if not path.exists():
+        return Step("anonymous bundle manifest", "missing", f"{path} not found")
+    with path.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    required = {"path", "bytes", "sha256"}
+    if not rows:
+        return Step("anonymous bundle manifest", "incomplete", "manifest has no rows")
+    if set(rows[0]) != required:
+        return Step("anonymous bundle manifest", "incomplete", f"columns are {sorted(rows[0])}")
+
+    paths = [row["path"] for row in rows]
+    duplicate_paths = sorted({item for item in paths if paths.count(item) > 1})
+    bad_rows: list[str] = []
+    for row in rows:
+        try:
+            size = int(row["bytes"])
+        except ValueError:
+            bad_rows.append(f"{row['path']}: non-integer bytes")
+            continue
+        digest = row["sha256"]
+        if size < 0:
+            bad_rows.append(f"{row['path']}: negative bytes")
+        if len(digest) != 64 or any(char not in "0123456789abcdef" for char in digest):
+            bad_rows.append(f"{row['path']}: invalid sha256")
+
+    if duplicate_paths:
+        return Step("anonymous bundle manifest", "incomplete", f"duplicate paths: {', '.join(duplicate_paths[:5])}")
+    if bad_rows:
+        return Step("anonymous bundle manifest", "incomplete", "; ".join(bad_rows[:5]))
+    if any(row_path.endswith("anonymous_bundle_manifest.csv") for row_path in paths):
+        return Step("anonymous bundle manifest", "incomplete", "manifest should exclude its own row")
+
+    status = "ready" if len(rows) >= 80 else "incomplete"
+    return Step("anonymous bundle manifest", status, f"{len(rows)} files with source bytes and SHA-256 values")
+
+
 def write_summary(rows: list[Step]) -> str:
     lines = [
         "# Publication Preflight",
@@ -152,6 +189,7 @@ def main() -> int:
     tex = args.tex
     final = args.final_tables_dir
     external = args.external_summary_dir
+    bundle_manifest = final / "anonymous_bundle_manifest.csv"
     rows: list[Step] = []
 
     rows.append(
@@ -242,7 +280,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 31))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 32))
 
     rows.append(
         require_ok(
@@ -345,6 +383,23 @@ def main() -> int:
 
     rows.append(
         require_ok(
+            "anonymous submission bundle dry-run",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/make_anonymous_submission_bundle.py",
+                    "--dry-run",
+                    "--manifest-output",
+                    str(bundle_manifest),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_bundle_manifest(root / bundle_manifest))
+
+    rows.append(
+        require_ok(
             "publication evidence manifest",
             run_command(
                 root,
@@ -361,13 +416,6 @@ def main() -> int:
                     str(final / "publication_evidence_manifest.md"),
                 ],
             ),
-        )
-    )
-
-    rows.append(
-        require_ok(
-            "anonymous submission bundle dry-run",
-            run_command(root, [sys.executable, "scripts/make_anonymous_submission_bundle.py", "--dry-run"]),
         )
     )
 

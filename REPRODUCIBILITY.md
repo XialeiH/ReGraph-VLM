@@ -105,6 +105,15 @@ make bundle
 
 The dry-run checks the exact bundle contents, scans text files for
 deanonymizing strings, and reports a deterministic SHA-256 checksum.
+The full publication preflight additionally regenerates:
+
+```text
+preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv
+```
+
+This manifest records each included source path, source byte count, and SHA-256
+checksum for reviewer-side artifact checking. The manifest excludes its own row
+to avoid self-referential checksum drift.
 
 ## Result Provenance
 

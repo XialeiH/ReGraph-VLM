@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import gzip
 import hashlib
 import subprocess
@@ -20,6 +21,7 @@ PUBLICATION_ARTIFACT_PATHS = {
     "external_validation/summary/laion_fmri_visual_roi_summary.md",
     "preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.md",
+    "preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/aaai_roi_token_story_summary.md",
     "preproc_v0/repetition_familiarity/results/final_tables/final_adjacency_ablation_tests.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/final_adjacency_ablation_tests.md",
@@ -150,6 +152,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=Path("dist/regraph_vlm_anonymous_submission.tar.gz"))
     parser.add_argument("--prefix", default="regraph_vlm_anonymous/")
     parser.add_argument("--dry-run", action="store_true", help="Validate the bundle contents without writing the archive.")
+    parser.add_argument(
+        "--manifest-output",
+        type=Path,
+        default=None,
+        help="Write a CSV manifest with per-file source bytes and SHA-256 values. The manifest excludes its own row.",
+    )
     return parser.parse_args()
 
 
@@ -192,18 +200,19 @@ def include_path(path: str) -> bool:
 
 
 def load_blob(root: Path, path: str) -> bytes:
-    completed = subprocess.run(
-        ["git", "-C", str(root), "show", f"HEAD:{path}"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
-    if completed.returncode == 0:
-        return completed.stdout
+    for ref in (":", "HEAD:"):
+        completed = subprocess.run(
+            ["git", "-C", str(root), "show", f"{ref}{path}"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        if completed.returncode == 0:
+            return completed.stdout
     filesystem_path = root / path
     if filesystem_path.exists():
         return filesystem_path.read_bytes()
-    raise RuntimeError(completed.stderr.decode("utf-8", errors="replace").strip() or f"cannot read {path}")
+    raise RuntimeError(f"cannot read {path} from Git index, HEAD, or filesystem")
 
 
 def bundle_files(root: Path) -> list[BundleFile]:
@@ -256,6 +265,31 @@ def write_archive(output: Path, data: bytes) -> None:
     output.write_bytes(data)
 
 
+def repo_relative_path(root: Path, path: Path) -> str:
+    full_path = path if path.is_absolute() else root / path
+    return full_path.resolve().relative_to(root).as_posix()
+
+
+def write_manifest(root: Path, output: Path, files: list[BundleFile]) -> int:
+    output_path = output if output.is_absolute() else root / output
+    excluded_path = repo_relative_path(root, output)
+    rows = [
+        {
+            "path": item.path,
+            "bytes": len(item.data),
+            "sha256": hashlib.sha256(item.data).hexdigest(),
+        }
+        for item in sorted(files, key=lambda value: value.path)
+        if item.path != excluded_path
+    ]
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=["path", "bytes", "sha256"], lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+    return len(rows)
+
+
 def main() -> int:
     args = parse_args()
     root = args.root.resolve()
@@ -269,20 +303,29 @@ def main() -> int:
             print(f"- ... {len(hits) - 40} more")
         return 1
 
+    manifest_rows = None
+    if args.manifest_output is not None:
+        manifest_rows = write_manifest(root, args.manifest_output, files)
+
     total_bytes = sum(len(item.data) for item in files)
     archive_data = archive_bytes(args.prefix, files)
     digest = archive_sha256(archive_data)
+    manifest_suffix = (
+        f", manifest={args.manifest_output.as_posix()} ({manifest_rows} rows)"
+        if args.manifest_output is not None
+        else ""
+    )
     if args.dry_run:
         print(
             f"Anonymous bundle dry run OK: {len(files)} files, {total_bytes} source bytes, "
-            f"{len(archive_data)} archive bytes, sha256={digest}, no deanonymizing strings."
+            f"{len(archive_data)} archive bytes, sha256={digest}, no deanonymizing strings{manifest_suffix}."
         )
         return 0
 
     write_archive(root / args.output, archive_data)
     print(
         f"Wrote anonymous submission bundle: {args.output} "
-        f"({len(files)} files, {total_bytes} source bytes, {len(archive_data)} archive bytes, sha256={digest})"
+        f"({len(files)} files, {total_bytes} source bytes, {len(archive_data)} archive bytes, sha256={digest}{manifest_suffix})"
     )
     return 0
 

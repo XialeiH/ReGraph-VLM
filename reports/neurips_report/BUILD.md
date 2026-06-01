@@ -72,6 +72,14 @@ make bundle
 
 The archive writer normalizes tar/gzip metadata and reports a SHA-256 checksum,
 so repeated builds from the same committed inputs should be byte-stable.
+The publication preflight also regenerates the per-file source manifest:
+
+```text
+preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv
+```
+
+It records each included source path, source byte count, and SHA-256 checksum,
+and excludes its own row to avoid self-referential checksum drift.
 
 If a TeX distribution is installed, compile through the same preflight:
 

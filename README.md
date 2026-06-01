@@ -164,6 +164,16 @@ make bundle
 
 The bundle writer normalizes archive metadata and reports a SHA-256 checksum,
 so repeated builds from the same committed inputs should be byte-stable.
+The publication preflight also regenerates a per-file source manifest for the
+anonymous bundle:
+
+```text
+preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv
+```
+
+The manifest lists each included source path, source byte count, and SHA-256
+checksum. It intentionally excludes its own row to avoid self-referential
+checksum drift.
 
 Run the manuscript-only audit directly when you only need a fast TeX-facing check:
 
