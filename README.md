@@ -183,6 +183,15 @@ python3 scripts/verify_anonymous_bundle_manifest.py
 make bundle-verify
 ```
 
+To test the full reviewer path by building a temporary archive, extracting it,
+and verifying the extracted files, run:
+
+```bash
+python3 scripts/smoke_test_anonymous_bundle_archive.py
+# or
+make bundle-smoke
+```
+
 Run the manuscript-only audit directly when you only need a fast TeX-facing check:
 
 ```bash
@@ -230,6 +239,7 @@ scripts/
   make_anonymous_submission_bundle.py
   materialize_publication_readiness_artifacts.py
   run_publication_preflight.py
+  smoke_test_anonymous_bundle_archive.py
   summarize_laion_fmri_external_results.py
   export_laion_fmri_visual_roi_scalar4.py
   verify_anonymous_bundle_manifest.py

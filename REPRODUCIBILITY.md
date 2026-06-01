@@ -122,6 +122,14 @@ python3 scripts/verify_anonymous_bundle_manifest.py
 make bundle-verify
 ```
 
+To test the full archive/extract/verify reviewer path:
+
+```bash
+python3 scripts/smoke_test_anonymous_bundle_archive.py
+# or
+make bundle-smoke
+```
+
 ## Result Provenance
 
 The main reviewer-facing result index is:

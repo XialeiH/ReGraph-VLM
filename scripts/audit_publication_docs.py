@@ -140,10 +140,12 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "make compile" in readme
                 and "make bundle-check" in readme
                 and "make bundle-verify" in readme
+                and "make bundle-smoke" in readme
                 and "make preflight" in build
                 and "make compile" in build
                 and "make bundle-check" in build
                 and "make bundle-verify" in build
+                and "make bundle-smoke" in build
                 and "make parameter-counts" in reproducibility
             ),
             "README, BUILD, and REPRODUCIBILITY document reviewer-facing make targets",
@@ -156,10 +158,11 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "bundle-check:" in makefile
                 and "bundle:" in makefile
                 and "bundle-verify:" in makefile
+                and "bundle-smoke:" in makefile
                 and "manuscript-audit:" in makefile
                 and "parameter-counts:" in makefile
             ),
-            "Makefile implements preflight, compile, bundle, bundle-verify, manuscript-audit, and parameter-count targets",
+            "Makefile implements preflight, compile, bundle, bundle-verify, bundle-smoke, manuscript-audit, and parameter-count targets",
         ),
         AuditRow(
             "reproducibility guide linked",
@@ -255,8 +258,12 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "verify_anonymous_bundle_manifest.py" in build
                 and "verify_anonymous_bundle_manifest.py" in reproducibility
                 and "verify_anonymous_bundle_manifest.py" in read_text(Path("ANONYMIZATION.md"))
+                and "smoke_test_anonymous_bundle_archive.py" in readme
+                and "smoke_test_anonymous_bundle_archive.py" in build
+                and "smoke_test_anonymous_bundle_archive.py" in reproducibility
+                and "smoke_test_anonymous_bundle_archive.py" in read_text(Path("ANONYMIZATION.md"))
             ),
-            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier",
+            "README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier and archive smoke test",
         ),
         AuditRow(
             "CI runs publication preflight",

@@ -8,7 +8,7 @@ import hashlib
 import subprocess
 import tarfile
 from dataclasses import dataclass
-from io import BytesIO
+from io import BytesIO, StringIO
 from pathlib import Path
 
 
@@ -108,6 +108,7 @@ EXACT_PATHS = {
     "scripts/materialize_publication_readiness_artifacts.py",
     "scripts/run_publication_preflight.py",
     "scripts/run_regraph_vlm_fold.py",
+    "scripts/smoke_test_anonymous_bundle_archive.py",
     "scripts/update_may30_publication_tables.py",
     "scripts/verify_anonymous_bundle_manifest.py",
     "scripts/verify_model_parameter_counts.py",
@@ -271,8 +272,7 @@ def repo_relative_path(root: Path, path: Path) -> str:
     return full_path.resolve().relative_to(root).as_posix()
 
 
-def write_manifest(root: Path, output: Path, files: list[BundleFile]) -> int:
-    output_path = output if output.is_absolute() else root / output
+def build_manifest(root: Path, output: Path, files: list[BundleFile]) -> tuple[bytes, int]:
     excluded_path = repo_relative_path(root, output)
     rows = [
         {
@@ -283,12 +283,24 @@ def write_manifest(root: Path, output: Path, files: list[BundleFile]) -> int:
         for item in sorted(files, key=lambda value: value.path)
         if item.path != excluded_path
     ]
+    buffer = StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=["path", "bytes", "sha256"], lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(rows)
+    return buffer.getvalue().encode("utf-8"), len(rows)
+
+
+def replace_bundle_file(files: list[BundleFile], path: str, data: bytes) -> list[BundleFile]:
+    return [BundleFile(path=item.path, data=data) if item.path == path else item for item in files]
+
+
+def write_manifest(root: Path, output: Path, files: list[BundleFile]) -> tuple[int, list[BundleFile]]:
+    output_path = output if output.is_absolute() else root / output
+    manifest_path = repo_relative_path(root, output)
+    manifest_data, row_count = build_manifest(root, output, files)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["path", "bytes", "sha256"], lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(rows)
-    return len(rows)
+    output_path.write_bytes(manifest_data)
+    return row_count, replace_bundle_file(files, manifest_path, manifest_data)
 
 
 def main() -> int:
@@ -306,7 +318,7 @@ def main() -> int:
 
     manifest_rows = None
     if args.manifest_output is not None:
-        manifest_rows = write_manifest(root, args.manifest_output, files)
+        manifest_rows, files = write_manifest(root, args.manifest_output, files)
 
     total_bytes = sum(len(item.data) for item in files)
     archive_data = archive_bytes(args.prefix, files)

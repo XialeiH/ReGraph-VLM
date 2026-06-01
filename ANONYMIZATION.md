@@ -47,3 +47,9 @@ After extracting a submitted bundle, verify the files against the manifest:
 ```bash
 python3 scripts/verify_anonymous_bundle_manifest.py
 ```
+
+To smoke-test the full bundle workflow before submission:
+
+```bash
+python3 scripts/smoke_test_anonymous_bundle_archive.py
+```

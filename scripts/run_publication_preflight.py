@@ -383,6 +383,27 @@ def main() -> int:
 
     rows.append(
         require_ok(
+            "publication evidence manifest",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/generate_publication_evidence_manifest.py",
+                    "--tex",
+                    str(tex),
+                    "--final-tables-dir",
+                    str(final),
+                    "--external-summary-dir",
+                    str(external),
+                    "--output",
+                    str(final / "publication_evidence_manifest.md"),
+                ],
+            ),
+        )
+    )
+
+    rows.append(
+        require_ok(
             "anonymous submission bundle dry-run",
             run_command(
                 root,
@@ -413,25 +434,10 @@ def main() -> int:
             ),
         )
     )
-
     rows.append(
         require_ok(
-            "publication evidence manifest",
-            run_command(
-                root,
-                [
-                    sys.executable,
-                    "scripts/generate_publication_evidence_manifest.py",
-                    "--tex",
-                    str(tex),
-                    "--final-tables-dir",
-                    str(final),
-                    "--external-summary-dir",
-                    str(external),
-                    "--output",
-                    str(final / "publication_evidence_manifest.md"),
-                ],
-            ),
+            "anonymous bundle archive smoke test",
+            run_command(root, [sys.executable, "scripts/smoke_test_anonymous_bundle_archive.py"]),
         )
     )
 

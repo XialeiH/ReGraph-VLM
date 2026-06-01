@@ -89,6 +89,15 @@ python3 scripts/verify_anonymous_bundle_manifest.py
 make bundle-verify
 ```
 
+To test the full reviewer path by building a temporary archive, extracting it,
+and verifying the extracted files, run:
+
+```bash
+python3 scripts/smoke_test_anonymous_bundle_archive.py
+# or
+make bundle-smoke
+```
+
 If a TeX distribution is installed, compile through the same preflight:
 
 ```bash
