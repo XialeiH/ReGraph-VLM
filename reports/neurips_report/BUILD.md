@@ -145,6 +145,10 @@ generated audit CSVs. The Makefile target audit is implemented in
 `scripts/audit_makefile_targets.py`; it verifies reviewer-facing `make` targets
 and writes
 `preproc_v0/repetition_familiarity/results/final_tables/makefile_targets_audit.csv`.
+The CI workflow audit is implemented in `scripts/audit_ci_workflow.py`; it
+verifies the compile-required, clean-worktree GitHub Actions preflight and
+writes
+`preproc_v0/repetition_familiarity/results/final_tables/ci_workflow_audit.csv`.
 The manuscript-only audit checks anonymity strings,
 fixed-adjacency overclaims, framing guardrails for adjacency, component
 baselines, external validation, fold_07, and implementation details, duplicate

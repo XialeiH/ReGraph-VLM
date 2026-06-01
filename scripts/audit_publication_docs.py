@@ -123,6 +123,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     pyproject = read_text(Path("pyproject.toml"))
     bundle_smoke = read_text(Path("scripts/smoke_test_anonymous_bundle_archive.py"))
     makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
+    ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
     combined = readme + "\n" + build
     publication_doc_text = "\n".join(read_text(path) for path in PUBLICATION_DOC_PATHS)
     rows = [
@@ -191,6 +192,22 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "reports/neurips_report/may30.tex" in makefile_audit
             ),
             "README, BUILD, and REPRODUCIBILITY document the Makefile target audit and generated artifact",
+        ),
+        AuditRow(
+            "CI workflow audit documented",
+            ready(
+                "CI workflow audit" in readme
+                and "CI workflow audit" in build
+                and "CI workflow audit" in reproducibility
+                and "scripts/audit_ci_workflow.py" in readme
+                and "scripts/audit_ci_workflow.py" in build
+                and "scripts/audit_ci_workflow.py" in reproducibility
+                and "ci_workflow_audit.csv" in readme
+                and "ci_workflow_audit.csv" in build
+                and "ci_workflow_audit.csv" in reproducibility
+                and "--compile --require-clean" in ci_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document the CI workflow audit and generated artifact",
         ),
         AuditRow(
             "reproducibility guide linked",

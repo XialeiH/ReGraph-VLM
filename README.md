@@ -151,6 +151,10 @@ The Makefile target audit checks that reviewer-facing commands stay wired to the
 canonical publication scripts for `may30.tex`. It is implemented in
 `scripts/audit_makefile_targets.py` and writes
 `preproc_v0/repetition_familiarity/results/final_tables/makefile_targets_audit.csv`.
+The CI workflow audit checks that the GitHub Actions publication workflow still
+uses the compile-required, clean-worktree preflight path. It is implemented in
+`scripts/audit_ci_workflow.py` and writes
+`preproc_v0/repetition_familiarity/results/final_tables/ci_workflow_audit.csv`.
 
 The preflight also writes a compact Publication Evidence Manifest:
 
@@ -265,6 +269,7 @@ scripts/
   run_regraph_vlm_fold.py
   audit_manuscript_publication_claims.py
   audit_aaai_publication_readiness.py
+  audit_ci_workflow.py
   audit_makefile_targets.py
   audit_reviewer_response_readiness.py
   generate_publication_evidence_manifest.py

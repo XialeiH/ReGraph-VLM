@@ -262,7 +262,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 40))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 41))
 
     rows.append(
         require_ok(
@@ -279,6 +279,22 @@ def main() -> int:
         )
     )
     rows.append(audit_status(root / final / "makefile_targets_audit.csv", 9))
+
+    rows.append(
+        require_ok(
+            "CI workflow audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_ci_workflow.py",
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "ci_workflow_audit.csv", 10))
 
     rows.append(
         require_ok(
@@ -391,7 +407,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 29))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 30))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

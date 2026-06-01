@@ -98,6 +98,10 @@ The Makefile target audit is implemented in
 `scripts/audit_makefile_targets.py`. It verifies that reviewer-facing `make`
 targets still call the canonical publication scripts for `may30.tex` and writes
 `preproc_v0/repetition_familiarity/results/final_tables/makefile_targets_audit.csv`.
+The CI workflow audit is implemented in `scripts/audit_ci_workflow.py`. It
+verifies that the GitHub Actions publication workflow still runs the
+compile-required, clean-worktree preflight path and writes
+`preproc_v0/repetition_familiarity/results/final_tables/ci_workflow_audit.csv`.
 
 When PyTorch is installed, the preflight also checks that
 `model_parameter_counts.csv` matches instantiated `ReGraphVLM` modules. The
