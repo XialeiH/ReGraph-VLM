@@ -12,6 +12,8 @@ from io import BytesIO, StringIO
 from pathlib import Path
 
 
+BUNDLE_MANIFEST_RELATIVE_PATH = "preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv"
+
 PUBLICATION_ARTIFACT_PATHS = {
     "external_validation/summary/external_visual_roi_all4_summary.md",
     "external_validation/summary/laion_fmri_visual_roi_all_runs.csv",
@@ -21,7 +23,7 @@ PUBLICATION_ARTIFACT_PATHS = {
     "external_validation/summary/laion_fmri_visual_roi_summary.md",
     "preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.md",
-    "preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv",
+    BUNDLE_MANIFEST_RELATIVE_PATH,
     "preproc_v0/repetition_familiarity/results/final_tables/aaai_roi_token_story_summary.md",
     "preproc_v0/repetition_familiarity/results/final_tables/final_adjacency_ablation_tests.csv",
     "preproc_v0/repetition_familiarity/results/final_tables/final_adjacency_ablation_tests.md",
@@ -148,7 +150,10 @@ def parse_args() -> argparse.Namespace:
         "--manifest-output",
         type=Path,
         default=None,
-        help="Write a CSV manifest with per-file source bytes and SHA-256 values. The manifest excludes its own row.",
+        help=(
+            "Write a CSV manifest with per-file source bytes and SHA-256 values. "
+            "External paths are allowed; the in-bundle manifest file is refreshed when present."
+        ),
     )
     return parser.parse_args()
 
@@ -255,13 +260,25 @@ def write_archive(output: Path, data: bytes) -> None:
     output.write_bytes(data)
 
 
-def repo_relative_path(root: Path, path: Path) -> str:
+def repo_relative_path(root: Path, path: Path) -> str | None:
     full_path = path if path.is_absolute() else root / path
-    return full_path.resolve().relative_to(root).as_posix()
+    try:
+        return full_path.resolve().relative_to(root).as_posix()
+    except ValueError:
+        return None
 
 
-def build_manifest(root: Path, output: Path, files: list[BundleFile]) -> tuple[bytes, int]:
-    excluded_path = repo_relative_path(root, output)
+def resolve_manifest_bundle_path(root: Path, output: Path, files: list[BundleFile]) -> str | None:
+    file_paths = {item.path for item in files}
+    output_path = repo_relative_path(root, output)
+    if output_path in file_paths:
+        return output_path
+    if BUNDLE_MANIFEST_RELATIVE_PATH in file_paths:
+        return BUNDLE_MANIFEST_RELATIVE_PATH
+    return None
+
+
+def build_manifest(manifest_bundle_path: str | None, files: list[BundleFile]) -> tuple[bytes, int]:
     rows = [
         {
             "path": item.path,
@@ -269,7 +286,7 @@ def build_manifest(root: Path, output: Path, files: list[BundleFile]) -> tuple[b
             "sha256": hashlib.sha256(item.data).hexdigest(),
         }
         for item in sorted(files, key=lambda value: value.path)
-        if item.path != excluded_path
+        if item.path != manifest_bundle_path
     ]
     buffer = StringIO()
     writer = csv.DictWriter(buffer, fieldnames=["path", "bytes", "sha256"], lineterminator="\n")
@@ -284,10 +301,12 @@ def replace_bundle_file(files: list[BundleFile], path: str, data: bytes) -> list
 
 def write_manifest(root: Path, output: Path, files: list[BundleFile]) -> tuple[int, list[BundleFile]]:
     output_path = output if output.is_absolute() else root / output
-    manifest_path = repo_relative_path(root, output)
-    manifest_data, row_count = build_manifest(root, output, files)
+    manifest_path = resolve_manifest_bundle_path(root, output, files)
+    manifest_data, row_count = build_manifest(manifest_path, files)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_bytes(manifest_data)
+    if manifest_path is None:
+        return row_count, files
     return row_count, replace_bundle_file(files, manifest_path, manifest_data)
 
 
