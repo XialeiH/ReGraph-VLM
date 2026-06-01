@@ -173,6 +173,8 @@ make bundle
 
 The bundle writer normalizes archive metadata and reports a SHA-256 checksum,
 so repeated builds from the same committed inputs should be byte-stable.
+It also scans every included file at the byte level for deanonymizing strings,
+including PDFs and image metadata.
 The publication preflight also regenerates a per-file source manifest for the
 anonymous bundle:
 

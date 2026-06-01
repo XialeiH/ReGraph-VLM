@@ -19,9 +19,10 @@ dist/regraph_vlm_anonymous_submission.tar.gz
 The bundle is built from an allowlist of committed source, manuscript, figure,
 and lightweight result artifacts. It excludes `.git`, checkpoints, raw data,
 HPC scratch scripts, Slurm logs, and local generated artifacts. The script also
-scans included text files for project-specific deanonymizing strings before
-writing the archive. Archive metadata is normalized, so repeated builds from
-the same committed inputs are byte-stable and report a SHA-256 checksum.
+scans every included file at the byte level for project-specific deanonymizing
+strings before writing the archive, including PDFs and image metadata. Archive
+metadata is normalized, so repeated builds from the same committed inputs are
+byte-stable and report a SHA-256 checksum.
 
 For a non-mutating check, run:
 

@@ -31,7 +31,7 @@ Status counts: {'ready': 38}
 | manuscript framing guardrails documented | ready | README and BUILD mention adjacency/component/external/fold_07/implementation guardrails |
 | reviewer-response audit documented | ready | README and BUILD mention reviewer-response readiness audit |
 | publication evidence manifest documented | ready | README and BUILD mention the publication evidence manifest |
-| anonymous submission bundle documented | ready | README and BUILD mention anonymous bundle instructions, checksum, and byte-stable archive metadata |
+| anonymous submission bundle documented | ready | README and BUILD mention anonymous bundle instructions, checksum, byte-stable archive metadata, and byte-level deanonymization scan |
 | anonymous bundle manifest documented | ready | README, BUILD, REPRODUCIBILITY, and ANONYMIZATION document the per-file bundle manifest verifier, archive smoke test, and compile-capable extracted-bundle preflight |
 | CI runs publication preflight | ready | workflow runs preflight command |
 | CI requires TeX compilation | ready | workflow installs TeX and runs compile-required preflight |

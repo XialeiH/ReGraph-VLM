@@ -110,8 +110,9 @@ make bundle-check
 make bundle
 ```
 
-The dry-run checks the exact bundle contents, scans text files for
-deanonymizing strings, and reports a deterministic SHA-256 checksum.
+The dry-run checks the exact bundle contents, scans every included file at the
+byte level for deanonymizing strings, and reports a deterministic SHA-256
+checksum.
 The full publication preflight additionally regenerates:
 
 ```text

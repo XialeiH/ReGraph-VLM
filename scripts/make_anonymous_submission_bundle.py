@@ -132,20 +132,6 @@ FORBIDDEN_TEXT = (
     "/scratch/" + "".join(("xh", "2906")),
 )
 
-TEXT_SUFFIXES = {
-    ".bib",
-    ".csv",
-    ".json",
-    ".md",
-    ".py",
-    ".sty",
-    ".tex",
-    ".txt",
-    ".yml",
-    ".yaml",
-}
-
-
 @dataclass(frozen=True)
 class BundleFile:
     path: str
@@ -228,14 +214,12 @@ def bundle_files(root: Path) -> list[BundleFile]:
     return [BundleFile(path=path, data=load_blob(root, path)) for path in paths]
 
 
-def scan_deanonymizing_text(files: list[BundleFile]) -> list[str]:
+def scan_deanonymizing_bytes(files: list[BundleFile]) -> list[str]:
     hits: list[str] = []
+    forbidden = [(needle, needle.encode("utf-8")) for needle in FORBIDDEN_TEXT]
     for item in files:
-        if Path(item.path).suffix not in TEXT_SUFFIXES:
-            continue
-        text = item.data.decode("utf-8", errors="replace")
-        for needle in FORBIDDEN_TEXT:
-            if needle in text:
+        for needle, encoded in forbidden:
+            if encoded in item.data:
                 hits.append(f"{item.path}: {needle}")
     return hits
 
@@ -311,9 +295,9 @@ def main() -> int:
     args = parse_args()
     root = args.root.resolve()
     files = bundle_files(root)
-    hits = scan_deanonymizing_text(files)
+    hits = scan_deanonymizing_bytes(files)
     if hits:
-        print("Anonymous bundle check failed; deanonymizing strings found:")
+        print("Anonymous bundle check failed; deanonymizing byte strings found:")
         for hit in hits[:40]:
             print(f"- {hit}")
         if len(hits) > 40:
@@ -335,7 +319,7 @@ def main() -> int:
     if args.dry_run:
         print(
             f"Anonymous bundle dry run OK: {len(files)} files, {total_bytes} source bytes, "
-            f"{len(archive_data)} archive bytes, sha256={digest}, no deanonymizing strings{manifest_suffix}."
+            f"{len(archive_data)} archive bytes, sha256={digest}, no deanonymizing byte strings{manifest_suffix}."
         )
         return 0
 

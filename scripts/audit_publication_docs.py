@@ -301,8 +301,12 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "SHA-256" in build
                 and "byte-stable" in readme
                 and "byte-stable" in build
+                and "byte level" in readme
+                and "byte level" in build
+                and "byte level" in reproducibility
+                and "byte level" in anonymization
             ),
-            "README and BUILD mention anonymous bundle instructions, checksum, and byte-stable archive metadata",
+            "README and BUILD mention anonymous bundle instructions, checksum, byte-stable archive metadata, and byte-level deanonymization scan",
         ),
         AuditRow(
             "anonymous bundle manifest documented",
