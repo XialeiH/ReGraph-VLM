@@ -6,14 +6,14 @@ Status counts: {'ready': 55}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
-| manuscript exists | ready | reports/neurips_report/may30.tex: 843 lines |
+| manuscript exists | ready | reports/neurips_report/may30.tex: 853 lines |
 | anonymous author block | ready | Anonymous Author(s) present |
 | deanonymizing strings | ready | none found |
 | fixed-adjacency overclaims | ready | none found |
 | duplicate labels | ready | none |
 | unresolved refs | ready | none |
 | required publication labels | ready | all present |
-| implementation detail coverage | ready | 9 reproducibility detail groups present |
+| implementation detail coverage | ready | 10 reproducibility detail groups present |
 | component-baseline framing | ready | task-matched component framing present; full-system/SOTA overclaims absent |
 | external-validation framing | ready | external checks framed as visual-ROI smoke/feasibility evidence with replication limits |
 | fold_07 robustness framing | ready | fold_07 remains framed as a diagnosed but unresolved robustness/calibration case |
@@ -24,13 +24,13 @@ Status counts: {'ready': 55}
 | unresolved manuscript placeholders | ready | no \needupdate uses and all 5 figure dependencies resolve to files |
 | figure files tracked by Git | ready | 5 checked, all tracked |
 | TeX group brace balance | ready | all unescaped group braces balanced |
-| TeX math dollar balance | ready | single=768, double=0 |
+| TeX math dollar balance | ready | single=774, double=0 |
 | table environment balance | ready | begin=21, end=21 |
 | figure environment balance | ready | begin=5, end=5 |
-| equation environment balance | ready | begin=7, end=7 |
+| equation environment balance | ready | begin=8, end=8 |
 | tabular environment balance | ready | begin=19, end=19 |
 | tabularx environment balance | ready | begin=2, end=2 |
-| LaTeX environment nesting | ready | 108 begin/end tokens nested correctly |
+| LaTeX environment nesting | ready | 110 begin/end tokens nested correctly |
 | result file: split_accounting.csv | ready | 8 rows, support n=8, expected at least 8 |
 | result file: session_order_pair_qc.csv | ready | 4 rows, support n=4, expected at least 1 |
 | result file: table_within_subject.csv | ready | 6 rows, support n=6, expected at least 1 |

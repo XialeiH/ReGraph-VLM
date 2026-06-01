@@ -240,6 +240,16 @@ The adjacency matrix is built from training data only for each fold. We use abso
   \end{tabularx}
 \end{table}
 
+\subsection{Evaluation metrics}
+
+We separate pair discrimination from retrieval. AUROC and AUPRC are computed over binary same-image versus different-image pair scores. For retrieval metrics, each query has a candidate set $\mathcal{C}_q$ with one correct same-image target $c_q^\star$. If the target rank is $r_q$, then
+\begin{equation}
+  \mathrm{R@5}=\frac{1}{Q}\sum_{q=1}^{Q}\mathbf{1}[r_q\leq5],
+  \qquad
+  \mathrm{MRR}=\frac{1}{Q}\sum_{q=1}^{Q}\frac{1}{r_q}.
+\end{equation}
+Plain R@5/MRR use the model's pair score to rank candidate brain-pair matches. Image R@5 ranks candidate CLIP image embeddings for a query brain embedding. Brain R@5 and brain MRR rank candidate brain embeddings directly in the learned brain-embedding space. This distinction matters for held-out-image controls: random image anchors can remain competitive for pair discrimination, but should fail on image/brain retrieval if semantic image structure is required.
+
 \section{Main Results}
 
 \subsection{Within-subject same-image repeat matching}

@@ -167,6 +167,11 @@ def audit_implementation_response(tex: str) -> AuditRow:
         "AdamW",
         "batch size 128",
         "validation AUROC",
+        "AUROC and AUPRC are computed over binary same-image versus different-image pair scores",
+        "\\mathrm{R@5}",
+        "\\mathrm{MRR}",
+        "Image R@5 ranks candidate CLIP image embeddings",
+        "Brain R@5 and brain MRR rank candidate brain embeddings",
     )
     ok = has_all(tex, required)
     missing = [fragment for fragment in required if fragment not in tex]

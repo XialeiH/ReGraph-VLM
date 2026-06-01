@@ -118,6 +118,7 @@ IMPLEMENTATION_DETAIL_REQUIREMENTS = {
     "optimization": ("AdamW", "learning rate $10^{-3}$", "weight decay $10^{-4}$", "batch size 128", "gradient clipping at 5.0"),
     "training selection": ("Up to 80 epochs", "patience 12", "validation AUROC"),
     "evaluation protocol": ("8 held-out-subject folds", "seeds 11, 22, and 33"),
+    "evaluation metrics": ("AUROC and AUPRC are computed over binary same-image versus different-image pair scores", "\\mathrm{R@5}", "\\mathrm{MRR}", "Image R@5 ranks candidate CLIP image embeddings", "Brain R@5 and brain MRR rank candidate brain embeddings"),
 }
 
 COMPONENT_BASELINE_REQUIRED_FRAGMENTS = (
