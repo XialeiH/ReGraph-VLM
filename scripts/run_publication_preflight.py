@@ -280,7 +280,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 49))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 50))
 
     rows.append(
         require_ok(
@@ -420,6 +420,22 @@ def main() -> int:
 
     rows.append(
         require_ok(
+            "Python syntax audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_python_syntax.py",
+                    "--output-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "python_syntax_audit.csv", 4))
+
+    rows.append(
+        require_ok(
             "reviewer-response readiness audit",
             run_command(
                 root,
@@ -533,7 +549,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 38))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 39))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

@@ -126,6 +126,11 @@ The dataset accounting audit is implemented in
 held-out subject assignment, sequence-to-pair counts, session/order QC totals,
 and manuscript table consistency, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/dataset_accounting_audit.csv`.
+The Python syntax audit is implemented in `scripts/audit_python_syntax.py`. It
+compiles every Python file included in the anonymous bundle with `py_compile`,
+so bundled model and utility code is checked even when optional runtime
+dependencies are unavailable, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/python_syntax_audit.csv`.
 The bundle allowlist audit is implemented in
 `scripts/audit_bundle_allowlist.py`. It verifies that anonymous-bundle source
 paths, figures, publication artifacts, generated audits, and reviewer-facing

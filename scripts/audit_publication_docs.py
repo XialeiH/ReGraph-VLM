@@ -125,6 +125,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     bundle_allowlist_audit = read_text(Path("scripts/audit_bundle_allowlist.py"))
     citation_audit = read_text(Path("scripts/audit_citation_integrity.py"))
     dataset_accounting_audit = read_text(Path("scripts/audit_dataset_accounting.py"))
+    python_syntax_audit = read_text(Path("scripts/audit_python_syntax.py"))
     makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
     ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
@@ -379,6 +380,23 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
             "package metadata audit documented",
             ready("package metadata" in readme and "package metadata" in build and "package metadata audit" in reproducibility),
             "README, BUILD, and REPRODUCIBILITY mention structural package metadata auditing",
+        ),
+        AuditRow(
+            "Python syntax audit documented",
+            ready(
+                "Python syntax audit" in readme
+                and "Python syntax audit" in build
+                and "Python syntax audit" in reproducibility
+                and "scripts/audit_python_syntax.py" in readme
+                and "scripts/audit_python_syntax.py" in build
+                and "scripts/audit_python_syntax.py" in reproducibility
+                and "python_syntax_audit.csv" in readme
+                and "python_syntax_audit.csv" in build
+                and "python_syntax_audit.csv" in reproducibility
+                and "py_compile" in python_syntax_audit
+                and "bundled Python syntax" in python_syntax_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document dependency-light Python syntax auditing",
         ),
         AuditRow(
             "external data policy audit documented",
