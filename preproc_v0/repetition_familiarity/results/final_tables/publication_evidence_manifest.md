@@ -19,7 +19,7 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | Statistical reporting | Results text and statistical claims | `publication_paired_stats.csv`, `manuscript_stat_claims_audit.csv` | paired fold x seed tests with bootstrap CIs; 119 rows; n sum=2744 |
 | Component baseline framing | Table `tab:sota_baselines` | `table_phase2_sota_graph_baselines.csv` | task-matched component baselines, not full image-reconstruction system claims |
 | Semantic alignment control | Table `tab:heldout` | `table_heldout_image.csv` | separates pair discrimination from image/brain retrieval under real CLIP versus random embeddings |
-| External validation limits | Table `tab:external_visual_roi_smoke` | `table_external_visual_roi_smoke.csv`, `external_visual_roi_all4_summary.md` | four public visual-ROI smoke checks; explicitly not full HCP-MMP external replications |
+| External validation limits | Tables `tab:external_visual_roi_smoke`, `tab:laion_external_pairwise` | `table_external_visual_roi_smoke.csv`, `external_visual_roi_all4_summary.md`, `laion_fmri_visual_roi_pairwise_tests.csv`, `external_validation_consistency_audit.csv` | four public visual-ROI smoke checks plus LAION paired tests; explicitly not full HCP-MMP external replications |
 | Fold_07 robustness | Table `tab:fold_difficulty` | `fold_difficulty_qc.csv` | fold_07 is diagnosed as difficult but left as an unresolved robustness case |
 | Reviewer-response coverage | Preflight artifact | `reviewer_response_readiness_audit.csv` | ready=11 |
 | Double-blind code sharing | `ANONYMIZATION.md` | `scripts/make_anonymous_submission_bundle.py`, `scripts/verify_anonymous_bundle_manifest.py`, `scripts/smoke_test_anonymous_bundle_archive.py`, `anonymous_bundle_manifest.csv` | Git-history-free anonymous archive workflow plus verifiable per-file source checksums and hardened archive smoke test; do not submit public GitHub metadata |
@@ -41,4 +41,6 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | `preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.csv` | present | ready=11 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.csv` | present | ready=25 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_stat_claims_audit.csv` | present | ready=22 |
+| `preproc_v0/repetition_familiarity/results/final_tables/external_validation_consistency_audit.csv` | present | ready=11 |
 | `external_validation/summary/external_visual_roi_all4_summary.md` | present | external smoke-validation summary |
+| `external_validation/summary/laion_fmri_visual_roi_pairwise_tests.csv` | present | LAION paired external visual-ROI tests |

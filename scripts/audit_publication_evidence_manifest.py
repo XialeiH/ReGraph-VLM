@@ -26,6 +26,7 @@ REQUIRED_CLAIMS = {
     "Component baseline framing",
     "Semantic alignment control",
     "External validation limits",
+    "tab:laion_external_pairwise",
     "Fold_07 robustness",
     "Double-blind code sharing",
 }
@@ -49,6 +50,8 @@ REQUIRED_ARTIFACTS = {
     "table_heldout_image.csv",
     "table_external_visual_roi_smoke.csv",
     "external_visual_roi_all4_summary.md",
+    "laion_fmri_visual_roi_pairwise_tests.csv",
+    "external_validation_consistency_audit.csv",
     "anonymous_bundle_manifest.csv",
 }
 
@@ -97,6 +100,8 @@ def resolve_artifact(token: str, final_tables_dir: Path, external_summary_dir: P
     if token.startswith("tab:") or token.startswith("Sec."):
         return None
     if token.endswith((".csv", ".txt")) and "/" not in token:
+        if token.startswith("laion_fmri_"):
+            return external_summary_dir / token
         return final_tables_dir / token
     if token == "external_visual_roi_all4_summary.md":
         return external_summary_dir / token
