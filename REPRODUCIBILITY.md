@@ -121,6 +121,11 @@ verifies that every manuscript `\IfFileExists` / `\includegraphics` dependency
 is present, nonempty, portable, tracked or staged, and bundle-allowlisted, then
 writes
 `preproc_v0/repetition_familiarity/results/final_tables/figure_asset_audit.csv`.
+The dataset accounting audit is implemented in
+`scripts/audit_dataset_accounting.py`. It verifies strict T=3 fold accounting,
+held-out subject assignment, sequence-to-pair counts, session/order QC totals,
+and manuscript table consistency, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/dataset_accounting_audit.csv`.
 The bundle allowlist audit is implemented in
 `scripts/audit_bundle_allowlist.py`. It verifies that anonymous-bundle source
 paths, figures, publication artifacts, generated audits, and reviewer-facing

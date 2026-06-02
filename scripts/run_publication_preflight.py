@@ -230,6 +230,24 @@ def main() -> int:
 
     rows.append(
         require_ok(
+            "dataset accounting audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_dataset_accounting.py",
+                    "--tex",
+                    str(tex),
+                    "--final-tables-dir",
+                    str(final),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "dataset_accounting_audit.csv", 13))
+
+    rows.append(
+        require_ok(
             "full manuscript/result audit",
             run_command(
                 root,
@@ -262,7 +280,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 48))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 49))
 
     rows.append(
         require_ok(
@@ -515,7 +533,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 37))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 38))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

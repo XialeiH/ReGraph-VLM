@@ -124,6 +124,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     bundle_smoke = read_text(Path("scripts/smoke_test_anonymous_bundle_archive.py"))
     bundle_allowlist_audit = read_text(Path("scripts/audit_bundle_allowlist.py"))
     citation_audit = read_text(Path("scripts/audit_citation_integrity.py"))
+    dataset_accounting_audit = read_text(Path("scripts/audit_dataset_accounting.py"))
     makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
     ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
@@ -280,6 +281,23 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "bundle-allowlisted" in figure_asset_audit
             ),
             "README, BUILD, and REPRODUCIBILITY document manuscript figure asset auditing",
+        ),
+        AuditRow(
+            "dataset accounting audit documented",
+            ready(
+                "dataset accounting audit" in readme
+                and "dataset accounting audit" in build
+                and "dataset accounting audit" in reproducibility
+                and "scripts/audit_dataset_accounting.py" in readme
+                and "scripts/audit_dataset_accounting.py" in build
+                and "scripts/audit_dataset_accounting.py" in reproducibility
+                and "dataset_accounting_audit.csv" in readme
+                and "dataset_accounting_audit.csv" in build
+                and "dataset_accounting_audit.csv" in reproducibility
+                and "strict T=3 sequence partition" in dataset_accounting_audit
+                and "session/order totals match split accounting" in dataset_accounting_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document dataset split and pair-accounting auditing",
         ),
         AuditRow(
             "reproducibility guide linked",
