@@ -280,7 +280,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_docs_audit.csv", 50))
+    rows.append(audit_status(root / final / "publication_docs_audit.csv", 51))
 
     rows.append(
         require_ok(
@@ -336,7 +336,29 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "table_uncertainty_language_audit.csv", 25))
+    rows.append(audit_status(root / final / "table_uncertainty_language_audit.csv", 26))
+
+    rows.append(
+        require_ok(
+            "external validation consistency audit",
+            run_command(
+                root,
+                [
+                    sys.executable,
+                    "scripts/audit_external_validation_consistency.py",
+                    "--tex",
+                    str(tex),
+                    "--scan",
+                    "reports/neurips_report/external_validation_dataset_scan.md",
+                    "--final-tables-dir",
+                    str(final),
+                    "--external-summary-dir",
+                    str(external),
+                ],
+            ),
+        )
+    )
+    rows.append(audit_status(root / final / "external_validation_consistency_audit.csv", 11))
 
     rows.append(
         require_ok(
@@ -468,11 +490,13 @@ def main() -> int:
                     str(tex),
                     "--final-tables-dir",
                     str(final),
+                    "--external-summary-dir",
+                    str(external),
                 ],
             ),
         )
     )
-    rows.append(audit_status(root / final / "manuscript_table_values_audit.csv", 24))
+    rows.append(audit_status(root / final / "manuscript_table_values_audit.csv", 25))
     rows.append(verify_model_parameter_counts(root, final))
 
     rows.append(
@@ -549,7 +573,7 @@ def main() -> int:
             ),
         )
     )
-    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 39))
+    rows.append(audit_status(root / final / "publication_artifact_provenance_audit.csv", 40))
 
     manuscript_only_dir = Path("/tmp/regraph_report_preflight")
     rows.append(

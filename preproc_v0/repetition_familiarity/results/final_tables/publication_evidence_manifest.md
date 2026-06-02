@@ -32,13 +32,13 @@ Active manuscript: `reports/neurips_report/may30.tex`
 | `MODEL_CARD.md` | present | reviewer-facing model scope, intended use, supported claims, non-claims, and limitations |
 | `REVIEWER_RESPONSE.md` | present | human-readable map from likely reviewer concerns to committed manuscript/result evidence |
 | `preproc_v0/repetition_familiarity/results/final_tables/aaai_publication_readiness_audit.csv` | present | ready=33 |
-| `preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv` | present | ready=39 |
+| `preproc_v0/repetition_familiarity/results/final_tables/publication_artifact_provenance_audit.csv` | present | ready=40 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_publication_claims_audit.csv` | present | ready=55 |
-| `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=50 |
+| `preproc_v0/repetition_familiarity/results/final_tables/publication_docs_audit.csv` | present | ready=51 |
 | `preproc_v0/repetition_familiarity/results/final_tables/publication_evidence_manifest_audit.csv` | present | ready=10 |
 | `preproc_v0/repetition_familiarity/results/final_tables/package_metadata_audit.csv` | present | ready=11 |
 | `preproc_v0/repetition_familiarity/results/final_tables/anonymous_bundle_manifest.csv` | present | per-file source byte counts and SHA-256 checksums for verifier-backed anonymous bundle contents |
 | `preproc_v0/repetition_familiarity/results/final_tables/reviewer_response_readiness_audit.csv` | present | ready=11 |
-| `preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.csv` | present | ready=24 |
+| `preproc_v0/repetition_familiarity/results/final_tables/manuscript_table_values_audit.csv` | present | ready=25 |
 | `preproc_v0/repetition_familiarity/results/final_tables/manuscript_stat_claims_audit.csv` | present | ready=22 |
 | `external_validation/summary/external_visual_roi_all4_summary.md` | present | external smoke-validation summary |

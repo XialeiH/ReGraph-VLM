@@ -131,6 +131,12 @@ compiles every Python file included in the anonymous bundle with `py_compile`,
 so bundled model and utility code is checked even when optional runtime
 dependencies are unavailable, then writes
 `preproc_v0/repetition_familiarity/results/final_tables/python_syntax_audit.csv`.
+The external validation consistency audit is implemented in
+`scripts/audit_external_validation_consistency.py`. It checks that the dataset
+scan, external visual-ROI smoke table, and LAION summary artifacts stay aligned
+and preserve the caveat that these are feasibility checks, not full HCP-MMP
+external replications, then writes
+`preproc_v0/repetition_familiarity/results/final_tables/external_validation_consistency_audit.csv`.
 The bundle allowlist audit is implemented in
 `scripts/audit_bundle_allowlist.py`. It verifies that anonymous-bundle source
 paths, figures, publication artifacts, generated audits, and reviewer-facing

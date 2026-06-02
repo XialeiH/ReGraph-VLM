@@ -33,6 +33,7 @@ CAPTION_REQUIREMENTS = {
     "tab:hardneg": ("mean", "std", "point summaries"),
     "tab:lowshot": ("mean", "std", "$n$"),
     "tab:external_visual_roi_smoke": ("mean", "std", "not full HCP-MMP"),
+    "tab:laion_external_pairwise": ("paired differences", "bootstrap 95\\% confidence intervals", "paired-test $p$-values"),
     "tab:gate_confound": ("before and after controlling",),
     "tab:matched_deletion": ("Drops are absolute",),
     "tab:fold_difficulty": ("Fold-level robustness diagnostic", "Raw pair AUROC"),
@@ -52,6 +53,7 @@ PRIMARY_RESULT_TABLES = {
     "tab:hardneg",
     "tab:lowshot",
     "tab:external_visual_roi_smoke",
+    "tab:laion_external_pairwise",
 }
 
 
@@ -119,7 +121,8 @@ def audit_caption_language(tex: Path) -> list[AuditRow]:
         has_mean_std = "mean" in caption and "std" in caption
         has_point_summary = "point summaries" in caption
         has_diagnostic_scope = "diagnostic" in caption or "not full HCP-MMP" in caption
-        if not (has_mean_std or has_point_summary or has_diagnostic_scope):
+        has_inferential_scope = "confidence intervals" in caption and "$p$-values" in caption
+        if not (has_mean_std or has_point_summary or has_diagnostic_scope or has_inferential_scope):
             primary_missing_uncertainty.append(label)
     rows.append(
         AuditRow(

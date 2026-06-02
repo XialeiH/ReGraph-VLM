@@ -126,6 +126,7 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
     citation_audit = read_text(Path("scripts/audit_citation_integrity.py"))
     dataset_accounting_audit = read_text(Path("scripts/audit_dataset_accounting.py"))
     python_syntax_audit = read_text(Path("scripts/audit_python_syntax.py"))
+    external_validation_consistency_audit = read_text(Path("scripts/audit_external_validation_consistency.py"))
     makefile_audit = read_text(Path("scripts/audit_makefile_targets.py"))
     ci_audit = read_text(Path("scripts/audit_ci_workflow.py"))
     schema_audit = read_text(Path("scripts/audit_result_artifact_schemas.py"))
@@ -397,6 +398,23 @@ def audit_docs(readme_path: Path, build_path: Path, workflow_path: Path, allfold
                 and "bundled Python syntax" in python_syntax_audit
             ),
             "README, BUILD, and REPRODUCIBILITY document dependency-light Python syntax auditing",
+        ),
+        AuditRow(
+            "external validation consistency audit documented",
+            ready(
+                "external validation consistency audit" in readme
+                and "external validation consistency audit" in build
+                and "external validation consistency audit" in reproducibility
+                and "scripts/audit_external_validation_consistency.py" in readme
+                and "scripts/audit_external_validation_consistency.py" in build
+                and "scripts/audit_external_validation_consistency.py" in reproducibility
+                and "external_validation_consistency_audit.csv" in readme
+                and "external_validation_consistency_audit.csv" in build
+                and "external_validation_consistency_audit.csv" in reproducibility
+                and "external-validation summary consistency" in external_validation_consistency_audit
+                and "not full HCP-MMP 180-ROI external validations" in external_validation_consistency_audit
+            ),
+            "README, BUILD, and REPRODUCIBILITY document external-validation summary consistency auditing",
         ),
         AuditRow(
             "external data policy audit documented",

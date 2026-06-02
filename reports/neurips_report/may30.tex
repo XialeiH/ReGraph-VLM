@@ -626,7 +626,26 @@ To address external generalization pragmatically, we ran exploratory smoke valid
   \end{tabular}
 \end{table}
 
-All external smoke checks show above-chance cross-subject same-image signal, but they do not replicate the main NSD ordering. In these public compact visual-ROI settings, ROI-MLP is stronger on most aggregate metrics, while the gated ROI Transformer is competitive only on selected retrieval metrics and subject pairs. On LAION-fMRI, paired tests over subject-pair$\times$seed runs show no significant AUROC or AUPRC difference between the gated ROI Transformer and ROI-MLP, with only a trend toward higher retrieval R@5 for the gated transformer ($+0.0093$, $p=0.0575$). We therefore treat these experiments as external feasibility evidence and as a constraint on the manuscript claim: full external validation should use trial-wise atlas/HCP-MMP beta maps, not only compact visual-localizer or table-format visual ROI summaries.
+\begin{table}[!htbp]
+  \centering
+  \caption{LAION-fMRI paired external visual-ROI tests comparing Gated ROI Transformer against ROI-MLP over matched subject-pair$\times$seed runs. Values are paired differences, bootstrap 95\% confidence intervals, and paired-test $p$-values.}
+  \label{tab:laion_external_pairwise}
+  \scriptsize
+  \setlength{\tabcolsep}{6pt}
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Metric & $n$ & Mean diff. & 95\% CI & Paired $p$ \\
+    \midrule
+    AUROC & 30 & $-0.0019$ & $[-0.0059,\ 0.0022]$ & $0.3558$ \\
+    AUPRC & 30 & $0.0000$ & $[-0.0004,\ 0.0004]$ & $0.8779$ \\
+    R@5 & 30 & $0.0093$ & $[-0.0003,\ 0.0189]$ & $0.0575$ \\
+    MRR & 30 & $0.0036$ & $[-0.0007,\ 0.0080]$ & $0.0989$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+All external smoke checks show above-chance cross-subject same-image signal, but they do not replicate the main NSD ordering. In these public compact visual-ROI settings, ROI-MLP is stronger on most aggregate metrics, while the gated ROI Transformer is competitive only on selected retrieval metrics and subject pairs. The LAION-fMRI paired tests make this limitation explicit: there is no significant AUROC or AUPRC difference between the gated ROI Transformer and ROI-MLP, and only a trend toward higher retrieval R@5 for the gated transformer ($+0.0093$, $p=0.0575$; Table~\ref{tab:laion_external_pairwise}). We therefore treat these experiments as external feasibility evidence and as a constraint on the manuscript claim: full external validation should use trial-wise atlas/HCP-MMP beta maps, not only compact visual-localizer or table-format visual ROI summaries. To keep this evidence auditable, the repository includes a separate external-validation consistency check tying Table~\ref{tab:external_visual_roi_smoke}, Table~\ref{tab:laion_external_pairwise}, and the public dataset scan to the same conservative interpretation.
 
 \section{Interpretability of the Gated Model}
 

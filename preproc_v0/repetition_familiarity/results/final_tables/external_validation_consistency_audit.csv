@@ -1,0 +1,12 @@
+item,status,evidence
+external-validation scan exists,ready,reports/neurips_report/external_validation_dataset_scan.md
+manuscript external-validation tables,ready,external smoke and LAION paired-test tables are present in may30.tex
+external-validation dataset coverage,ready,"LAION-fMRI, CNeuroMod-THINGS, BOLD5000, THINGS-fMRI, and NOD covered"
+external-validation HPC data policy,ready,scan documents HPC scratch-only external data handling
+external-validation limitation language,ready,scan preserves visual-ROI feasibility and non-universal-advantage caveats
+external visual-ROI table rows,ready,8 expected dataset-model rows with expected n values
+external visual-ROI table source labels,ready,all external rows cite may30.tex Table tab:external_visual_roi_smoke
+external visual-ROI metric ranges,ready,"all external AUROC/AUPRC/R@5/MRR means are in [0,1]"
+external visual-ROI summary text,ready,summary covers four datasets and preserves feasibility-only caveat
+LAION summary rows,ready,ROI-MLP and gated transformer LAION rows have n=30
+LAION pairwise test rows,ready,four LAION paired-test rows have n=30 and valid p-values

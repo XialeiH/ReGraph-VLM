@@ -47,6 +47,7 @@ TABLE_SPECS = [
 
 MANUAL_TABLE_LABELS = {
     "tab:implementation_details": "architecture/protocol table without numeric result artifact",
+    "tab:laion_external_pairwise": "external LAION paired-test table audited against external summary artifact",
     "tab:top_gated_roi_names": "manual ROI-name interpretation table in neuroscience section",
 }
 
@@ -68,6 +69,7 @@ CAPTION_REQUIREMENTS = {
     "tab:hardneg": ("mean $\\pm$ std where available", "point summaries"),
     "tab:lowshot": ("mean $\\pm$ std", "$n$ fold$\\times$seed"),
     "tab:external_visual_roi_smoke": ("mean $\\pm$ std", "not full HCP-MMP 180-ROI external validations"),
+    "tab:laion_external_pairwise": ("paired differences", "bootstrap 95\\% confidence intervals", "paired-test $p$-values"),
     "tab:gate_confound": ("before and after controlling",),
     "tab:matched_deletion": ("Drops are absolute performance decreases",),
     "tab:fold_difficulty": ("Fold-level robustness diagnostic", "computed from Pearson correlations"),
@@ -89,6 +91,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("preproc_v0/repetition_familiarity/results/final_tables"),
     )
+    parser.add_argument("--external-summary-dir", type=Path, default=Path("external_validation/summary"))
     parser.add_argument("--output-prefix", default="manuscript_table_values_audit")
     return parser.parse_args()
 
@@ -388,6 +391,52 @@ def audit_parameter_count_artifact(tex: str, final_tables_dir: Path) -> AuditRow
     )
 
 
+def audit_laion_pairwise_table(tex: str, external_summary_dir: Path) -> AuditRow:
+    block = find_table_block(tex, "tab:laion_external_pairwise")
+    if not block:
+        return AuditRow("tab:laion_external_pairwise", "missing", "table block not found")
+    rows = read_csv(external_summary_dir / "laion_fmri_visual_roi_pairwise_tests.csv")
+    if not rows:
+        return AuditRow("tab:laion_external_pairwise", "missing", "laion_fmri_visual_roi_pairwise_tests.csv missing or empty")
+    metric_labels = {
+        "test_AUROC": "AUROC",
+        "test_AUPRC": "AUPRC",
+        "test_R@5": "R@5",
+        "test_MRR": "MRR",
+    }
+    missing: list[str] = []
+    checked = 0
+    seen = {row.get("metric", "") for row in rows}
+    for metric in sorted(set(metric_labels) - seen):
+        missing.append(f"missing artifact metric: {metric}")
+    for row in rows:
+        metric = row.get("metric", "")
+        manuscript_label = metric_labels.get(metric)
+        if manuscript_label is None:
+            missing.append(f"unexpected artifact metric: {metric}")
+            continue
+        row_block = find_row_block(block, manuscript_label)
+        if not row_block:
+            missing.append(f"{metric}: row not found as {manuscript_label}")
+            continue
+        fragments = [
+            raw_fragment(row.get("n", "")),
+            tex_number(row.get("mean_diff", "")),
+            tex_number(row.get("ci95_low", "")),
+            tex_number(row.get("ci95_high", "")),
+            tex_number(row.get("paired_p", "")),
+        ]
+        for fragment in fragments:
+            checked += 1
+            if fragment not in row_block:
+                missing.append(f"{metric}: {fragment}")
+    return AuditRow(
+        "tab:laion_external_pairwise",
+        ready(not missing and checked > 0),
+        f"{checked} numeric fragments match laion_fmri_visual_roi_pairwise_tests.csv" if not missing and checked > 0 else "; ".join(missing[:8]),
+    )
+
+
 def write_outputs(output_dir: Path, output_prefix: str, rows: list[AuditRow]) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = output_dir / f"{output_prefix}.csv"
@@ -421,6 +470,7 @@ def main() -> int:
         audit_split_accounting_invariants(args.final_tables_dir),
         audit_session_order_qc_invariants(args.final_tables_dir),
         audit_parameter_count_artifact(tex, args.final_tables_dir),
+        audit_laion_pairwise_table(tex, args.external_summary_dir),
         *[audit_spec(tex, args.final_tables_dir, spec) for spec in TABLE_SPECS],
     ]
     write_outputs(args.final_tables_dir, args.output_prefix, rows)

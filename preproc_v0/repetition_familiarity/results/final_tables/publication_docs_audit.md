@@ -1,6 +1,6 @@
 # Publication Documentation Audit
 
-Status counts: {'ready': 50}
+Status counts: {'ready': 51}
 
 | Item | Status | Evidence |
 | --- | --- | --- |
@@ -32,6 +32,7 @@ Status counts: {'ready': 50}
 | pyproject metadata aligned | ready | pyproject names ReGraph-VLM, exposes dependency extras, and packages current models code |
 | package metadata audit documented | ready | README, BUILD, and REPRODUCIBILITY mention structural package metadata auditing |
 | Python syntax audit documented | ready | README, BUILD, and REPRODUCIBILITY document dependency-light Python syntax auditing |
+| external validation consistency audit documented | ready | README, BUILD, and REPRODUCIBILITY document external-validation summary consistency auditing |
 | external data policy audit documented | ready | README, BUILD, REPRODUCIBILITY, and DATASET_CARD mention HPC-only external-data policy auditing |
 | compile path documented | ready | --compile command present in README and BUILD |
 | portable TeX note documented | ready | BUILD uses a portable TeX availability note instead of local-machine state |
