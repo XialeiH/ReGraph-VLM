@@ -13,10 +13,21 @@ except ImportError:  # pragma: no cover - fallback for minimal HPC environments.
     stats = None
 
 
-METRICS = ["test_AUROC", "test_AUPRC", "test_R@5", "test_MRR"]
+METRICS = [
+    "test_AUROC",
+    "test_AUPRC",
+    "test_R@5",
+    "test_MRR",
+    "test_image_R@5",
+    "test_image_MRR",
+    "test_brain_R@5",
+    "test_brain_MRR",
+]
 DISPLAY_MODELS = {
     "roi_mlp": "ROI-MLP",
     "roi_transformer_gated": "Gated ROI Transformer",
+    "roi_mlp_clip": "ROI-MLP+CLIP",
+    "gated_roi_transformer_clip": "Gated ROI Transformer+CLIP",
 }
 
 
@@ -48,10 +59,7 @@ def write_latex(path: Path, summary: pd.DataFrame) -> None:
     ]
     for _, row in summary.iterrows():
         model = DISPLAY_MODELS.get(str(row["model"]), str(row["model"]))
-        values = [
-            pm(float(row[f"{metric}_mean"]), float(row[f"{metric}_std"]))
-            for metric in METRICS
-        ]
+        values = [pm(float(row[f"{metric}_mean"]), float(row[f"{metric}_std"])) for metric in METRICS if f"{metric}_mean" in row]
         lines.append(f"{model} & $" + "$ & $".join(values) + r"$ \\")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
