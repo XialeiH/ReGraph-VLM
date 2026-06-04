@@ -36,7 +36,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--subject-b", default="sub-02")
     parser.add_argument("--file-template", default="{subject}_cneuromod_visual_roi_scalar4.pt")
     parser.add_argument("--repetitions", nargs="+", type=int, default=[1, 2, 3])
-    parser.add_argument("--model", choices=["roi_mlp", "roi_transformer_gated"], default="roi_transformer_gated")
+    parser.add_argument(
+        "--model",
+        choices=[
+            "roi_mlp",
+            "roi_transformer_gated",
+            "roi_transformer_adj_gated",
+            "roi_transformer_attn_adj_gated",
+        ],
+        default="roi_transformer_gated",
+    )
+    parser.add_argument("--adjacency-topk", type=int, default=20)
+    parser.add_argument("--graph-bias-scale", type=float, default=1.0)
+    parser.add_argument("--attention-adjacency-scale", type=float, default=1.0)
     parser.add_argument("--seed", type=int, default=11)
     parser.add_argument("--train-frac", type=float, default=0.70)
     parser.add_argument("--val-frac", type=float, default=0.10)
@@ -111,6 +123,36 @@ class PairDataset(Dataset[tuple[torch.Tensor, torch.Tensor]]):
 def make_model(args: argparse.Namespace) -> nn.Module:
     if args.model == "roi_mlp":
         return RoiMLPEncoder(180, 4, args.hidden_dim, args.embedding_dim, args.dropout)
+    if args.model == "roi_transformer_adj_gated":
+        return BNTTokenEncoder(
+            n_nodes=180,
+            in_dim=4,
+            hidden_dim=args.hidden_dim,
+            embedding_dim=args.embedding_dim,
+            num_heads=args.num_heads,
+            num_layers=args.num_layers,
+            dropout=args.dropout,
+            readout="gated_flat",
+            roi_id_mode="normal",
+            use_graph_bias=True,
+            graph_bias_scale=args.graph_bias_scale,
+        )
+    if args.model == "roi_transformer_attn_adj_gated":
+        return BNTTokenEncoder(
+            n_nodes=180,
+            in_dim=4,
+            hidden_dim=args.hidden_dim,
+            embedding_dim=args.embedding_dim,
+            num_heads=args.num_heads,
+            num_layers=args.num_layers,
+            dropout=args.dropout,
+            readout="gated_flat",
+            roi_id_mode="normal",
+            use_graph_bias=False,
+            use_attention_bias=True,
+            attention_bias_scale=0.0,
+            attention_adjacency_scale=args.attention_adjacency_scale,
+        )
     return BNTTokenEncoder(
         n_nodes=180,
         in_dim=4,
@@ -123,6 +165,34 @@ def make_model(args: argparse.Namespace) -> nn.Module:
         roi_id_mode="normal",
         use_graph_bias=False,
     )
+
+
+def build_train_adjacency(
+    x_a: torch.Tensor,
+    x_b: torch.Tensor,
+    idx_a: dict[tuple[str, int], int],
+    idx_b: dict[tuple[str, int], int],
+    train_labels: list[str],
+    repetitions: list[int],
+    topk: int,
+) -> torch.Tensor:
+    train_idx_a = [idx_a[(label, rep)] for label in train_labels for rep in repetitions]
+    train_idx_b = [idx_b[(label, rep)] for label in train_labels for rep in repetitions]
+    train = torch.cat([x_a[train_idx_a], x_b[train_idx_b]], dim=0)
+    node_vectors = train.permute(1, 0, 2).reshape(train.shape[1], -1)
+    node_vectors = node_vectors - node_vectors.mean(dim=1, keepdim=True)
+    node_vectors = node_vectors / node_vectors.std(dim=1, keepdim=True).clamp_min(1e-6)
+    corr = (node_vectors @ node_vectors.T) / max(node_vectors.shape[1] - 1, 1)
+    corr = corr.abs()
+    corr.fill_diagonal_(0.0)
+    if topk > 0 and topk < corr.shape[1]:
+        keep = torch.zeros_like(corr)
+        idx = torch.topk(corr, k=topk, dim=1).indices
+        keep.scatter_(1, idx, 1.0)
+        keep = torch.maximum(keep, keep.T)
+        corr = corr * keep
+    corr = corr / corr.sum(dim=1, keepdim=True).clamp_min(1e-6)
+    return corr.float()
 
 
 def contrastive_loss(z_a: torch.Tensor, z_b: torch.Tensor, temperature: float) -> torch.Tensor:
@@ -150,8 +220,10 @@ def evaluate(
     labels: list[str],
     repetitions: list[int],
     device: torch.device,
+    adjacency: torch.Tensor | None = None,
 ) -> dict[str, float]:
     model.eval()
+    adj = adjacency.to(device) if adjacency is not None else None
     y_all = []
     score_all = []
     r5s = []
@@ -159,8 +231,8 @@ def evaluate(
     for rep in repetitions:
         ia = torch.tensor([idx_a[(label, rep)] for label in labels], dtype=torch.long)
         ib = torch.tensor([idx_b[(label, rep)] for label in labels], dtype=torch.long)
-        za = model(x_a[ia].to(device), None).cpu().numpy()
-        zb = model(x_b[ib].to(device), None).cpu().numpy()
+        za = model(x_a[ia].to(device), adj).cpu().numpy()
+        zb = model(x_b[ib].to(device), adj).cpu().numpy()
         scores = za @ zb.T
         target = np.eye(len(labels), dtype=np.int8)
         y_all.append(target.reshape(-1))
@@ -213,6 +285,19 @@ def main() -> None:
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = make_model(args).to(device)
+    adjacency = None
+    if args.model in {"roi_transformer_adj_gated", "roi_transformer_attn_adj_gated"}:
+        adjacency = build_train_adjacency(
+            x_a,
+            x_b,
+            idx_a,
+            idx_b,
+            splits["train"],
+            args.repetitions,
+            args.adjacency_topk,
+        )
+        torch.save(adjacency, out_dir / "train_adjacency.pt")
+    adjacency_device = adjacency.to(device) if adjacency is not None else None
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     train_ds = PairDataset(x_a, x_b, idx_a, idx_b, splits["train"], args.repetitions)
     loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, drop_last=False)
@@ -228,12 +313,12 @@ def main() -> None:
         for xa, xb in loader:
             xa = xa.to(device)
             xb = xb.to(device)
-            loss = contrastive_loss(model(xa, None), model(xb, None), args.temperature)
+            loss = contrastive_loss(model(xa, adjacency_device), model(xb, adjacency_device), args.temperature)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             opt.step()
             losses.append(float(loss.item()))
-        val = evaluate(model, x_a, x_b, idx_a, idx_b, splits["val"], args.repetitions, device)
+        val = evaluate(model, x_a, x_b, idx_a, idx_b, splits["val"], args.repetitions, device, adjacency=adjacency)
         row = {"epoch": epoch, "train_loss": float(np.mean(losses)), **{f"val_{k}": v for k, v in val.items()}}
         history.append(row)
         print(json.dumps(row), flush=True)
@@ -248,8 +333,8 @@ def main() -> None:
 
     if best_state is not None:
         model.load_state_dict(best_state)
-    val = evaluate(model, x_a, x_b, idx_a, idx_b, splits["val"], args.repetitions, device)
-    test = evaluate(model, x_a, x_b, idx_a, idx_b, splits["test"], args.repetitions, device)
+    val = evaluate(model, x_a, x_b, idx_a, idx_b, splits["val"], args.repetitions, device, adjacency=adjacency)
+    test = evaluate(model, x_a, x_b, idx_a, idx_b, splits["test"], args.repetitions, device, adjacency=adjacency)
     summary = {
         "model": args.model,
         "seed": args.seed,
@@ -260,6 +345,9 @@ def main() -> None:
         "n_val_images": len(splits["val"]),
         "n_test_images": len(splits["test"]),
         "best_epoch": best["epoch"],
+        "adjacency_topk": args.adjacency_topk if adjacency is not None else None,
+        "graph_bias_scale": args.graph_bias_scale if args.model == "roi_transformer_adj_gated" else None,
+        "attention_adjacency_scale": args.attention_adjacency_scale if args.model == "roi_transformer_attn_adj_gated" else None,
         "elapsed_seconds": float(time.time() - start),
         **{f"val_{k}": v for k, v in val.items()},
         **{f"test_{k}": v for k, v in test.items()},
