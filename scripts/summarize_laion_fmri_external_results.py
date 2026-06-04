@@ -84,22 +84,30 @@ def markdown_table(df: pd.DataFrame) -> str:
 
 def paired_tests(all_runs: pd.DataFrame) -> pd.DataFrame:
     models = sorted(all_runs["model"].unique())
-    if models != ["roi_mlp", "roi_transformer_gated"]:
+    if {"roi_mlp_clip", "gated_roi_transformer_clip"}.issubset(models):
+        baseline = "roi_mlp_clip"
+        candidate = "gated_roi_transformer_clip"
+        comparison = "Gated ROI Transformer+CLIP - ROI-MLP+CLIP"
+    elif {"roi_mlp", "roi_transformer_gated"}.issubset(models):
+        baseline = "roi_mlp"
+        candidate = "roi_transformer_gated"
+        comparison = "Gated ROI Transformer - ROI-MLP"
+    else:
         return pd.DataFrame()
 
     rows = []
     for metric in METRICS:
         wide = all_runs.pivot_table(index=["pair", "seed"], columns="model", values=metric)
-        wide = wide.dropna(subset=models)
+        wide = wide.dropna(subset=[baseline, candidate])
         if wide.empty:
             continue
-        diff = wide["roi_transformer_gated"] - wide["roi_mlp"]
+        diff = wide[candidate] - wide[baseline]
         n = int(diff.shape[0])
         mean_diff = float(diff.mean())
         std_diff = float(diff.std(ddof=1)) if n > 1 else float("nan")
         sem = std_diff / math.sqrt(n) if n > 1 else float("nan")
         if stats is not None and n > 1:
-            p_value = float(stats.ttest_rel(wide["roi_transformer_gated"], wide["roi_mlp"]).pvalue)
+            p_value = float(stats.ttest_rel(wide[candidate], wide[baseline]).pvalue)
             ci_delta = float(stats.t.ppf(0.975, n - 1) * sem)
         elif n > 1 and sem > 0:
             z = abs(mean_diff / sem)
@@ -110,7 +118,7 @@ def paired_tests(all_runs: pd.DataFrame) -> pd.DataFrame:
             ci_delta = float("nan")
         rows.append(
             {
-                "comparison": "Gated ROI Transformer - ROI-MLP",
+                "comparison": comparison,
                 "metric": metric,
                 "n": n,
                 "mean_diff": mean_diff,
