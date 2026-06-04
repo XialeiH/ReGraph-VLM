@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import time
 from pathlib import Path
 
@@ -29,6 +30,21 @@ def parse_args() -> argparse.Namespace:
         default=Path("/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/cneuromod_things/metadata_repo/THINGS"),
     )
     parser.add_argument(
+        "--conp-base-url",
+        default="https://sftp.conp.ca/users/cneuromod/cneuromod.all",
+        help="Public CONP HTTP mirror used when local GLMsingle/smriprep files are absent.",
+    )
+    parser.add_argument(
+        "--conp-host-header",
+        default=None,
+        help="Optional Host header for compute nodes that can reach CONP by IP but cannot resolve DNS.",
+    )
+    parser.add_argument(
+        "--download-dir",
+        type=Path,
+        default=Path("/gpfsnyu/scratch/xh2906/ReGraph-VLM/external_validation/cneuromod_things/conp_public_downloads"),
+    )
+    parser.add_argument(
         "--atlas",
         type=Path,
         default=Path(
@@ -43,6 +59,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--subjects", nargs="+", default=["sub-01", "sub-02"])
     parser.add_argument("--space", default="MNI152NLin2009cAsym")
+    parser.add_argument(
+        "--atlas-to-beta-space",
+        choices=["none", "mni2009c_to_t1w"],
+        default="none",
+        help="Use mni2009c_to_t1w for public CNeuroMod GLMsingle T1w trial betas.",
+    )
     parser.add_argument("--max-shared-images", type=int, default=200)
     parser.add_argument("--top-quantile", type=float, default=0.90)
     parser.add_argument("--progress-every", type=int, default=100)
@@ -106,6 +128,71 @@ def h5_path(things_root: Path, subject: str, space: str) -> Path:
     )
 
 
+def conp_h5_url(base_url: str, subject: str, space: str) -> str:
+    return (
+        f"{base_url}/things/glmsingle/{subject}/glmsingle/output/"
+        f"{subject}_task-things_space-{space}_model-fitHrfGLMdenoiseRR_stat-trialBetas_desc-zscore_statseries.h5"
+    )
+
+
+def conp_transform_url(base_url: str, subject: str) -> str:
+    return (
+        f"{base_url}/anat/smriprep/{subject}/anat/"
+        f"{subject}_from-MNI152NLin2009cAsym_to-T1w_mode-image_xfm.h5"
+    )
+
+
+def download_with_wget(url: str, out_path: Path, host_header: str | None = None) -> Path:
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    if out_path.exists() and out_path.stat().st_size > 0:
+        return out_path
+    cmd = ["wget", "-c", "-O", str(out_path)]
+    if host_header is not None:
+        cmd.extend(["--no-check-certificate", "--header", f"Host: {host_header}"])
+    cmd.append(url)
+    print(f"[download] {' '.join(cmd)}", flush=True)
+    subprocess.run(cmd, check=True)
+    return out_path
+
+
+def local_or_conp_h5(args: argparse.Namespace, subject: str) -> Path:
+    local = h5_path(args.things_root, subject, args.space)
+    if local.exists():
+        return local
+    out = (
+        args.download_dir
+        / "things"
+        / "glmsingle"
+        / subject
+        / "glmsingle"
+        / "output"
+        / f"{subject}_task-things_space-{args.space}_model-fitHrfGLMdenoiseRR_stat-trialBetas_desc-zscore_statseries.h5"
+    )
+    return download_with_wget(conp_h5_url(args.conp_base_url, subject, args.space), out, args.conp_host_header)
+
+
+def local_or_conp_transform(args: argparse.Namespace, subject: str) -> Path:
+    local = (
+        args.things_root.parent
+        / "anat"
+        / "smriprep"
+        / subject
+        / "anat"
+        / f"{subject}_from-MNI152NLin2009cAsym_to-T1w_mode-image_xfm.h5"
+    )
+    if local.exists():
+        return local
+    out = (
+        args.download_dir
+        / "anat"
+        / "smriprep"
+        / subject
+        / "anat"
+        / f"{subject}_from-MNI152NLin2009cAsym_to-T1w_mode-image_xfm.h5"
+    )
+    return download_with_wget(conp_transform_url(args.conp_base_url, subject), out, args.conp_host_header)
+
+
 def bilateral_label_values(atlas_data: np.ndarray) -> np.ndarray:
     labels = np.rint(atlas_data).astype(np.int32)
     out = np.zeros_like(labels, dtype=np.int16)
@@ -116,13 +203,60 @@ def bilateral_label_values(atlas_data: np.ndarray) -> np.ndarray:
     return out
 
 
-def roi_indices_for_h5(h5: h5py.File, atlas_path: Path) -> tuple[list[np.ndarray], list[int]]:
+def mask_img_from_h5(h5: h5py.File) -> nib.Nifti1Image:
     mask_array = np.asarray(h5["mask_array"]).astype(bool)
     mask_affine = np.asarray(h5["mask_affine"])
-    mask_img = nib.Nifti1Image(mask_array.astype(np.uint8), affine=mask_affine)
-    atlas_img = nib.load(str(atlas_path))
-    atlas_resampled = resample_to_img(atlas_img, mask_img, interpolation="nearest", force_resample=True, copy_header=True)
+    return nib.Nifti1Image(mask_array.astype(np.uint8), affine=mask_affine)
+
+
+def warp_atlas_to_mask(
+    atlas_path: Path,
+    mask_img: nib.Nifti1Image,
+    transform_path: Path,
+    cache_path: Path,
+) -> nib.Nifti1Image:
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    if cache_path.exists():
+        return nib.load(str(cache_path))
+    ref_path = cache_path.with_name(cache_path.name.replace(".nii.gz", "_reference.nii.gz"))
+    nib.save(mask_img, str(ref_path))
+    import ants
+
+    fixed = ants.image_read(str(ref_path))
+    moving = ants.image_read(str(atlas_path))
+    warped = ants.apply_transforms(
+        fixed=fixed,
+        moving=moving,
+        transformlist=[str(transform_path)],
+        interpolator="genericLabel",
+    )
+    ants.image_write(warped, str(cache_path))
+    return nib.load(str(cache_path))
+
+
+def roi_indices_for_h5(
+    h5: h5py.File,
+    atlas_path: Path,
+    atlas_to_beta_space: str,
+    transform_path: Path | None,
+    warped_atlas_cache: Path | None,
+) -> tuple[list[np.ndarray], list[int]]:
+    mask_img = mask_img_from_h5(h5)
+    if atlas_to_beta_space == "mni2009c_to_t1w":
+        if transform_path is None or warped_atlas_cache is None:
+            raise ValueError("mni2009c_to_t1w requires a transform path and warped atlas cache path.")
+        atlas_resampled = warp_atlas_to_mask(atlas_path, mask_img, transform_path, warped_atlas_cache)
+    else:
+        atlas_img = nib.load(str(atlas_path))
+        atlas_resampled = resample_to_img(
+            atlas_img,
+            mask_img,
+            interpolation="nearest",
+            force_resample=True,
+            copy_header=True,
+        )
     labels = bilateral_label_values(np.asanyarray(atlas_resampled.dataobj))
+    mask_array = np.asarray(h5["mask_array"]).astype(bool)
     flat_labels = labels[mask_array]
     indices = [np.flatnonzero(flat_labels == roi_id).astype(np.int64) for roi_id in range(1, 181)]
     return indices, [int(idx.size) for idx in indices]
@@ -150,6 +284,8 @@ def export_subject(
     df: pd.DataFrame,
     h5_file: Path,
     atlas: Path,
+    atlas_to_beta_space: str,
+    transform_path: Path | None,
     out_dir: Path,
     top_quantile: float,
     progress_every: int,
@@ -160,7 +296,14 @@ def export_subject(
         raise FileNotFoundError(f"Missing HDF5 content for {subject}: {h5_file}")
 
     with h5py.File(h5_file, "r") as h5:
-        roi_indices, voxel_counts = roi_indices_for_h5(h5, atlas)
+        warped_cache = out_dir / "warped_atlases" / f"{subject}_hcp_mmp180_space-{atlas_to_beta_space}_in_h5mask.nii.gz"
+        roi_indices, voxel_counts = roi_indices_for_h5(
+            h5,
+            atlas,
+            atlas_to_beta_space=atlas_to_beta_space,
+            transform_path=transform_path,
+            warped_atlas_cache=warped_cache,
+        )
         features = np.zeros((len(df), 180, len(FEATURE_NAMES)), dtype=np.float32)
         for i, row in enumerate(df.itertuples(index=False), start=0):
             betas = h5_betas(h5, int(row.session_num), int(row.run_num))
@@ -180,6 +323,7 @@ def export_subject(
         "x": torch.from_numpy(features),
         "subject": torch.full((len(df),), subject_int, dtype=torch.int16),
         "image_id": torch.from_numpy(df["things_image_nr"].astype(np.int32).to_numpy()),
+        "image_label": df["image_key"].astype(str).to_numpy(),
         "repetition": torch.from_numpy(df["repetition"].astype(np.int16).to_numpy()),
         "session": torch.from_numpy(df["session_num"].astype(np.int16).to_numpy()),
         "run": torch.from_numpy(df["run_num"].astype(np.int16).to_numpy()),
@@ -190,6 +334,8 @@ def export_subject(
         "voxel_counts": torch.tensor(voxel_counts, dtype=torch.int32),
         "source_h5": str(h5_file),
         "source_atlas": str(atlas),
+        "atlas_to_beta_space": atlas_to_beta_space,
+        "source_transform": str(transform_path) if transform_path is not None else None,
     }
     out_path = out_dir / f"{subject}_cneuromod_things_trial_scalar4.pt"
     torch.save(pt, out_path)
@@ -216,6 +362,8 @@ def export_subject(
         "nan_count": int(np.isnan(features).sum()),
         "inf_count": int(np.isinf(features).sum()),
         "output_path": str(out_path),
+        "atlas_to_beta_space": atlas_to_beta_space,
+        "source_transform": str(transform_path) if transform_path is not None else None,
         "elapsed_seconds": float(time.time() - start),
     }
     (out_dir / f"{subject}_cneuromod_things_trial_scalar4_qc.json").write_text(json.dumps(qc, indent=2), encoding="utf-8")
@@ -235,12 +383,16 @@ def main() -> None:
     for subject, df in events_by_subject.items():
         sub = df[df["image_key"].isin(shared_images)].copy()
         sub = sub.sort_values(["image_key", "repetition", "session_num", "run_num", "trial_in_run"]).reset_index(drop=True)
+        h5_file = local_or_conp_h5(args, subject)
+        transform_path = local_or_conp_transform(args, subject) if args.atlas_to_beta_space == "mni2009c_to_t1w" else None
         qcs.append(
             export_subject(
                 subject=subject,
                 df=sub,
-                h5_file=h5_path(args.things_root, subject, args.space),
+                h5_file=h5_file,
                 atlas=args.atlas,
+                atlas_to_beta_space=args.atlas_to_beta_space,
+                transform_path=transform_path,
                 out_dir=args.out_dir,
                 top_quantile=args.top_quantile,
                 progress_every=args.progress_every,
@@ -250,6 +402,7 @@ def main() -> None:
     manifest = {
         "subjects": args.subjects,
         "space": args.space,
+        "atlas_to_beta_space": args.atlas_to_beta_space,
         "n_shared_strict_t3_images_used": len(shared_images),
         "max_shared_images": args.max_shared_images,
         "shared_image_ids": shared_images,
