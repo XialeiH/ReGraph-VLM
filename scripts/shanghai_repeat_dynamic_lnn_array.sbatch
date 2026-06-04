@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=20G
 #SBATCH --time=20:00:00
-#SBATCH --array=0-71%12
+#SBATCH --array=0-71%4
 #SBATCH --output=/gpfsnyu/scratch/xh2906/ReGraph-VLM/slurm_logs/%x_%A_%a.out
 #SBATCH --error=/gpfsnyu/scratch/xh2906/ReGraph-VLM/slurm_logs/%x_%A_%a.err
 
@@ -60,4 +60,4 @@ python scripts/run_repeat_dynamic_vlm_fold.py \
   --temporal-module "$TEMPORAL" \
   --lambda-clip 2.0 \
   --seed "$SEED" \
-  --device cpu
+  --device auto
