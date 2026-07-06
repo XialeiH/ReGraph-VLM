@@ -1,4 +1,0 @@
-model,n,source,AUROC_mean,AUROC_std,AUPRC_mean,AUPRC_std,R@5_mean,R@5_std,MRR_mean,MRR_std,image_R@5_mean,image_R@5_std,brain_R@5_mean,brain_R@5_std,brain_MRR_mean,brain_MRR_std
-Main all-fold edge-bias,24,reports/neurips_report/may30.tex: Table tab:edge_bias_followup,0.8219,0.0509,0.8017,0.0498,0.0844,0.0311,,,,,0.1013,0.0324,,
-Hard-negative edge-bias,8,reports/neurips_report/may30.tex: Table tab:edge_bias_followup,0.7613,0.0419,0.7365,0.0397,0.0812,0.0315,,,,,0.1033,0.0303,,
-Held-out-image edge-bias,6,reports/neurips_report/may30.tex: Table tab:edge_bias_followup,0.8418,0.013,0.8149,0.0144,0.276,0.0963,,,,,0.2139,0.0489,,

@@ -1,4 +1,0 @@
-model,n,source,AUROC_mean,AUROC_std,AUPRC_mean,AUPRC_std,R@5_mean,R@5_std,MRR_mean,MRR_std,image_R@5_mean,image_R@5_std,brain_R@5_mean,brain_R@5_std,brain_MRR_mean,brain_MRR_std
-ROI-MLP+CLIP,24,reports/neurips_report/may30.tex: Table tab:single_ref_matched,0.7731,0.046,0.745,0.0472,0.0535,0.0196,0.0459,0.0138,0.0729,0.028,0.0837,0.0291,0.0668,0.0193
-No-adj gated ROI Transformer+CLIP,24,reports/neurips_report/may30.tex: Table tab:single_ref_matched,0.7814,0.0425,0.7584,0.0435,0.0586,0.0197,0.0494,0.0139,0.0815,0.0319,0.0965,0.032,0.0756,0.0208
-Gated ReGraph/BNT+CLIP,24,reports/neurips_report/may30.tex: Table tab:single_ref_matched,0.7828,0.0452,0.7606,0.0461,0.0577,0.0191,0.0497,0.0138,0.0847,0.0318,0.0996,0.031,0.0773,0.0207

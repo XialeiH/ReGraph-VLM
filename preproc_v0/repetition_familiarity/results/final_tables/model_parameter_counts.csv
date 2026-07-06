@@ -1,6 +1,0 @@
-model,graph_encoder,readout,trainable_parameters,n_nodes,node_feature_dim,clip_dim,hidden_dim,embedding_dim,num_layers,num_heads,source
-Final gated BNT/ReGraph+CLIP,bnt_token_flat,gated_flat,3251595,180,4,512,64,128,2,4,reports/neurips_report/may30.tex: Table tab:implementation_details; computed from architecture formulas in scripts/materialize_publication_readiness_artifacts.py
-No-adj gated ROI Transformer+CLIP,roi_transformer_noadj,gated_flat,3251595,180,4,512,64,128,2,4,reports/neurips_report/may30.tex: Table tab:implementation_details; computed from architecture formulas in scripts/materialize_publication_readiness_artifacts.py
-Graph-bias BNT/ReGraph+CLIP,graph_bnt,gated_flat,3255883,180,4,512,64,128,2,4,reports/neurips_report/may30.tex: Table tab:implementation_details; computed from architecture formulas in scripts/materialize_publication_readiness_artifacts.py
-Learned edge-bias BNT+CLIP,edge_bias_bnt,gated_flat,3283995,180,4,512,64,128,2,4,reports/neurips_report/may30.tex: Table tab:implementation_details; computed from architecture formulas in scripts/materialize_publication_readiness_artifacts.py
-ROI-MLP+CLIP,roi_mlp,flat,369706,180,4,512,64,128,,,reports/neurips_report/may30.tex: Table tab:implementation_details; computed from architecture formulas in scripts/materialize_publication_readiness_artifacts.py

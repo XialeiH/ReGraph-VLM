@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import random
 import time
 from pathlib import Path
@@ -27,7 +28,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--subject-b", required=True)
     parser.add_argument("--file-template", default="{subject}_laion_visual_roi_scalar4.pt")
     parser.add_argument("--repetitions", nargs="+", type=int, default=[1, 2, 3])
-    parser.add_argument("--model", choices=["roi_mlp_clip", "gated_roi_transformer_clip"], default="gated_roi_transformer_clip")
+    parser.add_argument(
+        "--model",
+        choices=["roi_mlp_clip", "gated_roi_transformer_clip", "fusion_clip"],
+        default="gated_roi_transformer_clip",
+    )
     parser.add_argument("--seed", type=int, default=11)
     parser.add_argument("--train-frac", type=float, default=0.70)
     parser.add_argument("--val-frac", type=float, default=0.10)
@@ -54,8 +59,15 @@ def set_seed(seed: int) -> None:
     torch.cuda.manual_seed_all(seed)
 
 
+def configure_torch_threads() -> None:
+    threads = os.environ.get("SLURM_CPUS_PER_TASK") or os.environ.get("OMP_NUM_THREADS")
+    if threads:
+        torch.set_num_threads(max(1, int(threads)))
+        torch.set_num_interop_threads(max(1, min(2, int(threads))))
+
+
 def load_subject(data_dir: Path, subject: str, file_template: str) -> tuple[np.ndarray, np.ndarray, torch.Tensor, torch.Tensor]:
-    payload = torch.load(data_dir / file_template.format(subject=subject), map_location="cpu")
+    payload = torch.load(data_dir / file_template.format(subject=subject), map_location="cpu", weights_only=False)
     labels = np.asarray(payload["image_label"], dtype=str)
     reps = payload["repetition"].numpy().astype(np.int16)
     x = payload["x"].float()
@@ -127,6 +139,9 @@ def make_model(args: argparse.Namespace, clip_dim: int) -> ReGraphVLM:
     if args.model == "roi_mlp_clip":
         graph_encoder = "roi_mlp"
         readout = "flat"
+    elif args.model == "fusion_clip":
+        graph_encoder = "fusion"
+        readout = "gated_flat"
     else:
         graph_encoder = "roi_transformer_noadj"
         readout = "gated_flat"
@@ -258,6 +273,7 @@ def evaluate(
 
 def main() -> None:
     args = parse_args()
+    configure_torch_threads()
     set_seed(args.seed)
     out_dir = args.out_dir / args.model / f"seed{args.seed}"
     out_dir.mkdir(parents=True, exist_ok=True)

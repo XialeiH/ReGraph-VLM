@@ -1,7 +1,0 @@
-\begin{tabular}{lllrlrrrrrrrrrrrrrrrrr}
-\toprule
-table & graph_encoder & readout & lambda_clip & model & n & AUROC_mean & AUROC_std & AUPRC_mean & AUPRC_std & R@5_mean & R@5_std & MRR_mean & MRR_std & image_R@5_mean & image_R@5_std & image_MRR_mean & image_MRR_std & brain_R@5_mean & brain_R@5_std & brain_MRR_mean & brain_MRR_std \\
-\midrule
-table_architecture_ablation_fusion & fusion & flat & 2.0000 & regraph_vlm_v0 & 6 & 0.8030 & 0.0281 & 0.7623 & 0.0328 & 0.0595 & 0.0253 & 0.0516 & 0.0174 & 0.0612 & 0.0253 & 0.0508 & 0.0166 & 0.0631 & 0.0204 & 0.0548 & 0.0143 \\
-\bottomrule
-\end{tabular}

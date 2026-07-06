@@ -1,7 +1,0 @@
-# Abstract Placeholder / Submitted-Abstract Anchor
-
-> Replace this file with the actual submitted placeholder abstract if one already exists. If not, use the draft below as the project-specific anchor and modify it minimally.
-
-## Working abstract draft
-
-We study whether an explicit shared-unit bottleneck can improve cross-subject modeling of visual cortical fMRI. Using NSD-derived responses restricted to V1, V2, V3, and hV4, we build a shared latent space over multiple subjects and compare a linear baseline, a strong shared non-graph encoder, and a prototype-based shared-unit model. On the main `all8_ge2_766` view, the prototype bottleneck achieves a small but reproducible top-1 improvement over the strong `B4` baseline (0.004406 vs 0.004080) while matching top-5 performance. On the stricter `all8_ge3_515` robustness view, the top-1 advantage persists in direction (0.00534 vs 0.00485), although top-5 no longer improves. Beyond accuracy, the learned prototype representation exhibits more consistently positive same-vs-different cross-subject similarity gaps than the `B4` hidden representation on the main view, supporting the claim that it captures a more shared cross-subject latent organization. Post-hoc analyses show that the learned units are distributed soft recruitment patterns over a joint V1/V2/V3/hV4 latent space, with mostly mixed ROI dependence and only weak regional preference. These results motivate a staged transition from shared-unit discovery to light interaction modeling over learned units, prior to any full dynamic graph reasoning.

@@ -154,55 +154,6 @@ class SubjectEmbeddingRoiEncoder(nn.Module):
         s = self.subject_embedding(subject_idx)
         return F.normalize(self.head(torch.cat([z, s], dim=-1)), dim=-1)
 
-
-class FusionEncoder(nn.Module):
-    """Concatenate non-graph ROI MLP and BNT/ReGraph embeddings before projection."""
-
-    def __init__(
-        self,
-        n_nodes: int,
-        node_feature_dim: int,
-        hidden_dim: int,
-        embedding_dim: int,
-        dropout: float,
-        readout: str,
-        roi_id_mode: str,
-        num_heads: int,
-        num_layers: int,
-    ) -> None:
-        super().__init__()
-        self.roi_mlp = RoiMLPEncoder(
-            n_nodes=n_nodes,
-            node_feature_dim=node_feature_dim,
-            hidden_dim=hidden_dim,
-            embedding_dim=embedding_dim,
-            dropout=dropout,
-        )
-        self.bnt = BNTTokenEncoder(
-            n_nodes=n_nodes,
-            in_dim=node_feature_dim,
-            hidden_dim=hidden_dim,
-            embedding_dim=embedding_dim,
-            dropout=dropout,
-            readout=readout,
-            roi_id_mode=roi_id_mode,
-            num_heads=num_heads,
-            num_layers=num_layers,
-        )
-        self.fuse = nn.Sequential(
-            nn.LayerNorm(embedding_dim * 2),
-            nn.Linear(embedding_dim * 2, embedding_dim * 2),
-            nn.GELU(),
-            nn.Dropout(dropout),
-            nn.Linear(embedding_dim * 2, embedding_dim),
-        )
-
-    def forward(self, x: torch.Tensor, adjacency: torch.Tensor | None = None, subject: torch.Tensor | None = None) -> torch.Tensor:
-        z_roi = self.roi_mlp(x, adjacency)
-        z_bnt = self.bnt(x, adjacency)
-        return F.normalize(self.fuse(torch.cat([z_roi, z_bnt], dim=-1)), dim=-1)
-
-
 class ReGraphVLM(nn.Module):
     """ReGraph-VLM v0: BNT-token graph encoder plus frozen CLIP-image alignment."""
 
@@ -313,18 +264,6 @@ class ReGraphVLM(nn.Module):
                 embedding_dim=embedding_dim,
                 dropout=dropout,
                 num_subjects=num_subjects,
-            )
-        elif graph_encoder == "fusion":
-            self.graph_encoder = FusionEncoder(
-                n_nodes=n_nodes,
-                node_feature_dim=node_feature_dim,
-                hidden_dim=hidden_dim,
-                embedding_dim=embedding_dim,
-                dropout=dropout,
-                readout=readout,
-                roi_id_mode=roi_id_mode,
-                num_heads=num_heads,
-                num_layers=num_layers,
             )
         else:
             raise ValueError(f"Unsupported ReGraph-VLM graph encoder: {graph_encoder}")

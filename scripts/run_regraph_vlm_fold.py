@@ -41,7 +41,6 @@ def parse_args() -> argparse.Namespace:
             "gated_token_mlp",
             "mindeye2_shared",
             "umbrae_subject",
-            "fusion",
         ],
     )
     parser.add_argument("--loss", default="bce_infonce_clip", choices=["bce_infonce_clip"])

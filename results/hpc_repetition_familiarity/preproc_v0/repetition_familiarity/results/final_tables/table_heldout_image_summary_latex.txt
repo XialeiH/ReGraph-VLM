@@ -1,9 +1,0 @@
-\begin{tabular}{lllrrlrrrrrrrrrrrrrrrrr}
-\toprule
-table & graph_encoder & readout & lambda_clip & lambda_cross & model & n & AUROC_mean & AUROC_std & AUPRC_mean & AUPRC_std & R@5_mean & R@5_std & MRR_mean & MRR_std & image_R@5_mean & image_R@5_std & image_MRR_mean & image_MRR_std & brain_R@5_mean & brain_R@5_std & brain_MRR_mean & brain_MRR_std \\
-\midrule
-table_heldout_image & bnt_token_flat & flat & 2.0000 & 0.0000 & regraph_vlm_v0 & 6 & 0.8433 & 0.0139 & 0.8175 & 0.0153 & 0.2852 & 0.1125 & 0.1960 & 0.0627 & 0.2105 & 0.0799 & 0.1465 & 0.0444 & 0.2255 & 0.0649 & 0.1569 & 0.0385 \\
-table_heldout_image & bnt_token_flat & gated_flat & 2.0000 & 0.0000 & regraph_vlm_v0 & 6 & 0.8505 & 0.0166 & 0.8301 & 0.0144 & 0.3054 & 0.0800 & 0.2158 & 0.0554 & 0.2310 & 0.0562 & 0.1598 & 0.0372 & 0.2471 & 0.0532 & 0.1650 & 0.0326 \\
-table_heldout_image & roi_mlp & flat & 2.0000 & 0.0000 & regraph_vlm_v0 & 6 & 0.8454 & 0.0098 & 0.8190 & 0.0161 & 0.2713 & 0.0763 & 0.1938 & 0.0509 & 0.2097 & 0.0390 & 0.1474 & 0.0224 & 0.2284 & 0.0405 & 0.1546 & 0.0246 \\
-\bottomrule
-\end{tabular}

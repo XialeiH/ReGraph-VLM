@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "regraph-vlm"
 version = "0.1.0"
-description = "Fixed-order ROI-token brain graph and vision alignment for repeated natural-image fMRI."
+description = "Fixed-order ROI-token brain graph and vision alignment for natural-image fMRI."
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
@@ -18,41 +18,17 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-publication = [
-  "pandas>=2.0",
-]
-neuro = [
-  "h5py>=3.10",
-  "matplotlib>=3.8",
-  "nibabel>=5.2",
-  "nilearn>=0.10",
-  "Pillow>=10.0",
-  "requests>=2.31",
-]
 clip = [
   "open_clip_torch>=2.24",
 ]
-legacy-graph = [
-  "networkx>=3.1",
-  "PyYAML>=6.0",
-  "torch-geometric>=2.5",
-]
-dev = [
+neuro = [
   "h5py>=3.10",
-  "matplotlib>=3.8",
-  "networkx>=3.1",
   "nibabel>=5.2",
   "nilearn>=0.10",
-  "Pillow>=10.0",
-  "PyYAML>=6.0",
+]
+dev = [
   "pytest>=8.0",
-  "requests>=2.31",
-  "torch-geometric>=2.5",
 ]
 
 [tool.setuptools]
-package-dir = {"bridgegen" = "src/bridgegen", "models" = "models"}
-
-[tool.setuptools.packages.find]
-where = ["src", "."]
-include = ["bridgegen*", "models*"]
+packages = ["models"]

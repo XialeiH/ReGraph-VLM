@@ -1,7 +1,0 @@
-model,AUROC,AUPRC,R@5,MRR,source
-Raw Pearson flat,0.6182,,0.0522,0.0433,reports/neurips_report/may30.tex: Table tab:within_subject
-ROI MLP + BCE,0.7672,0.7336,0.0543,0.0442,reports/neurips_report/may30.tex: Table tab:within_subject
-ROI MLP + BCE+InfoNCE,0.7778,0.754,0.0758,0.0592,reports/neurips_report/may30.tex: Table tab:within_subject
-Naive GCN,0.5,,,,reports/neurips_report/may30.tex: Table tab:within_subject
-BrainGNN Siamese,0.5,,,,reports/neurips_report/may30.tex: Table tab:within_subject
-BNT-token + BCE+InfoNCE,0.7693,0.7512,0.0718,0.0584,reports/neurips_report/may30.tex: Table tab:within_subject

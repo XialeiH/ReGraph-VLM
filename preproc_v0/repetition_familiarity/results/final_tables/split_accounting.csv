@@ -1,9 +1,0 @@
-fold,test_subject,val_subject,train_seq,val_seq,test_seq,train_pairs,val_pairs,test_pairs,test_imgs,source
-fold_01,subj01,subj08,3975,515,766,23850,3090,4596,766,reports/neurips_report/may30.tex: Table tab:split_accounting
-fold_02,subj02,subj08,3975,515,766,23850,3090,4596,766,reports/neurips_report/may30.tex: Table tab:split_accounting
-fold_03,subj03,subj08,4160,515,581,24960,3090,3486,581,reports/neurips_report/may30.tex: Table tab:split_accounting
-fold_04,subj04,subj08,4226,515,515,25356,3090,3090,515,reports/neurips_report/may30.tex: Table tab:split_accounting
-fold_05,subj05,subj08,3975,515,766,23850,3090,4596,766,reports/neurips_report/may30.tex: Table tab:split_accounting
-fold_06,subj06,subj08,4160,515,581,24960,3090,3486,581,reports/neurips_report/may30.tex: Table tab:split_accounting
-fold_07,subj07,subj08,3975,515,766,23850,3090,4596,766,reports/neurips_report/may30.tex: Table tab:split_accounting
-fold_08,subj08,subj07,3975,766,515,23850,4596,3090,515,reports/neurips_report/may30.tex: Table tab:split_accounting

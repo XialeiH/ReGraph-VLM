@@ -15,11 +15,12 @@ from models.regraph_vlm import ReGraphVLM
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Verify model_parameter_counts.csv against instantiated ReGraphVLM modules.")
+    parser = argparse.ArgumentParser(description="Print or verify trainable parameter counts for ReGraphVLM variants.")
     parser.add_argument(
         "--parameter-counts",
         type=Path,
-        default=Path("preproc_v0/repetition_familiarity/results/final_tables/model_parameter_counts.csv"),
+        default=None,
+        help="Optional CSV with columns model, graph_encoder, readout, trainable_parameters.",
     )
     return parser.parse_args()
 
@@ -54,6 +55,18 @@ def read_rows(path: Path) -> list[dict[str, str]]:
 
 def main() -> int:
     args = parse_args()
+    if args.parameter_counts is None:
+        variants = [
+            ("ROI-MLP+CLIP", "roi_mlp", "flat"),
+            ("Flat ReGraph+CLIP", "graph_bnt", "flat"),
+            ("Gated ReGraph+CLIP", "graph_bnt", "gated_flat"),
+            ("No-adj gated ROI Transformer+CLIP", "roi_transformer_noadj", "gated_flat"),
+        ]
+        for model, graph_encoder, readout in variants:
+            observed = count_trainable_parameters(graph_encoder, readout)
+            print(f"{model},{graph_encoder},{readout},{observed}")
+        return 0
+
     rows = read_rows(args.parameter_counts)
     if not rows:
         raise SystemExit(f"No rows found in {args.parameter_counts}")

@@ -1,9 +1,0 @@
-fold,test_subject,test_seq,repeat_corr,raw_AUROC,raw_gap,model_AUROC,brain_R@5,source
-fold_01,subj01,766,0.9107,0.6615,0.0151,0.8387,0.0963,reports/neurips_report/may30.tex: Table tab:fold_difficulty
-fold_02,subj02,766,0.9057,0.6697,0.018,0.844,0.0865,reports/neurips_report/may30.tex: Table tab:fold_difficulty
-fold_03,subj03,581,0.8898,0.6469,0.0166,0.8488,0.1279,reports/neurips_report/may30.tex: Table tab:fold_difficulty
-fold_04,subj04,515,0.8832,0.6919,0.0188,0.871,0.1439,reports/neurips_report/may30.tex: Table tab:fold_difficulty
-fold_05,subj05,766,0.8997,0.6824,0.0193,0.8783,0.1113,reports/neurips_report/may30.tex: Table tab:fold_difficulty
-fold_06,subj06,581,0.8779,0.6486,0.0169,0.8306,0.1038,reports/neurips_report/may30.tex: Table tab:fold_difficulty
-fold_07,subj07,766,0.869,0.6296,0.0144,0.7111,0.0374,reports/neurips_report/may30.tex: Table tab:fold_difficulty
-fold_08,subj08,515,0.8524,0.6158,0.018,0.7848,0.0893,reports/neurips_report/may30.tex: Table tab:fold_difficulty
